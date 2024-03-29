@@ -26,8 +26,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -51,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogFilledButton
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIntermediatorTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.theme.Brown5
@@ -283,14 +280,14 @@ private fun ApplyButton(onClick: () -> Unit) {
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_add),
-            contentDescription = null,
+            contentDescription = null
         )
         Spacer(modifier = Modifier.width(11.dp))
         Text(
             text = "공고 등록하기",
             color = Color.White,
             style = Typography.titleSmall,
-            fontSize = 12.sp,
+            fontSize = 12.sp
         )
     }
 }
