@@ -25,12 +25,14 @@ fun NavGraphBuilder.loginNavGraph(
     onBackClick: () -> Unit,
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToVolunteer: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
             onNavigateToNormalLogin,
-            onNavigateToSignup
+            onNavigateToSignup,
+            onNavigateToVolunteer
         )
     }
 
@@ -45,7 +47,8 @@ fun NavGraphBuilder.loginNavGraph(
         NormalLoginScreen(
             onBackClick = onBackClick,
             userType = it.arguments!!.getSerializable("type") as UserType,
-            onNavigateToVolunteerHome = onNavigateToVolunteer
+            onNavigateToVolunteerHome = onNavigateToVolunteer,
+            onNavigateToIntermediatorHome = onNavigateToIntermediatorHome
         )
     }
 }

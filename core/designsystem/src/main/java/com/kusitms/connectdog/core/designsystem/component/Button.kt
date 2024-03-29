@@ -42,11 +42,18 @@ fun ConnectDogBottomButton(
         onClick = onClick,
         contentPadding = PaddingValues(vertical = 16.dp),
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier.height(56.dp).fillMaxWidth(),
+        modifier = modifier
+            .height(56.dp)
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = textColor),
         border = border
     ) {
-        Text(text = content, style = Typography.titleSmall, color = textColor, fontSize = fontSize.sp)
+        Text(
+            text = content,
+            style = Typography.titleSmall,
+            color = textColor,
+            fontSize = fontSize.sp
+        )
     }
 }
 
@@ -132,6 +139,39 @@ fun ConnectDogOutlinedButton(
 }
 
 @Composable
+fun ConnectDogFilledButton(
+    width: Int,
+    height: Int,
+    text: String,
+    padding: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = Color.White,
+    fontColor: Color = MaterialTheme.colorScheme.primary
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier
+            .width(width.dp)
+            .height(height.dp),
+        contentPadding = PaddingValues(
+            top = 1.dp,
+            bottom = 1.dp,
+            start = padding.dp,
+            end = padding.dp
+        ),
+        colors = ButtonDefaults.buttonColors(backgroundColor)
+    ) {
+        Text(
+            text = text,
+            fontSize = 8.sp,
+            color = fontColor,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
 fun ConnectDogOutlinedButton(
     modifier: Modifier = Modifier,
     isSelected: Boolean = false,
@@ -163,10 +203,17 @@ fun ConnectDogSecondaryButton(
         contentPadding = PaddingValues(vertical = 11.dp),
         shape = RoundedCornerShape(6.dp),
         border = BorderStroke(1.dp, borderColor),
-        modifier = modifier.fillMaxWidth().height(40.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(40.dp),
         colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = textColor)
     ) {
-        Text(text = stringResource(id = contentRes), style = Typography.titleSmall, color = textColor, fontSize = 12.sp)
+        Text(
+            text = stringResource(id = contentRes),
+            style = Typography.titleSmall,
+            color = textColor,
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -205,6 +252,20 @@ private fun OutlinedButton() {
             height = 30,
             text = "프로필 사진 선택",
             padding = 10,
+            onClick = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FilledButton() {
+    ConnectDogTheme {
+        ConnectDogFilledButton(
+            width = 45,
+            height = 14,
+            text = "프로필 보기",
+            padding = 1,
             onClick = {}
         )
     }

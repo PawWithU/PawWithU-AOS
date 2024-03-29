@@ -30,6 +30,7 @@ import androidx.navigation.compose.NavHost
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.util.AppMode
 import com.kusitms.connectdog.feature.home.navigation.homeNavGraph
+import com.kusitms.connectdog.feature.intermediator.navigation.intermediatorNavGraph
 import com.kusitms.connectdog.feature.login.loginNavGraph
 import com.kusitms.connectdog.feature.management.navigation.managementNavGraph
 import com.kusitms.connectdog.feature.mypage.navigation.mypageNavGraph
@@ -67,11 +68,12 @@ internal fun MainScreen(
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onNavigateToNormalLogin = { navigator.navigateNormalLogin(it) },
                         onNavigateToVolunteer = { navigator.navigateHome() },
+                        onNavigateToIntermediatorHome = { navigator.navigateIntermediatorHome() },
                         onNavigateToSignup = { navigator.navigateSignup(it) }
                     )
                     signUpGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
-                        navigateToVolunteerProfile = { navigator.navigateVolunteerProfile() },
+                        navigateToVolunteerProfile = { navigator.navigateVolunteerProfile(it) },
                         navigateToIntermediatorInformation = { navigator.navigateIntermediatorInformation() },
                         navigateToIntermediatorProfile = { navigator.navigateIntermediatorProfile() },
                         navigateToRegisterEmail = { navigator.navigateRegisterEmail(it) },
@@ -95,7 +97,9 @@ internal fun MainScreen(
                         onNavigateToCertification = { navigator.navigateCertification(it) },
                         onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToComplete = { navigator.navigateComplete() },
-                        onNavigateToIntermediatorProfile = { navigator.navigateIntermediatorProfile(it) },
+                        onNavigateToIntermediatorProfile = {
+                            navigator.navigateIntermediatorProfile(it)
+                        },
                         onNavigateToNotification = { navigator.navigateNotification() },
                         onShowErrorSnackBar = {},
                         onSendMessage = { sendVerificationCode(it) },
@@ -118,7 +122,17 @@ internal fun MainScreen(
                         onBookmarkClick = { navigator.navigateBookmark() },
                         onEditProfileImageClick = { navigator.navigateEditProfileImage() },
                         editProfileViewModel = editProfileViewModel,
+                        onNavigateToCertification = { navigator.navigateCertification(it) },
+                        onNavigateToDetail = { navigator.navigateHomeDetail(it) },
+                        onNavigateToIntermediatorProfile = { navigator.navigateIntermediatorProfile(it) },
                         onShowErrorSnackbar = {}
+                    )
+                    intermediatorNavGraph(
+                        onBackClick = navigator::popBackStackIfNotHome,
+                        onSettingClick = { navigator.navigateSetting() },
+                        onNotificationClick = { navigator.navigateNotification() },
+                        onManagementClick = { navigator.navigateInterManagement(it) },
+                        onProfileClick = { navigator.navigateInterProfile() }
                     )
                 }
             }
