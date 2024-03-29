@@ -21,12 +21,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -49,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogFilledButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIntermediatorTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.theme.Brown5
@@ -84,7 +84,8 @@ internal data class CardItem(
 fun IntermediatorHomeScreen(
     onNotificationClick: () -> Unit,
     onSettingClick: () -> Unit,
-    onDataClick: (Int) -> Unit,
+    onManageClick: (Int) -> Unit,
+    onProfileClick: () -> Unit,
     viewModel: InterHomeViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
@@ -100,7 +101,8 @@ fun IntermediatorHomeScreen(
     ) {
         Content(
             viewModel = viewModel,
-            onClick = onDataClick
+            onManageClick = onManageClick,
+            onProfileClick = onProfileClick
         )
     }
 }
@@ -108,13 +110,19 @@ fun IntermediatorHomeScreen(
 @Composable
 private fun Content(
     viewModel: InterHomeViewModel,
-    onClick: (Int) -> Unit
+    onProfileClick: () -> Unit,
+    onManageClick: (Int) -> Unit
 ) {
     val recruitingCount = viewModel.recruitingCount.collectAsState()
     val waitingCount = viewModel.waitingCount.collectAsState()
     val progressingCount = viewModel.progressingCount.collectAsState()
     val completedCount = viewModel.completedCount.collectAsState()
-    val cnt = listOf(recruitingCount.value, waitingCount.value, progressingCount.value, completedCount.value)
+    val cnt = listOf(
+        recruitingCount.value,
+        waitingCount.value,
+        progressingCount.value,
+        completedCount.value
+    )
     val list = cnt.mapIndexedNotNull { index, value ->
         value?.let {
             CardItem(
@@ -128,20 +136,21 @@ private fun Content(
         modifier = Modifier.fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(48.dp))
-        ProfileCard(viewModel)
-        ManageBoard(list) { onClick(it) }
+        ProfileCard(viewModel, onProfileClick)
+        ManageBoard(list) { onManageClick(it) }
     }
 }
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 private fun ProfileCard(
-    viewModel: InterHomeViewModel
+    viewModel: InterHomeViewModel,
+    onProfileClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp)
+            .height(172.dp)
             .background(MaterialTheme.colorScheme.primary)
     ) {
         Row(
@@ -156,12 +165,25 @@ private fun ProfileCard(
                     placeholder = painterResource(id = R.drawable.ic_default_intermediator)
                 )
                 Spacer(modifier = Modifier.height(18.dp))
-                Text(
-                    text = viewModel.intermediaryName.value,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = Color.White,
-                    fontSize = 20.sp
-                )
+                Row(
+                    modifier = Modifier.wrapContentHeight(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = viewModel.intermediaryName.value,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    ConnectDogFilledButton(
+                        width = 45,
+                        height = 14,
+                        text = "프로필 보기",
+                        padding = 1,
+                        onClick = onProfileClick
+                    )
+                }
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = viewModel.intro.value,
@@ -231,9 +253,9 @@ private fun ManageBoard(
                 ) { onClick(index) }
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             ApplyButton(onClick = {})
@@ -246,7 +268,6 @@ private fun ApplyButton(onClick: () -> Unit) {
     val context = LocalContext.current
     Button(
         onClick = { Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show() },
-        contentPadding = PaddingValues(vertical = 15.dp),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .width(117.dp)
@@ -254,15 +275,20 @@ private fun ApplyButton(onClick: () -> Unit) {
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White
-        )
+        ),
+        contentPadding = PaddingValues(horizontal = 15.dp)
     ) {
         Icon(
-            imageVector = Icons.Outlined.Add,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            painter = painterResource(id = R.drawable.ic_add),
+            contentDescription = null
         )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(text = "공고 등록", color = Color.White, style = Typography.titleSmall, fontSize = 12.sp)
+        Spacer(modifier = Modifier.width(11.dp))
+        Text(
+            text = "공고 등록하기",
+            color = Color.White,
+            style = Typography.titleSmall,
+            fontSize = 12.sp
+        )
     }
 }
 
@@ -279,8 +305,7 @@ private fun ManageCard(
             containerColor = Color.White
         ),
         modifier = Modifier
-            .width(170.dp)
-            .height(200.dp)
+            .size(width = 150.dp, height = 180.dp)
             .clickable { onClick() }
     ) {
         Column(
@@ -318,6 +343,24 @@ private fun ManageCard(
 @Composable
 private fun test() {
     ConnectDogTheme {
-        IntermediatorHomeScreen(onNotificationClick = {}, onSettingClick = {}, {})
+        Row(
+            modifier = Modifier.wrapContentHeight(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "이동봉사 중개",
+                style = MaterialTheme.typography.titleSmall,
+                color = Color.White,
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            ConnectDogFilledButton(
+                width = 45,
+                height = 14,
+                text = "프로필 보기",
+                padding = 1,
+                onClick = {}
+            )
+        }
     }
 }
