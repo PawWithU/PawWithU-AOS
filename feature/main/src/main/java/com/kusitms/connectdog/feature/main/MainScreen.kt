@@ -131,7 +131,8 @@ internal fun MainScreen(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onSettingClick = { navigator.navigateSetting() },
                         onNotificationClick = { navigator.navigateNotification() },
-                        onManagementClick = { navigator.navigateInterManagement(it) }
+                        onManagementClick = { navigator.navigateInterManagement(it) },
+                        onProfileClick = { navigator.navigateInterProfile() }
                     )
                 }
             }
