@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogFilledButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIntermediatorTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.theme.Brown5
@@ -270,7 +271,6 @@ private fun ApplyButton(onClick: () -> Unit) {
     val context = LocalContext.current
     Button(
         onClick = { Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show() },
-        contentPadding = PaddingValues(vertical = 15.dp),
         shape = RoundedCornerShape(12.dp),
         modifier = Modifier
             .width(117.dp)
@@ -278,15 +278,20 @@ private fun ApplyButton(onClick: () -> Unit) {
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White
-        )
+        ),
+        contentPadding = PaddingValues(horizontal = 15.dp)
     ) {
         Icon(
-            imageVector = Icons.Outlined.Add,
+            painter = painterResource(id = R.drawable.ic_add),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
         )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(text = "공고 등록", color = Color.White, style = Typography.titleSmall, fontSize = 12.sp)
+        Spacer(modifier = Modifier.width(11.dp))
+        Text(
+            text = "공고 등록하기",
+            color = Color.White,
+            style = Typography.titleSmall,
+            fontSize = 12.sp,
+        )
     }
 }
 
