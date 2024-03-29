@@ -1,9 +1,13 @@
 package com.kusitms.connectdog.feature.login.screen
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,9 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -23,14 +26,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,17 +44,17 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.KAKAO
 import com.kusitms.connectdog.core.designsystem.theme.NAVER
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.util.SocialType
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.login.R
 import com.kusitms.connectdog.feature.login.viewmodel.LoginViewModel
 import com.kusitms.connectdog.feature.login.viewmodel.Provider
 import kotlinx.coroutines.launch
-
-val pages = listOf("이동봉사자 회원", "이동봉사자 중개 회원")
 
 @Composable
 internal fun LoginRoute(
@@ -64,6 +69,7 @@ internal fun LoginRoute(
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(
     onNavigateToNormalLogin: (UserType) -> Unit,
@@ -71,87 +77,91 @@ fun LoginScreen(
     onNavigateToVolunteerHome: () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize()
     ) {
+        Text(
+            modifier = Modifier.padding(start = 20.dp, top = 32.dp, bottom = 32.dp),
+            text = stringResource(id = R.string.introduce),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        LoginContent(
+            onNavigateToNormalLogin,
+            onNavigateToSignup,
+            onNavigateToVolunteerHome
+        )
+        Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = com.kusitms.connectdog.core.designsystem.R.drawable.ic_main),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .height(200.dp)
-        )
-        SelectLoginType(
-            onNavigateToNormalLogin = onNavigateToNormalLogin,
-            onNavigateToSignup = onNavigateToSignup,
-            onNavigateToVolunteerHome = onNavigateToVolunteerHome
         )
     }
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun SelectLoginType(
+private fun LoginContent(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit
 ) {
-    Surface {
-        Column() {
-            val pagerState = rememberPagerState()
-            val coroutineScope = rememberCoroutineScope()
-            TabRow(
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp),
-                selectedTabIndex = pagerState.currentPage
-            ) {
-                pages.forEachIndexed { index, title ->
-                    Tab(
-                        text = {
-                            Text(
-                                text = title,
-                                color = if (pagerState.currentPage == index) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    Gray2
-                                }
-                            )
-                        },
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.scrollToPage(index)
+    val pages = listOf("이동봉사자 회원", "이동봉사 모집자 회원")
+    Column(
+        modifier = Modifier.height(340.dp)
+    ) {
+        val pagerState = rememberPagerState()
+        val coroutineScope = rememberCoroutineScope()
+        TabRow(
+            modifier = Modifier
+                .padding(start = 10.dp, end = 10.dp),
+            selectedTabIndex = pagerState.currentPage
+        ) {
+            pages.forEachIndexed { index, title ->
+                Tab(
+                    text = {
+                        Text(
+                            text = title,
+                            color = if (pagerState.currentPage == index) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                Gray2
                             }
+                        )
+                    },
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.scrollToPage(index)
                         }
-                    )
-                }
+                    }
+                )
             }
-            HorizontalPager(
-                count = pages.size,
-                state = pagerState
-            ) {
-                when (it) {
-                    0 -> Volunteer(
-                        onNavigateToNormalLogin,
-                        onNavigateToSignup,
-                        onNavigateToVolunteerHome
-                    )
+        }
+        HorizontalPager(
+            count = pages.size,
+            state = pagerState
+        ) {
+            when (it) {
+                0 -> Volunteer(
+                    onNavigateToNormalLogin = onNavigateToNormalLogin,
+                    onNavigateToSignup = onNavigateToSignup,
+                    onNavigateToVolunteerHome = onNavigateToVolunteerHome
+                )
 
-                    1 -> Intermediator(
-                        onNavigateToNormalLogin,
-                        onNavigateToSignup
-                    )
-                }
+                1 -> Intermediator(
+                    onNavigateToNormalLogin = onNavigateToNormalLogin,
+                    onNavigateToSignup = onNavigateToSignup
+                )
             }
         }
     }
 }
 
 @Composable
-fun Volunteer(
+private fun Volunteer(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
@@ -163,15 +173,16 @@ fun Volunteer(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(top = 32.dp)
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.Top
+            .fillMaxHeight()
+            .padding(top = 32.dp),
     ) {
+        BubbleInfo()
+        Spacer(modifier = Modifier.height(20.dp))
         ConnectDogIconBottomButton(
             iconId = R.drawable.ic_kakao,
             contentDescription = "kakao login",
             onClick = { viewModel.initSocialLogin(Provider.KAKAO, context) },
-            content = stringResource(id = com.kusitms.connectdog.feature.login.R.string.kakao_login),
+            content = stringResource(id = R.string.kakao_login),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp),
@@ -189,28 +200,14 @@ fun Volunteer(
             onClick = { viewModel.initSocialLogin(Provider.NAVER, context) },
             content = stringResource(id = R.string.naver_login)
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = stringResource(id = R.string.or),
-            fontSize = 13.sp,
-            color = Color(0xFF7B7B7B)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        ConnectDogNormalButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            content = stringResource(id = R.string.signup_with_connectdog),
-            onClick = { onNavigateToSignup(UserType.NORMAL_VOLUNTEER) }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        NormalLogin(onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
+        Spacer(modifier = Modifier.height(30.dp))
+        NormalLogin(onNavigateToSignup, onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
     }
 
     socialType?.let {
         when (it) {
             SocialType.VOLUNTEER -> onNavigateToVolunteerHome()
-            SocialType.GUEST -> onNavigateToSignup(UserType.SOCIAL_VOLUNTEER)
+            SocialType.GUEST -> {}
         }
     }
 }
@@ -221,11 +218,11 @@ private fun Intermediator(
     onNavigateToSignup: (UserType) -> Unit
 ) {
     Column(
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(top = 32.dp)
             .fillMaxHeight(),
-        verticalArrangement = Arrangement.Top
     ) {
         ConnectDogNormalButton(
             modifier = Modifier
@@ -235,32 +232,114 @@ private fun Intermediator(
             onClick = { onNavigateToSignup(UserType.INTERMEDIATOR) }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        NormalLogin(onNavigateToNormalLogin, UserType.INTERMEDIATOR)
+//        NormalLogin(onNavigateToNormalLogin, UserType.INTERMEDIATOR)
     }
 }
 
 @Composable
-private fun NormalLogin(onNavigateToNormalLogin: (UserType) -> Unit, userType: UserType) {
-    ClickableText(
-        text = buildAnnotatedString {
-            withStyle(
-                style = SpanStyle(
-                    color = Color(0xFF7B7B7B),
-                    fontSize = 13.sp
-                )
-            ) {
-                append("이미 계정이 있나요? ")
-            }
-            withStyle(
-                style = SpanStyle(
-                    color = Color(0xFF7B7B7B),
-                    fontSize = 13.sp,
-                    textDecoration = TextDecoration.Underline
-                )
-            ) {
-                append("로그인")
-            }
-        },
-        onClick = { onNavigateToNormalLogin(userType) }
-    )
+private fun NormalLogin(
+    onNavigateToSignup: (UserType) -> Unit,
+    onNavigateToNormalLogin: (UserType) -> Unit,
+    userType: UserType
+) {
+    Row {
+        Text(
+            modifier = Modifier.clickable { onNavigateToSignup(userType) },
+            text = "이메일로 회원가입",
+            fontSize = 12.sp,
+            color = Gray2
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = "|",
+            fontSize = 12.sp,
+            color = Gray2
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            modifier = Modifier.clickable { onNavigateToNormalLogin(userType) },
+            text = "이메일 로그인",
+            fontSize = 12.sp,
+            color = Gray2
+        )
+    }
+}
+
+@Composable
+private fun BubbleInfo() {
+    Box {
+        BubbleShape()
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            text = "이동봉사 공고를 찾고 계신다면, 이동봉사자 회원으로!",
+            fontSize = 12.sp,
+            color = PetOrange,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+private fun BubbleShape() {
+    val density = LocalDensity.current
+    val tailWidth = with(density) { 10.dp.toPx() }
+    val tailHeight = with(density) { 9.dp.toPx() }
+    val strokeWidth = with(density) { 1.dp.toPx() }
+
+    Canvas(
+        modifier = Modifier
+            .height(28.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 37.dp)
+    ) {
+        val width = size.width
+        val height = size.height
+
+        val path = Path().apply {
+            val cornerRadius = 100.dp.toPx()
+            addRoundRect(RoundRect(0f, 0f, width, height, cornerRadius, cornerRadius))
+        }
+
+        val path2 = Path().apply {
+            val tailStartX = (width / 2) - (tailWidth / 2)
+            val tailStartY = height
+            moveTo(tailStartX + 2f, tailStartY)
+            lineTo(tailStartX + tailWidth - 2f, tailStartY)
+        }
+
+        val path3 = Path().apply {
+            val tailStartX = (width / 2) - (tailWidth / 2)
+            val tailStartY = height
+
+            moveTo(tailStartX, tailStartY)
+            lineTo(tailStartX + tailWidth / 2, tailStartY + tailHeight) // 꼬리의 끝점
+            lineTo(tailStartX + tailWidth, tailStartY)
+        }
+
+        drawPath(
+            path = path,
+            color = PetOrange,
+            style = Stroke(width = strokeWidth)
+        )
+
+        drawPath(
+            path = path2,
+            color = Color.White,
+            style = Stroke(width = strokeWidth + 2.dp.toPx())
+        )
+
+        drawPath(
+            path = path3,
+            color = PetOrange,
+            style = Stroke(width = strokeWidth)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun test() {
+    ConnectDogTheme {
+        BubbleInfo()
+    }
 }
