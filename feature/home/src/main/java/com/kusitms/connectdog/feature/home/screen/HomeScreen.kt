@@ -113,7 +113,7 @@ private fun HomeScreen(
     ) {
         TopTitle(modifier = Modifier.padding(20.dp))
         StatisticBanner(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp))
-        BannerGuideline()
+        BannerGuideline(onNavigateToSearch)
         MoveContent(onClick = { onNavigateToSearch() }, titleRes = R.string.home_navigate_search)
         AnnouncementContent(announcementUiState, onClick = onNavigateToDetail)
         MoveContent(onClick = { onNavigateToReview() }, titleRes = R.string.home_navigate_review)
@@ -167,9 +167,7 @@ private fun TopTitle(modifier: Modifier) {
 private fun StatisticBanner(modifier: Modifier) {
     Column(horizontalAlignment = Alignment.End, modifier = modifier) {
         Row(
-            modifier = Modifier
-                .clickable { }
-                .padding(end = 10.dp),
+            modifier = Modifier.padding(end = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -260,7 +258,9 @@ private fun StatisticInfoItem(
 }
 
 @Composable
-private fun BannerGuideline() {
+private fun BannerGuideline(
+    onNavigateToReview: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -276,7 +276,7 @@ private fun BannerGuideline() {
             color = MaterialTheme.colorScheme.background
         )
         Button(
-            onClick = {},
+            onClick = onNavigateToReview,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.primary

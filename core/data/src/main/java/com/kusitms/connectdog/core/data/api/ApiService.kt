@@ -67,6 +67,11 @@ internal interface ApiService {
     /**
      * 회원가입
      */
+    @POST("/volunteers/nickname/isDuplicated")
+    suspend fun postNickname(
+        @Body nickname: IsDuplicateNicknameBody
+    ): IsDuplicateNicknameResponse
+
     @POST("/volunteers/sign-up/email")
     suspend fun postEmail(
         @Body emailCertificationBody: EmailCertificationBody
@@ -77,7 +82,7 @@ internal interface ApiService {
         @Body normalVolunteerSignUpBody: NormalVolunteerSignUpBody
     )
 
-    @POST("/volunteers/sign-up/social")
+    @PATCH("/volunteers/sign-up/social")
     suspend fun postSocialVolunteerSignUp(
         @Body socialVolunteerSignUpBody: SocialVolunteerSignUpBody
     )
@@ -132,14 +137,6 @@ internal interface ApiService {
     suspend fun postSocialLoginData(
         @Body socialLoginBody: SocialLoginBody
     ): LoginResponseItem
-
-    /**
-     * 회원가입
-     */
-    @POST("/volunteers/nickname/isDuplicated")
-    suspend fun postNickname(
-        @Body nickname: IsDuplicateNicknameBody
-    ): IsDuplicateNicknameResponse
 
     /**
      * 이동봉사자 > 마이페이지

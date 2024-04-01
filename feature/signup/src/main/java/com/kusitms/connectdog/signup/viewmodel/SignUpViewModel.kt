@@ -7,6 +7,7 @@ import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.repository.DataStoreRepository
 import com.kusitms.connectdog.core.data.repository.LoginRepository
+import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.repository.SignUpRepository
 import com.kusitms.connectdog.core.util.AppMode
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,12 +57,10 @@ class SignUpViewModel @Inject constructor(
             password = _password.value!!,
             profileImageNum = _profileImageId.value!!
         )
-
         val login = NormalLoginBody(
             email = _email.value!!,
             password = _password.value!!
         )
-
         viewModelScope.launch {
             try {
                 signupRepository.postNormalVolunteerSignUp(body)
@@ -71,6 +70,20 @@ class SignUpViewModel @Inject constructor(
                 dataStoreRepository.saveRefreshToken(response.refreshToken)
             } catch (e: Exception) {
                 Log.d("tesaq", e.message.toString())
+            }
+        }
+    }
+
+    fun postSocialVolunteerSignUp() {
+        val body = SocialVolunteerSignUpBody(
+            nickname = _nickname.value!!,
+            profileImageNum = _profileImageId.value!!
+        )
+        viewModelScope.launch {
+            try {
+                val response = signupRepository.postSocialVolunteerSignUp(body)
+            } catch (e: Exception) {
+                Log.d("tesqz", e.message.toString())
             }
         }
     }

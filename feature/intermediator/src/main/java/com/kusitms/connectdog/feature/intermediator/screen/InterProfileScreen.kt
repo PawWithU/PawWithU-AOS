@@ -46,8 +46,8 @@ val pages = listOf("기본 정보", "후기", "근황")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun ProfileScreen(
-    onBackClick: () -> Unit = {}
+internal fun InterProfileScreen(
+    onBackClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -204,6 +204,6 @@ fun News() {
 @Composable
 private fun test() {
     ConnectDogTheme {
-        ProfileScreen()
+//        InterProfileScreen()
     }
 }

@@ -23,6 +23,10 @@ import com.kusitms.connectdog.feature.home.navigation.navigateIntermediatorProfi
 import com.kusitms.connectdog.feature.home.navigation.navigateReview
 import com.kusitms.connectdog.feature.home.navigation.navigateSearch
 import com.kusitms.connectdog.feature.home.navigation.navigateSearchWithFilter
+import com.kusitms.connectdog.feature.intermediator.navigation.IntermediatorRoute
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterManagement
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateIntermediatorHome
 import com.kusitms.connectdog.feature.login.LoginRoute
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.onLogoutClick
@@ -50,13 +54,11 @@ internal class MainNavigator(
     mode: AppMode
 ) {
     private val currentDestination: NavDestination?
-        @Composable get() =
-            navController
-                .currentBackStackEntryAsState().value?.destination
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
     val startDestination = when (mode) {
         AppMode.VOLUNTEER -> MainTab.HOME.route
-        AppMode.INTERMEDIATOR -> MainTab.HOME.route
+        AppMode.INTERMEDIATOR -> IntermediatorRoute.route
         AppMode.LOGIN -> LoginRoute.route
     }
 
@@ -90,7 +92,7 @@ internal class MainNavigator(
     fun onLogoutClick() = navController.onLogoutClick()
 
     // signup navigator
-    fun navigateVolunteerProfile() = navController.navigateToVolunteerProfile()
+    fun navigateVolunteerProfile(userType: UserType) = navController.navigateToVolunteerProfile(userType)
     fun navigateIntermediatorProfile() = navController.navigateToIntermediatorProfile()
     fun navigateRegisterEmail(userType: UserType) = navController.navigateRegisterEmail(userType)
     fun navigateRegisterPassword(userType: UserType) = navController.navigateRegisterPassword(userType)
@@ -119,6 +121,11 @@ internal class MainNavigator(
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
     fun navigateCreateReview() = navController.navigateCreateReview()
 
+    // intermediator
+    fun navigateIntermediatorHome() = navController.navigateIntermediatorHome()
+    fun navigateInterManagement(index: Int) = navController.navigateInterManagement(index)
+    fun navigateInterProfile() = navController.navigateInterProfile()
+
     fun popBackStackIfNotHome() {
         if (!isSameCurrentDestination(HomeRoute.route)) {
             navController.popBackStack()
@@ -136,7 +143,10 @@ internal class MainNavigator(
 }
 
 @Composable
-internal fun rememberMainNavigator(navController: NavHostController = rememberNavController(), mode: AppMode): MainNavigator =
+internal fun rememberMainNavigator(
+    navController: NavHostController = rememberNavController(),
+    mode: AppMode
+): MainNavigator =
     remember(navController) {
         MainNavigator(navController, mode)
     }
