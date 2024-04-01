@@ -33,6 +33,5 @@ private fun Content() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-
     }
 }
