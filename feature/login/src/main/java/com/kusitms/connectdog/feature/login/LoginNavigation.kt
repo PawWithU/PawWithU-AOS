@@ -38,7 +38,7 @@ fun NavGraphBuilder.loginNavGraph(
     onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit,
+    onNavigateToPasswordSearch: () -> Unit
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
@@ -68,13 +68,13 @@ fun NavGraphBuilder.loginNavGraph(
     }
 
     composable(route = LoginRoute.email_search) {
-        EmailSearchScreen (
+        EmailSearchScreen(
             onBackClick = onBackClick
         )
     }
 
     composable(route = LoginRoute.password_search) {
-        PasswordSearchScreen (
+        PasswordSearchScreen(
             onBackClick = onBackClick
         )
     }
