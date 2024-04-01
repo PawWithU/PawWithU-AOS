@@ -75,7 +75,7 @@ internal interface ApiService {
     @POST("/volunteers/sign-up")
     suspend fun postNormalVolunteerSignUp(
         @Body normalVolunteerSignUpBody: NormalVolunteerSignUpBody
-    ): Unit
+    )
 
     @POST("/volunteers/sign-up/social")
     suspend fun postSocialVolunteerSignUp(
