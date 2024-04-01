@@ -174,7 +174,7 @@ private fun Volunteer(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxHeight()
-            .padding(top = 32.dp),
+            .padding(top = 32.dp)
     ) {
         BubbleInfo()
         Spacer(modifier = Modifier.height(20.dp))
@@ -222,7 +222,7 @@ private fun Intermediator(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(top = 32.dp)
-            .fillMaxHeight(),
+            .fillMaxHeight()
     ) {
         ConnectDogNormalButton(
             modifier = Modifier
