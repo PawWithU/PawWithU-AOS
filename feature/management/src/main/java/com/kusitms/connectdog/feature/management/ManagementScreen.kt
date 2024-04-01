@@ -6,9 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -68,6 +66,7 @@ val TAG = "ManagementScreen"
 @Composable
 internal fun ManagementRoute(
     onBackClick: () -> Unit,
+    onNavigateToCreateReview: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: ManagementViewModel = hiltViewModel()
 ) {
@@ -100,7 +99,7 @@ internal fun ManagementRoute(
                 }
             },
             secondContent = { InProgress(inProgressUiState) },
-            thirdContent = { Completed(completedUiState, onClickReview = {}, onClickRecent = {}) }
+            thirdContent = { Completed(completedUiState, onClickReview = onNavigateToCreateReview) }
         )
     }
 
@@ -189,9 +188,11 @@ private fun PendingApproval(
                 }
             }
         }
+
         is ApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_pending, descriptionRes = R.string.no_description)
         }
+
         is ApplicationUiState.Loading -> Loading()
     }
 }
@@ -208,9 +209,11 @@ private fun InProgress(
                 }
             }
         }
+
         is ApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_progressing, descriptionRes = R.string.no_description)
         }
+
         is ApplicationUiState.Loading -> Loading()
     }
 }
@@ -218,8 +221,7 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: ApplicationUiState,
-    onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
+    onClickReview: () -> Unit
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
@@ -227,15 +229,16 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = onClickReview,
-                        onClickRecent = onClickRecent
+                        onClickReview = onClickReview
                     )
                 }
             }
         }
+
         is ApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_completed, descriptionRes = R.string.no_description)
         }
+
         is ApplicationUiState.Loading -> Loading()
     }
 }
@@ -278,8 +281,7 @@ private fun InProgressContent(application: Application) {
 @Composable
 private fun CompletedContent(
     application: Application,
-    onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
+    onClickReview: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -295,12 +297,10 @@ private fun CompletedContent(
                 hasKennel = application.hasKennel
             )
             Spacer(modifier = Modifier.size(20.dp))
-            ReviewRecentButton(
+            ReviewButton(
                 modifier = Modifier.height(40.dp),
                 hasReview = application.reviewId != null,
-                hasRecent = application.dogStatusId != null,
-                onClickReview = onClickReview,
-                onClickRecent = onClickRecent
+                onClickReview = onClickReview
             )
         }
         Divider(thickness = 8.dp, color = Gray7)
@@ -319,64 +319,28 @@ private fun OutlinedButton(
 }
 
 @Composable
-private fun ReviewRecentButton(
+private fun ReviewButton(
     modifier: Modifier = Modifier,
     hasReview: Boolean,
-    hasRecent: Boolean,
-    onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
+    onClickReview: () -> Unit
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .border(
                 shape = RoundedCornerShape(6.dp),
                 color = MaterialTheme.colorScheme.outline,
                 width = 1.dp
             )
+            .clickable(enabled = hasReview) { onClickReview() },
+        contentAlignment = Alignment.Center
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Box(
-                modifier = modifier
-                    .fillMaxHeight()
-                    .weight(0.5f)
-                    .clickable(enabled = hasReview) { onClickReview() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.create_review),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    color = if (!hasReview) Gray4 else Gray1
-                )
-            }
-            Box(
-                modifier = modifier
-                    .fillMaxHeight()
-                    .weight(0.5f)
-                    .clickable(enabled = hasRecent) { onClickRecent() },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = R.string.check_recent),
-                    style = MaterialTheme.typography.titleSmall,
-                    fontSize = 12.sp,
-                    textAlign = TextAlign.Center,
-                    color = if (!hasRecent) Gray4 else Gray1
-                )
-            }
-        }
-        Divider(
-            color = MaterialTheme.colorScheme.outline,
-            modifier = modifier
-                .align(Alignment.Center)
-                .width(1.dp)
-                .fillMaxHeight()
-                .padding(vertical = 8.dp)
+        Text(
+            text = stringResource(id = R.string.create_review),
+            style = MaterialTheme.typography.titleSmall,
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            color = if (!hasReview) Gray4 else Gray1
         )
     }
 }
@@ -393,6 +357,6 @@ private fun Loading() {
 private fun CompletedContentPreview() {
     val application = Application("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, 0, 0)
     ConnectDogTheme {
-        CompletedContent(application = application, onClickReview = { }, onClickRecent = {})
+        CompletedContent(application = application, onClickReview = { })
     }
 }

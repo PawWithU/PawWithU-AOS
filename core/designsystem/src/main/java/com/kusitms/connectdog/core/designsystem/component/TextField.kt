@@ -3,6 +3,7 @@ package com.kusitms.connectdog.core.designsystem.component
 import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,8 +31,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
@@ -56,58 +61,64 @@ fun ConnectDogTextField(
             VisualTransformation.None
         }
 
-    OutlinedTextField(
-        visualTransformation = visualTransformation,
+    Box(
         modifier = Modifier
+            .height(height.dp)
             .fillMaxWidth()
-            .height(height.dp),
-        value = text,
-        onValueChange = { onTextChanged(it) },
-        label = {
-            Text(
-                text = label,
-                color = Gray3
-            )
-        },
-        placeholder = {
-            Text(
-                text = placeholder,
-                color = Gray4
-            )
-        },
-        keyboardOptions =
-        KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        isError = isError,
-        enabled = enabled,
-        supportingText = {
-            if (isError) {
+    ) {
+        OutlinedTextField(
+            visualTransformation = visualTransformation,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .fillMaxSize(),
+            value = text,
+            onValueChange = { onTextChanged(it) },
+            label = {
                 Text(
-                    text = stringResource(id = errorMessageRes),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else if (supportingText != null) {
-                Text(
-                    text = stringResource(id = supportingText),
-                    style = MaterialTheme.typography.labelSmall,
+                    text = label,
                     color = Gray3
                 )
-            }
-        },
-        colors =
-        OutlinedTextFieldDefaults.colors(
-            unfocusedBorderColor = borderColor,
-            errorBorderColor = MaterialTheme.colorScheme.error
-        )
+            },
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = Gray4
+                )
+            },
+            keyboardOptions =
+            KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            singleLine = (height == 65),
+            shape = RoundedCornerShape(12.dp),
+            isError = isError,
+            enabled = enabled,
+            supportingText = {
+                if (isError) {
+                    Text(
+                        text = stringResource(id = errorMessageRes),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else if (supportingText != null) {
+                    Text(
+                        text = stringResource(id = supportingText),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Gray3
+                    )
+                }
+            },
+            colors =
+            OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = borderColor,
+                errorBorderColor = MaterialTheme.colorScheme.error
+            )
 //        textStyle = LocalTextStyle.current.copy(
 //            baselineShift = BaselineShift(if(height == 65) 0f else 2.5f)
 //        )
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -200,22 +211,38 @@ fun ConnectDogTextFieldWithButton(
     }
 }
 
-// @Preview
-// @Composable
-// private fun ConnectDogTextFieldPreview() {
-//    val (text, onTextChanged) =
-//        remember {
-//            mutableStateOf("")
-//        }
-//    ConnectDogTheme {
-//        ConnectDogTextField(
-//            text = text,
-//            onTextChanged = onTextChanged,
-//            label = "텍스트",
-//            placeholder = "비밀번호"
-//        )
-//    }
-// }
+@Preview
+@Composable
+private fun ConnectDogTextFieldPreview() {
+    val (text, onTextChanged) =
+        remember {
+            mutableStateOf("")
+        }
+    ConnectDogTheme {
+        ConnectDogTextField(
+            text = text,
+            onTextChanged = onTextChanged,
+            label = "텍스트",
+            placeholder = "비밀번호"
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun tesaq() {
+    ConnectDogTheme {
+        ConnectDogTextField(
+            height = 244,
+            text = "",
+            onTextChanged = {},
+            label = "느꼈던 감정, 후기를 작성해주세요",
+            placeholder = "",
+            isError = false,
+            supportingText = null
+        )
+    }
+}
 
 // @Preview
 // @Composable
