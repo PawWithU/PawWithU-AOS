@@ -25,12 +25,14 @@ import com.kusitms.connectdog.feature.home.navigation.navigateSearch
 import com.kusitms.connectdog.feature.home.navigation.navigateSearchWithFilter
 import com.kusitms.connectdog.feature.intermediator.navigation.IntermediatorRoute
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterManagement
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateIntermediatorHome
 import com.kusitms.connectdog.feature.login.LoginRoute
 import com.kusitms.connectdog.feature.login.navigateEmailSearch
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
 import com.kusitms.connectdog.feature.login.onLogoutClick
+import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBadge
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBookmark
@@ -121,10 +123,12 @@ internal class MainNavigator(
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
+    fun navigateCreateReview() = navController.navigateCreateReview()
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateIntermediatorHome()
     fun navigateInterManagement(index: Int) = navController.navigateInterManagement(index)
+    fun navigateInterProfile() = navController.navigateInterProfile()
 
     fun popBackStackIfNotHome() {
         if (!isSameCurrentDestination(HomeRoute.route)) {

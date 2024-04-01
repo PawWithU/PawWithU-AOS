@@ -110,7 +110,8 @@ internal fun MainScreen(
                     )
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onShowErrorSnackbar = {}
+                        onShowErrorSnackbar = {},
+                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
                     )
                     mypageNavGraph(
                         padding = it,
@@ -133,7 +134,8 @@ internal fun MainScreen(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onSettingClick = { navigator.navigateSetting() },
                         onNotificationClick = { navigator.navigateNotification() },
-                        onManagementClick = { navigator.navigateInterManagement(it) }
+                        onManagementClick = { navigator.navigateInterManagement(it) },
+                        onProfileClick = { navigator.navigateInterProfile() }
                     )
                 }
             }

@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kusitms.connectdog.feature.intermediator.screen.InterManagementRoute
+import com.kusitms.connectdog.feature.intermediator.screen.InterProfileScreen
 import com.kusitms.connectdog.feature.intermediator.screen.IntermediatorHomeScreen
 
 fun NavController.navigateIntermediatorHome() {
@@ -18,17 +19,23 @@ fun NavController.navigateInterManagement(tabIndex: Int) {
     navigate(route)
 }
 
+fun NavController.navigateInterProfile() {
+    navigate(IntermediatorRoute.inter_profile)
+}
+
 fun NavGraphBuilder.intermediatorNavGraph(
     onBackClick: () -> Unit,
     onSettingClick: () -> Unit,
     onNotificationClick: () -> Unit,
+    onProfileClick: () -> Unit,
     onManagementClick: (Int) -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
         IntermediatorHomeScreen(
             onNotificationClick = onNotificationClick,
             onSettingClick = onSettingClick,
-            onDataClick = onManagementClick
+            onManageClick = onManagementClick,
+            onProfileClick = onProfileClick
         )
     }
 
@@ -41,9 +48,16 @@ fun NavGraphBuilder.intermediatorNavGraph(
             tabIndex = it.arguments?.getInt("tabIndex") ?: 0
         )
     }
+
+    composable(route = IntermediatorRoute.inter_profile) {
+        InterProfileScreen(
+            onBackClick = onBackClick
+        )
+    }
 }
 
 object IntermediatorRoute {
     const val route = "inter_home"
     const val management = "inter_management"
+    const val inter_profile = "inter_profile"
 }

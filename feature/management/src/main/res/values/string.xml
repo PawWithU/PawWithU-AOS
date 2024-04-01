@@ -5,7 +5,9 @@
     <string name="completed">봉사완료</string>
     <string name="check_my_appliance">내 신청 확인</string>
     <string name="create_review">후기 등록</string>
+    <string name="check_review">후기 확인</string>
     <string name="check_recent">근황 확인</string>
+    <string name="review">이동봉사 후기</string>
     <string name="cancel_appliance">봉사 신청 취소</string>
     <string name="question_cancel">봉사 신청을 정말로 취소하시겠습니까?</string>
     <string name="question_cancel_description">봉사 신청을 삭제하실 경우 \n신청 봉사 건은 복구가 어렵습니다.</string>
