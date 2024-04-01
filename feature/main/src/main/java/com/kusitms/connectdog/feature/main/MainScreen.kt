@@ -104,7 +104,8 @@ internal fun MainScreen(
                     )
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onShowErrorSnackbar = {}
+                        onShowErrorSnackbar = {},
+                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
                     )
                     mypageNavGraph(
                         padding = it,
