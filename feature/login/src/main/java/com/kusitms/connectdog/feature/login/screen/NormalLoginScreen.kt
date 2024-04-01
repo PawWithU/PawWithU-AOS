@@ -22,17 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,9 +34,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
-import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.login.viewmodel.LoginViewModel
 
@@ -101,7 +91,7 @@ internal fun NormalLoginScreen(
             onNavigateToEmailSearch = onNavigateToEmailSearch,
             onNavigateToPasswordSearch = onNavigateToPasswordSearch,
             userType = userType,
-            isLoginSuccessful = isLoginSuccessful,
+            isLoginSuccessful = isLoginSuccessful
         )
     }
 }
@@ -230,5 +220,4 @@ private fun NormalLogin(
             color = Gray2
         )
     }
-
 }
