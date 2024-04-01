@@ -69,7 +69,9 @@ internal fun MainScreen(
                         onNavigateToNormalLogin = { navigator.navigateNormalLogin(it) },
                         onNavigateToVolunteer = { navigator.navigateHome() },
                         onNavigateToIntermediatorHome = { navigator.navigateIntermediatorHome() },
-                        onNavigateToSignup = { navigator.navigateSignup(it) }
+                        onNavigateToSignup = { navigator.navigateSignup(it) },
+                        onNavigateToEmailSearch = { navigator.navigateEmailSearch() },
+                        onNavigateToPasswordSearch = { navigator.navigatePasswordSearch() }
                     )
                     signUpGraph(
                         onBackClick = navigator::popBackStackIfNotHome,

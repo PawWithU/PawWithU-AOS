@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="naver_login">네이버로 시작하기</string>
-    <string name="kakao_login">카카오로 시작하기</string>
+    <string name="naver_login">네이버로 3초 만에 시작하기</string>
+    <string name="kakao_login">카카오로 3초 만에 시작하기</string>
     <string name="signup_with_connectdog">코넥독 계정으로 회원가입하기</string>
     <string name="or">또는</string>
+    <string name="introduce">코넥독과 함께\n유기견에게 새 삶의 기회를 연결해주세요!</string>
+    <string name="email_search">이메일 찾기</string>
+    <string name="password_search">비밀번호 찾기</string>
 </resources>
