@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,6 +45,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.KAKAO
@@ -201,7 +203,7 @@ private fun Volunteer(
             content = stringResource(id = R.string.naver_login)
         )
         Spacer(modifier = Modifier.height(30.dp))
-        NormalLogin(onNavigateToSignup, onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
+        SignUpOrLogin(onNavigateToSignup, onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
     }
 
     socialType?.let {
@@ -215,29 +217,54 @@ private fun Volunteer(
 @Composable
 private fun Intermediator(
     onNavigateToNormalLogin: (UserType) -> Unit,
-    onNavigateToSignup: (UserType) -> Unit
+    onNavigateToSignup: (UserType) -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
+    val isLoginSuccessful by viewModel.isLoginSuccessful.collectAsState()
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .padding(top = 32.dp)
+            .padding(top = 32.dp, start = 20.dp, end = 20.dp)
             .fillMaxHeight()
     ) {
+        ConnectDogTextField(
+            text = viewModel.email,
+            label = "이메일",
+            placeholder = "이메일 입력",
+            keyboardType = KeyboardType.Text,
+            onTextChanged = { viewModel.updateEmail(it) },
+            isError = isLoginSuccessful?.let { !it } ?: run { false }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+        ConnectDogTextField(
+            text = viewModel.password,
+            label = "비밀번호",
+            placeholder = "비밀번호 입력",
+            keyboardType = KeyboardType.Password,
+            onTextChanged = { viewModel.updatePassword(it) },
+            isError = isLoginSuccessful?.let { !it } ?: run { false }
+        )
+        Spacer(modifier = Modifier.height(12.dp))
         ConnectDogNormalButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            content = stringResource(id = R.string.signup_with_connectdog),
-            onClick = { onNavigateToSignup(UserType.INTERMEDIATOR) }
+                .fillMaxWidth(),
+            content = stringResource(id = R.string.login),
+            onClick = { viewModel.initIntermediatorLogin() }
         )
-        Spacer(modifier = Modifier.height(16.dp))
-//        NormalLogin(onNavigateToNormalLogin, UserType.INTERMEDIATOR)
+        Spacer(modifier = Modifier.height(30.dp))
+        AccountFind(
+            onNavigateToSignup = onNavigateToSignup,
+            onNavigateToEmailSearch = { },
+            onNavigateToPasswordSearch = { },
+            userType = UserType.INTERMEDIATOR
+        )
     }
 }
 
 @Composable
-private fun NormalLogin(
+private fun SignUpOrLogin(
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToNormalLogin: (UserType) -> Unit,
     userType: UserType
