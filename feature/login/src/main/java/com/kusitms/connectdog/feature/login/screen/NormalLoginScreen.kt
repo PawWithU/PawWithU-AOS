@@ -154,7 +154,7 @@ private fun Content(
                     .height(56.dp)
             )
             Spacer(modifier = Modifier.height(30.dp))
-            NormalLogin(
+            AccountFind(
                 onNavigateToSignup = onNavigateToSignUp,
                 onNavigateToEmailSearch = onNavigateToEmailSearch,
                 onNavigateToPasswordSearch = onNavigateToPasswordSearch,
@@ -177,7 +177,7 @@ private fun Content(
 }
 
 @Composable
-private fun NormalLogin(
+fun AccountFind(
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToEmailSearch: () -> Unit,
     onNavigateToPasswordSearch: () -> Unit,
