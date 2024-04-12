@@ -102,7 +102,7 @@ fun RegisterEmailScreen(
                         Toast.makeText(context, "이미 가입된 이메일입니다.", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.postEmail()
-                         Toast.makeText(context, "이메일을 전송했습니다", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "이메일을 전송했습니다", Toast.LENGTH_SHORT).show()
                     }
                 },
                 padding = 5
