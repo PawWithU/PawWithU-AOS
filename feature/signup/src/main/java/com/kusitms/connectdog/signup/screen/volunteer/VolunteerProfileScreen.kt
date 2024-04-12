@@ -124,13 +124,13 @@ fun VolunteerProfileScreen(
                     viewModel.isAvailableNickname()
                 },
                 padding = 5,
-                isError = (isDuplicatedNickname ?: false) || (isAvailableNickname ?: false)
+                isError = (isDuplicatedNickname == false) || (isAvailableNickname ?: false)
             )
             Text(
                 text = isDuplicatedNickname?.let {
-                    if (it) { "이미 사용중인 닉네임 입니다." } else { "사용할 수 있는 닉네임 입니다." }
+                    if (!it) { "이미 사용중인 닉네임 입니다." } else { "사용할 수 있는 닉네임 입니다." }
                 } ?: run { "" },
-                color = when (isDuplicatedNickname) {
+                color = when (isDuplicatedNickname?.not()) {
                     false -> PetOrange
                     else -> Red1
                 },
