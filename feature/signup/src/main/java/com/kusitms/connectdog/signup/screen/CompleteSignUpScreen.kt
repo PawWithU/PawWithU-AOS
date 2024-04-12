@@ -26,15 +26,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.util.AppMode
 import com.kusitms.connectdog.core.util.UserType
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @Composable
 fun CompleteSignUpScreen(
     navigateToVolunteer: () -> Unit,
     navigateToIntermediator: () -> Unit,
+    viewModel: SignUpViewModel,
     userType: UserType
 ) {
     val focusManager = LocalFocusManager.current
@@ -91,9 +95,17 @@ fun CompleteSignUpScreen(
                         placeable.place(0, 0)
                     }
                 },
-            onClick = when (userType) {
-                UserType.INTERMEDIATOR -> navigateToIntermediator
-                else -> navigateToVolunteer
+            onClick = {
+                when (userType) {
+                    UserType.INTERMEDIATOR -> {
+                        viewModel.setAutoLogin(AppMode.INTERMEDIATOR)
+                        navigateToIntermediator()
+                    }
+                    else -> {
+                        viewModel.setAutoLogin(AppMode.VOLUNTEER)
+                        navigateToVolunteer()
+                    }
+                }
             }
         )
     }
@@ -106,6 +118,7 @@ private fun test() {
         CompleteSignUpScreen(
             userType = UserType.INTERMEDIATOR,
             navigateToIntermediator = {},
+            viewModel = hiltViewModel(),
             navigateToVolunteer = {}
         )
     }
