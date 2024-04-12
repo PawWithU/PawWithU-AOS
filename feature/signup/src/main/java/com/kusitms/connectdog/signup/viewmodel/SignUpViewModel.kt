@@ -10,10 +10,8 @@ import com.kusitms.connectdog.core.data.repository.DataStoreRepository
 import com.kusitms.connectdog.core.data.repository.LoginRepository
 import com.kusitms.connectdog.core.data.repository.SignUpRepository
 import com.kusitms.connectdog.core.util.AppMode
-import com.kusitms.connectdog.core.util.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
