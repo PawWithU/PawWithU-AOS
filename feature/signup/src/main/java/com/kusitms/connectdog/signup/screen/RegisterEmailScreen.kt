@@ -102,6 +102,7 @@ fun RegisterEmailScreen(
                         Toast.makeText(context, "이미 가입된 이메일입니다.", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.postEmail()
+                         Toast.makeText(context, "이메일을 전송했습니다", Toast.LENGTH_SHORT).show()
                     }
                 },
                 padding = 5
@@ -114,7 +115,7 @@ fun RegisterEmailScreen(
                 textFieldLabel = "인증 번호",
                 placeholder = "숫자 6자리",
                 buttonLabel = "인증 확인",
-                keyboardType = KeyboardType.Number,
+                keyboardType = KeyboardType.Text,
                 onTextChanged = { viewModel.updateCertificationNumber(it) },
                 onClick = {
                     if (it.isNotEmpty()) {

@@ -2,6 +2,7 @@ package com.kusitms.connectdog.signup
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -42,7 +43,10 @@ fun NavController.navigateSelectProfileImage() {
 }
 
 fun NavController.navigateCompleteSignUp(userType: UserType) {
-    navigate("${SignUpRoute.complete_signup}/$userType")
+    val navOption = NavOptions.Builder()
+        .setPopUpTo(SignUpRoute.route, false)
+        .build()
+    navigate("${SignUpRoute.complete_signup}/$userType", navOption)
 }
 
 fun NavController.navigateIntermediatorInformation() {
@@ -155,6 +159,7 @@ fun NavGraphBuilder.signUpGraph(
         CompleteSignUpScreen(
             userType = it.arguments!!.getSerializable("type") as UserType,
             navigateToVolunteer = navigateToVolunteer,
+            viewModel = signUpViewModel,
             navigateToIntermediator = navigateToIntermediator
         )
     }
