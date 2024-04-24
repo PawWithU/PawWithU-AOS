@@ -129,15 +129,18 @@ fun RegisterEmailScreen(
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogNormalButton(
                 content = "다음",
-                color = if (isEmailVerified) { PetOrange } else { Orange_40 },
+                color = if (isEmailVerified) {
+                    PetOrange
+                } else {
+                    Orange_40
+                },
                 onClick = {
                     if (isEmailVerified) {
                         signUpViewModel.updateEmail(viewModel.email)
                         onNavigateToRegisterPassword(userType)
                     }
                 },
-                modifier =
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             )
@@ -150,6 +153,12 @@ fun RegisterEmailScreen(
 @Composable
 private fun test() {
     ConnectDogTheme {
-        RegisterEmailScreen(onBackClick = {}, userType = UserType.NORMAL_VOLUNTEER, onNavigateToRegisterPassword = {}, hiltViewModel(), imeHeight = 10)
+        RegisterEmailScreen(
+            onBackClick = {},
+            userType = UserType.NORMAL_VOLUNTEER,
+            onNavigateToRegisterPassword = {},
+            hiltViewModel(),
+            imeHeight = 10
+        )
     }
 }
