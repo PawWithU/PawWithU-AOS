@@ -53,14 +53,14 @@ internal fun SignUpRoute(
     onBackClick: () -> Unit,
     navigateToVolunteerProfile: (UserType) -> Unit,
     navigateToIntermediatorInformation: () -> Unit,
-    navigateToRegisterEmail: (UserType) -> Unit,
+    navigateToCertification: (UserType) -> Unit,
     userType: UserType
 ) {
     SignUpScreen(
         onBackClick = onBackClick,
         userType = userType,
         navigateToVolunteerProfile = navigateToVolunteerProfile,
-        navigateToRegisterEmail = navigateToRegisterEmail,
+        navigateToCertification = navigateToCertification,
         navigateToIntermediatorProfile = navigateToIntermediatorInformation
     )
 }
@@ -70,7 +70,7 @@ fun SignUpScreen(
     userType: UserType,
     onBackClick: () -> Unit,
     navigateToVolunteerProfile: (UserType) -> Unit,
-    navigateToRegisterEmail: (UserType) -> Unit,
+    navigateToCertification: (UserType) -> Unit,
     navigateToIntermediatorProfile: () -> Unit,
     viewModel: TermsViewModel = hiltViewModel()
 ) {
@@ -147,7 +147,7 @@ fun SignUpScreen(
             onClick = {
                 if (allChecked) {
                     when (userType) {
-                        UserType.NORMAL_VOLUNTEER -> navigateToRegisterEmail(userType)
+                        UserType.NORMAL_VOLUNTEER -> navigateToCertification(userType)
                         UserType.SOCIAL_VOLUNTEER -> navigateToVolunteerProfile(userType)
                         UserType.INTERMEDIATOR -> navigateToIntermediatorProfile()
                     }
