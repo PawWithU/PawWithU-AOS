@@ -48,6 +48,7 @@ import com.kusitms.connectdog.signup.navigateRegisterEmail
 import com.kusitms.connectdog.signup.navigateRegisterPassword
 import com.kusitms.connectdog.signup.navigateSelectProfileImage
 import com.kusitms.connectdog.signup.navigateSignup
+import com.kusitms.connectdog.signup.navigateToCertification
 import com.kusitms.connectdog.signup.navigateToIntermediatorProfile
 import com.kusitms.connectdog.signup.navigateToVolunteerProfile
 
@@ -103,6 +104,7 @@ internal class MainNavigator(
     fun navigateSelectProfileImage() = navController.navigateSelectProfileImage()
     fun navigateCompleteSignUp(userType: UserType) = navController.navigateCompleteSignUp(userType)
     fun navigateIntermediatorInformation() = navController.navigateIntermediatorInformation()
+    fun navigateCertification(userType: UserType) = navController.navigateToCertification(userType)
 
     // volunteer navigator
     fun navigateHome() = navigate(MainTab.HOME)
