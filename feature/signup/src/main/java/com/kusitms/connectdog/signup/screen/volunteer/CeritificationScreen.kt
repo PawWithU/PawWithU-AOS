@@ -173,7 +173,7 @@ private fun Content(
             onClick = {
                 if (viewModel.name.isNotEmpty() && isCertified) {
                     viewModel.postAdditionalAuth()
-                    when(userType) {
+                    when (userType) {
                         UserType.SOCIAL_VOLUNTEER -> onNavigateToVolunteerProfile(userType)
                         else -> onNavigateToRegisterEmail(userType)
                     }
