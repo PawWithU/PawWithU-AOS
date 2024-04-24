@@ -40,6 +40,7 @@ import com.kusitms.connectdog.signup.viewmodel.CertificationViewModel
 fun CertificationScreen(
     onBackClick: () -> Unit,
     onNavigateToRegisterEmail: (UserType) -> Unit,
+    onNavigateToVolunteerProfile: (UserType) -> Unit,
     onSendMessageClick: (String) -> Unit,
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
     imeHeight: Int,
@@ -61,6 +62,7 @@ fun CertificationScreen(
     ) {
         Content(
             onNavigateToRegisterEmail = { onNavigateToRegisterEmail(userType) },
+            onNavigateToVolunteerProfile = { onNavigateToVolunteerProfile(userType) },
             onSendMessageClick = onSendMessageClick,
             onVerifyCodeClick = onVerifyCodeClick,
             viewModel = viewModel,
@@ -75,6 +77,7 @@ private fun Content(
     imeHeight: Int,
     userType: UserType,
     onNavigateToRegisterEmail: (UserType) -> Unit,
+    onNavigateToVolunteerProfile: (UserType) -> Unit,
     onSendMessageClick: (String) -> Unit,
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
     viewModel: CertificationViewModel
@@ -170,7 +173,10 @@ private fun Content(
             onClick = {
                 if (viewModel.name.isNotEmpty() && isCertified) {
                     viewModel.postAdditionalAuth()
-                    onNavigateToRegisterEmail(userType)
+                    when(userType) {
+                        UserType.SOCIAL_VOLUNTEER -> onNavigateToVolunteerProfile(userType)
+                        else -> onNavigateToRegisterEmail(userType)
+                    }
                 }
             }
         )
