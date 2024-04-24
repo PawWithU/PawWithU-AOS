@@ -86,7 +86,10 @@ internal fun MainScreen(
                         navigateToIntermediator = { navigator.navigateManageAccount() },
                         imeHeight = imeHeight,
                         signUpViewModel = signUpViewModel,
-                        profileViewModel = profileViewModel
+                        profileViewModel = profileViewModel,
+                        navigateToCertification = { navigator.navigateCertification(it) },
+                        onSendMessage = { sendVerificationCode(it) },
+                        onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } }
                     )
                     homeNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
