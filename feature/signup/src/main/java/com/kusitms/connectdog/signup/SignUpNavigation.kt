@@ -13,6 +13,7 @@ import com.kusitms.connectdog.signup.screen.RegisterPasswordScreen
 import com.kusitms.connectdog.signup.screen.SignUpRoute
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorInformationScreen
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorProfileScreen
+import com.kusitms.connectdog.signup.screen.volunteer.CertificationScreen
 import com.kusitms.connectdog.signup.screen.volunteer.SelectProfileImageScreen
 import com.kusitms.connectdog.signup.screen.volunteer.VolunteerProfileScreen
 import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
@@ -24,6 +25,10 @@ fun NavController.navigateSignup(userType: UserType) {
 
 fun NavController.navigateToIntermediatorProfile() {
     navigate(SignUpRoute.intermediator_profile)
+}
+
+fun NavController.navigateToCertification(userType: UserType) {
+    navigate("${SignUpRoute.certification}/$userType")
 }
 
 fun NavController.navigateToVolunteerProfile(userType: UserType) {
@@ -64,6 +69,9 @@ fun NavGraphBuilder.signUpGraph(
     navigateToCompleteSignUp: (UserType) -> Unit,
     navigateToVolunteer: () -> Unit,
     navigateToIntermediator: () -> Unit,
+    navigateToCertification: (UserType) -> Unit,
+    onSendMessage: (String) -> Unit,
+    onVerifyCode: (String, (Boolean) -> Unit) -> Unit,
     imeHeight: Int,
     signUpViewModel: SignUpViewModel,
     profileViewModel: VolunteerProfileViewModel
@@ -83,7 +91,7 @@ fun NavGraphBuilder.signUpGraph(
             userType = it.arguments!!.getSerializable("type") as UserType,
             navigateToVolunteerProfile = navigateToVolunteerProfile,
             navigateToIntermediatorInformation = navigateToIntermediatorInformation,
-            navigateToRegisterEmail = navigateToRegisterEmail
+            navigateToCertification = navigateToCertification
         )
     }
 
@@ -163,6 +171,20 @@ fun NavGraphBuilder.signUpGraph(
             navigateToIntermediator = navigateToIntermediator
         )
     }
+
+    composable(
+        route = "${SignUpRoute.certification}/{type}",
+        arguments = userTypeArgument
+    ) {
+        CertificationScreen(
+            onBackClick = onBackClick,
+            onNavigateToRegisterEmail = navigateToRegisterEmail,
+            onSendMessageClick = onSendMessage,
+            onVerifyCodeClick = onVerifyCode,
+            imeHeight = imeHeight,
+            userType = it.arguments!!.getSerializable("type") as UserType
+        )
+    }
 }
 
 object SignUpRoute {
@@ -175,5 +197,6 @@ object SignUpRoute {
     const val profile_image = "profile_image"
     const val complete_signup = "complete_signup"
     const val volunteer = "volunteer"
+    const val certification = "certification"
     const val intermediator = "intermediator"
 }
