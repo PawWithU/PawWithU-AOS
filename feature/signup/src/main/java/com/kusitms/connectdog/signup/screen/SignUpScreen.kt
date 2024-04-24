@@ -32,7 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,6 +78,7 @@ fun SignUpScreen(
 ) {
     val allChecked by viewModel.allChecked.observeAsState(initial = false)
     val privacyChecked by viewModel.privacyChecked.observeAsState(initial = false)
+    val advertisementChecked by viewModel.advertisementChecked.observeAsState(initial = false)
     val termsChecked by viewModel.termsChecked.observeAsState(initial = false)
     val context = LocalContext.current
 
@@ -119,25 +122,33 @@ fun SignUpScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             CustomCheckbox("모두 동의", allChecked) {
-                viewModel.toggleAllChecked()
-                viewModel.toggleTermsChecked()
-                viewModel.togglePrivacyChecked()
+                viewModel.updateAllChecked()
+                viewModel.updateTermsChecked()
+                viewModel.updatePrivacyChecked()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalLine()
             Spacer(modifier = Modifier.height(16.dp))
             CustomCheckbox("[필수] 이용약관 동의", termsChecked) {
-                viewModel.toggleTermsChecked()
+                viewModel.updateTermsChecked()
             }
             Spacer(modifier = Modifier.height(16.dp))
             CustomCheckbox("[필수] 개인정보 수집 및 이용 동의", privacyChecked) {
-                viewModel.togglePrivacyChecked()
+                viewModel.updatePrivacyChecked()
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomCheckbox("[선택] 광고성 정보 수신 동의", advertisementChecked) {
+                viewModel.updateAdvertisementChecked()
             }
         }
         ConnectDogNormalButton(
             content = "다음",
-            color = if (allChecked) { PetOrange } else { Orange_40 },
+            color = if (allChecked) {
+                PetOrange
+            } else {
+                Orange_40
+            },
             modifier =
             Modifier
                 .fillMaxWidth()
@@ -200,16 +211,21 @@ fun CustomCheckbox(text: String, checked: Boolean, onCheckedChange: (Boolean) ->
             ),
             contentDescription = "Custom Checkbox",
             tint = if (isChecked) MaterialTheme.colorScheme.primary else Gray4,
-            modifier = Modifier
-                .size(24.dp)
+            modifier = Modifier.size(24.dp)
         )
-
         Spacer(modifier = Modifier.width(12.dp))
-
         Text(
             text = text,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Medium,
+            color = if (isChecked) Color.Black else Gray2
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            text = "보기",
+            style = TextStyle(textDecoration = TextDecoration.Underline),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium,
             color = if (isChecked) Color.Black else Gray2
         )
     }

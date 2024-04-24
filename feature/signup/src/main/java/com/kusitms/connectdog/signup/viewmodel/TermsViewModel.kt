@@ -17,20 +17,27 @@ class TermsViewModel @Inject constructor() : ViewModel() {
     private val _privacyChecked = MutableLiveData(false)
     val privacyChecked: LiveData<Boolean> = _privacyChecked
 
-    fun toggleAllChecked() {
+    private val _advertisementChecked = MutableLiveData(false)
+    val advertisementChecked: LiveData<Boolean> = _advertisementChecked
+
+    fun updateAllChecked() {
         _allChecked.value = !_allChecked.value!!
         _termsChecked.value = !_allChecked.value!!
         _privacyChecked.value = !_allChecked.value!!
     }
 
-    fun toggleTermsChecked() {
+    fun updateTermsChecked() {
         _termsChecked.value = !_termsChecked.value!!
         updateAllCheckedState()
     }
 
-    fun togglePrivacyChecked() {
+    fun updatePrivacyChecked() {
         _privacyChecked.value = !_privacyChecked.value!!
         updateAllCheckedState()
+    }
+
+    fun updateAdvertisementChecked() {
+        _advertisementChecked.value = !_advertisementChecked.value!!
     }
 
     private fun updateAllCheckedState() {

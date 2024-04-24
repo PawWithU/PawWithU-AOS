@@ -179,6 +179,7 @@ fun NavGraphBuilder.signUpGraph(
         CertificationScreen(
             onBackClick = onBackClick,
             onNavigateToRegisterEmail = navigateToRegisterEmail,
+            onNavigateToVolunteerProfile = navigateToVolunteerProfile,
             onSendMessageClick = onSendMessage,
             onVerifyCodeClick = onVerifyCode,
             imeHeight = imeHeight,
