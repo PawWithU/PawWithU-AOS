@@ -65,13 +65,16 @@ internal fun MainScreen(
                     startDestination = navigator.startDestination
                 ) {
                     loginNavGraph(
+                        imeHeight = imeHeight,
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onNavigateToNormalLogin = { navigator.navigateNormalLogin(it) },
                         onNavigateToVolunteer = { navigator.navigateHome() },
                         onNavigateToIntermediatorHome = { navigator.navigateIntermediatorHome() },
                         onNavigateToSignup = { navigator.navigateSignup(it) },
                         onNavigateToEmailSearch = { navigator.navigateEmailSearch() },
-                        onNavigateToPasswordSearch = { navigator.navigatePasswordSearch() }
+                        onNavigateToPasswordSearch = { navigator.navigatePasswordSearch() },
+                        onNavigateToEmailSearchComplete = { navigator.navigateEmailSearchComplete() },
+                        onNavigateToPasswordSearchComplete = { navigator.navigatePasswordSearchComplete() }
                     )
                     signUpGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -130,7 +133,11 @@ internal fun MainScreen(
                         editProfileViewModel = editProfileViewModel,
                         onNavigateToCertification = { navigator.navigateCertification(it) },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
-                        onNavigateToIntermediatorProfile = { navigator.navigateIntermediatorProfile(it) },
+                        onNavigateToIntermediatorProfile = {
+                            navigator.navigateIntermediatorProfile(
+                                it
+                            )
+                        },
                         onShowErrorSnackbar = {}
                     )
                     intermediatorNavGraph(
