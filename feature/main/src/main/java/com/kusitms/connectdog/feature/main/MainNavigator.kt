@@ -29,8 +29,10 @@ import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProf
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateIntermediatorHome
 import com.kusitms.connectdog.feature.login.LoginRoute
 import com.kusitms.connectdog.feature.login.navigateEmailSearch
+import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
+import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
 import com.kusitms.connectdog.feature.login.onLogoutClick
 import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
@@ -94,6 +96,8 @@ internal class MainNavigator(
     fun navigateSignup(userType: UserType) = navController.navigateSignup(userType)
     fun navigateEmailSearch() = navController.navigateEmailSearch()
     fun navigatePasswordSearch() = navController.navigatePasswordSearch()
+    fun navigateEmailSearchComplete() = navController.navigateEmailSearchComplete()
+    fun navigatePasswordSearchComplete() = navController.navigatePasswordSearchComplete()
     fun onLogoutClick() = navController.onLogoutClick()
 
     // signup navigator
