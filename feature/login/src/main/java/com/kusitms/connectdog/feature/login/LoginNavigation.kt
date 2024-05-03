@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kusitms.connectdog.core.util.UserType
+import com.kusitms.connectdog.feature.login.screen.EmailSearchResultScreen
 import com.kusitms.connectdog.feature.login.screen.EmailSearchScreen
 import com.kusitms.connectdog.feature.login.screen.LoginRoute
 import com.kusitms.connectdog.feature.login.screen.NormalLoginScreen
@@ -31,14 +32,25 @@ fun NavController.navigatePasswordSearch() {
     navigate(LoginRoute.password_search)
 }
 
+fun NavController.navigateEmailSearchComplete() {
+    navigate(LoginRoute.email_search_complete)
+}
+
+fun NavController.navigatePasswordSearchComplete() {
+    navigate(LoginRoute.password_search_complete)
+}
+
 fun NavGraphBuilder.loginNavGraph(
+    imeHeight: Int,
     onBackClick: () -> Unit,
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToVolunteer: () -> Unit,
     onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit
+    onNavigateToPasswordSearch: () -> Unit,
+    onNavigateToPasswordSearchComplete: () -> Unit,
+    onNavigateToEmailSearchComplete: () -> Unit
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
@@ -69,6 +81,14 @@ fun NavGraphBuilder.loginNavGraph(
 
     composable(route = LoginRoute.email_search) {
         EmailSearchScreen(
+            imeHeight = imeHeight,
+            onBackClick = onBackClick,
+            navigateToCompleteScreen = onNavigateToEmailSearchComplete
+        )
+    }
+
+    composable(route = LoginRoute.email_search_complete) {
+        EmailSearchResultScreen(
             onBackClick = onBackClick
         )
     }
@@ -85,4 +105,6 @@ object LoginRoute {
     const val normal_login = "normal_login"
     const val email_search = "email_search"
     const val password_search = "password_search"
+    const val email_search_complete = "email_search_complete"
+    const val password_search_complete = "password_search_complete"
 }
