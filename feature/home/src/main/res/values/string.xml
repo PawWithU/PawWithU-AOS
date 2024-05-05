@@ -29,7 +29,7 @@
     <string name="filter_small_dog">소형견</string>
     <string name="filter_kennel_no_need">O (준비 불필요)</string>
     <string name="filter_kennel_need">X (준비 필요)</string>
-    <string name="filter_select_departure_region">출발 지역 선택</string>
+    <string name="filter_select_departure_region">출발 지역w 선택</string>
     <string name="filter_select_destination_region">도착 지역 선택</string>
     <string name="filter_button_refresh">초기화</string>
     <string name="filter_button_search">검색하기</string>
@@ -41,10 +41,10 @@
     <string name="home_dog_unit">마리</string>
     <string name="home_need_move_description">이동이 필요해요</string>
     <string name="home_moved_description">이동했어요!</string>
-    <string name="home_banner">이동봉사 전과정이 궁금해요!</string>
-    <string name="home_banner_button_guideline">가이드라인 확인하기</string>
-    <string name="home_navigate_search">이동봉사 공고</string>
-    <string name="home_navigate_review">이동봉사 후기</string>
+    <string name="home_navigate_search">이번주 이동봉사 공고</string>
+    <string name="home_navigate_review">생생 이동봉사 후기</string>
+    <string name="search_bar_title_1">딱 맞는 이동봉사를 찾아보세요!\n</string>
+    <string name="search_bar_title_2">출발지·도착지·일정</string>
     <!-- review -->
     <string name="review_top_app_bar_title">이동봉사 후기</string>
     <!--apply-->
