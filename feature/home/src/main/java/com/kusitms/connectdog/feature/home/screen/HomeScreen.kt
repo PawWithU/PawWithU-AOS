@@ -320,7 +320,6 @@ fun MoveContent(
     }
 }
 
-
 @Composable
 private fun AnnouncementContent(uiState: AnnouncementUiState, onClick: (Long) -> Unit) {
     val modifier = Modifier.padding(horizontal = 20.dp)
