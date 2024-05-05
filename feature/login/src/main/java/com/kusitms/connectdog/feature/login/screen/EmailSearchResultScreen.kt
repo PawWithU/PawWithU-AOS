@@ -25,7 +25,7 @@ import com.kusitms.connectdog.feature.login.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun EmailSearchResultScreen(
-    onBackClick: () -> Unit,
+    onBackClick: () -> Unit
 //    navigateToLogin: () -> Unit
 ) {
     Scaffold(
@@ -45,9 +45,7 @@ internal fun EmailSearchResultScreen(
 }
 
 @Composable
-private fun Content(
-
-) {
+private fun Content() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -79,7 +77,6 @@ private fun Content(
                 padding = 5,
                 modifier = Modifier.padding(top = 6.dp, end = 16.dp),
                 onClick = {
-
                 }
             )
         }
