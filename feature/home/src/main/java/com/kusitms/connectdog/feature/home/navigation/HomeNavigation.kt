@@ -10,7 +10,6 @@ import androidx.navigation.navArgument
 import com.kusitms.connectdog.core.util.localDateGson
 import com.kusitms.connectdog.feature.home.model.Filter
 import com.kusitms.connectdog.feature.home.screen.ApplyScreen
-import com.kusitms.connectdog.feature.home.screen.CertificationScreen
 import com.kusitms.connectdog.feature.home.screen.CompleteApplyScreen
 import com.kusitms.connectdog.feature.home.screen.DetailScreen
 import com.kusitms.connectdog.feature.home.screen.FilterSearchRoute
@@ -57,10 +56,6 @@ fun NavController.navigateDetail(postId: Long) {
     navigate("${HomeRoute.detail}/$postId")
 }
 
-fun NavController.navigateCertification(postId: Long) {
-    navigate("${HomeRoute.certification}/$postId")
-}
-
 fun NavController.navigateApply(postId: Long) {
     navigate("${HomeRoute.apply}/$postId")
 }
@@ -85,7 +80,6 @@ fun NavGraphBuilder.homeNavGraph(
     onNavigateToFilter: (Filter) -> Unit,
     onNavigateToReview: () -> Unit,
     onNavigateToDetail: (Long) -> Unit,
-    onNavigateToCertification: (Long) -> Unit,
     onNavigateToApply: (Long) -> Unit,
     onNavigateToComplete: () -> Unit,
     onNavigateToIntermediatorProfile: (Long) -> Unit,
@@ -171,27 +165,9 @@ fun NavGraphBuilder.homeNavGraph(
     ) {
         DetailScreen(
             onBackClick = onBackClick,
-            onCertificationClick = { onNavigateToCertification(it) },
+            onApplyClick = { onNavigateToApply(it) },
             onIntermediatorProfileClick = onNavigateToIntermediatorProfile,
             postId = it.arguments!!.getLong("postId")
-        )
-    }
-
-    composable(
-        route = "${HomeRoute.certification}/{postId}",
-        arguments = listOf(
-            navArgument("postId") {
-                type = NavType.LongType
-            }
-        )
-    ) {
-        CertificationScreen(
-            onBackClick = onBackClick,
-            onApplyClick = { onNavigateToApply(it) },
-            onSendMessageClick = onSendMessage,
-            onVerifyCodeClick = onVerifyCode,
-            postId = it.arguments!!.getLong("postId"),
-            imeHeight = imeHeight
         )
     }
 
@@ -246,7 +222,6 @@ object HomeRoute {
     const val filter_search = "filter_search"
     const val review = "review"
     const val detail = "detail"
-    const val certification = "certification"
     const val apply = "apply"
     const val complete = "complete"
     const val intermediatorProfile = "intermediatorProfile"
