@@ -8,9 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel @Inject constructor(
-
-): ViewModel() {
+class SearchViewModel @Inject constructor() : ViewModel() {
     private val _phoneNumber: MutableState<String> = mutableStateOf("")
     val phoneNumber: String
         get() = _phoneNumber.value
@@ -18,8 +16,6 @@ class SearchViewModel @Inject constructor(
     private val _isAvailablePhoneNumber = MutableStateFlow<Boolean?>(null)
     val isAvailablePhoneNumber: Boolean?
         get() = _isAvailablePhoneNumber.value
-
-
 
     fun updatePhoneNumber(value: String) {
         _phoneNumber.value = value

@@ -30,7 +30,7 @@ fun EmailSearchScreen(
     imeHeight: Int,
     onBackClick: () -> Unit,
     navigateToCompleteScreen: () -> Unit,
-    viewModel: SearchViewModel = hiltViewModel(),
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -77,7 +77,6 @@ private fun Content(
 //                viewModel.updateEmailValidity()
             },
             onClick = {
-
             },
             padding = 5
         )
@@ -94,7 +93,6 @@ private fun Content(
 //                viewModel.updateEmailValidity()
             },
             onClick = {
-
             },
             padding = 5
         )

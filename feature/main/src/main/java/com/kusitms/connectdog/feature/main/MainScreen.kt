@@ -102,7 +102,6 @@ internal fun MainScreen(
                         onNavigateToFilter = { navigator.navigateHomeFilter(it) },
                         onNavigateToReview = { navigator.navigateHomeReview() },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
-                        onNavigateToCertification = { navigator.navigateCertification(it) },
                         onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToComplete = { navigator.navigateComplete() },
                         onNavigateToIntermediatorProfile = {
@@ -131,7 +130,7 @@ internal fun MainScreen(
                         onBookmarkClick = { navigator.navigateBookmark() },
                         onEditProfileImageClick = { navigator.navigateEditProfileImage() },
                         editProfileViewModel = editProfileViewModel,
-                        onNavigateToCertification = { navigator.navigateCertification(it) },
+                        onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
                         onNavigateToIntermediatorProfile = {
                             navigator.navigateIntermediatorProfile(

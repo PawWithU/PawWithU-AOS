@@ -13,7 +13,6 @@ import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.home.model.Filter
 import com.kusitms.connectdog.feature.home.navigation.HomeRoute
 import com.kusitms.connectdog.feature.home.navigation.navigateApply
-import com.kusitms.connectdog.feature.home.navigation.navigateCertification
 import com.kusitms.connectdog.feature.home.navigation.navigateComplete
 import com.kusitms.connectdog.feature.home.navigation.navigateDetail
 import com.kusitms.connectdog.feature.home.navigation.navigateFilter
@@ -118,7 +117,6 @@ internal class MainNavigator(
     fun navigateHomeFilter(filter: Filter) = navController.navigateFilter(filter)
     fun navigateHomeReview() = navController.navigateReview()
     fun navigateHomeDetail(postId: Long) = navController.navigateDetail(postId)
-    fun navigateCertification(postId: Long) = navController.navigateCertification(postId)
     fun navigateApply(postId: Long) = navController.navigateApply(postId)
     fun navigateComplete() = navController.navigateComplete()
     fun navigateIntermediatorProfile(intermediaryId: Long) = navController.navigateIntermediatorProfile(intermediaryId)

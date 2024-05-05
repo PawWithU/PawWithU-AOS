@@ -66,7 +66,7 @@ fun NavGraphBuilder.mypageNavGraph(
     editProfileViewModel: EditProfileViewModel,
     onNavigateToIntermediatorProfile: (Long) -> Unit,
     onNavigateToDetail: (Long) -> Unit,
-    onNavigateToCertification: (Long) -> Unit
+    onNavigateToApply: (Long) -> Unit
 ) {
     composable(route = MypageRoute.route) {
         MypageRoute(
@@ -137,7 +137,7 @@ fun NavGraphBuilder.mypageNavGraph(
     ) {
         DetailScreen(
             onBackClick = onBackClick,
-            onCertificationClick = { onNavigateToCertification(it) },
+            onApplyClick = { onNavigateToApply(it) },
             onIntermediatorProfileClick = onNavigateToIntermediatorProfile,
             postId = it.arguments!!.getLong("postId")
         )
