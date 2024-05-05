@@ -38,6 +38,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationC
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.DetailInfo
+import com.kusitms.connectdog.core.designsystem.component.MoveContent
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
@@ -283,11 +284,3 @@ fun News() {
     ) {
     }
 }
-
-// @Preview
-// @Composable
-// private fun test() {
-//    ConnectDogTheme {
-//        IntermediatorProfileScreen(intermediaryId = it.arguments!!.getLong("intermediaryId"))
-//    }
-// }
