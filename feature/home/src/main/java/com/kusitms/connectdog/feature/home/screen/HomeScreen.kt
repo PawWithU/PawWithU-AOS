@@ -53,10 +53,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogReview
-import com.kusitms.connectdog.core.designsystem.component.MoveContent
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
+import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.model.Announcement
@@ -291,6 +291,35 @@ private fun StatisticInfoItem(
         Image(painter = painter, contentDescription = "mandog")
     }
 }
+
+@Composable
+fun MoveContent(
+    onClick: () -> Unit,
+    titleRes: Int
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(horizontal = 20.dp, vertical = 20.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(id = titleRes),
+            style = MaterialTheme.typography.titleMedium,
+            fontSize = 18.sp
+        )
+        IconButton(onClick = { onClick() }) {
+            Icon(
+                painter = painterResource(id = com.kusitms.connectdog.core.designsystem.R.drawable.ic_right_arrow),
+                contentDescription = "move to another screen",
+                modifier = Modifier.size(24.dp),
+                tint = Gray2
+            )
+        }
+    }
+}
+
 
 @Composable
 private fun AnnouncementContent(uiState: AnnouncementUiState, onClick: (Long) -> Unit) {
