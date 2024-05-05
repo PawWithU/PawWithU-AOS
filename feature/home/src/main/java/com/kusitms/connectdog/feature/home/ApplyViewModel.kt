@@ -32,6 +32,14 @@ class ApplyViewModel @Inject constructor(
     val transportation: String
         get() = _transportation.value
 
+    private val _isAvailableName: MutableState<Boolean?> = mutableStateOf(null)
+    val isAvailableName: Boolean?
+        get() = _isAvailableName.value
+
+    private val _isAvailablePhoneNumber: MutableState<Boolean?> = mutableStateOf(null)
+    val isAvailablePhoneNumber: Boolean?
+        get() = _isAvailablePhoneNumber.value
+
     private val _content: MutableState<String> = mutableStateOf("")
     val content: String
         get() = _content.value
@@ -39,10 +47,6 @@ class ApplyViewModel @Inject constructor(
     private val _isNextEnabled: MutableState<Boolean> = mutableStateOf(false)
     val isNextEnabled: Boolean
         get() = _isNextEnabled.value
-
-    fun updateTransportation(transportation: String) {
-        _transportation.value = transportation
-    }
 
     fun updateContent(content: String) {
         _content.value = content
@@ -69,6 +73,12 @@ class ApplyViewModel @Inject constructor(
                 Log.d("testttserror", e.message.toString())
             }
         }
+    }
+
+    fun updateIsAvailablePhoneNumber() {
+    }
+
+    fun updateIsAvailableName() {
     }
 
     fun getAdditionalAuth() {
