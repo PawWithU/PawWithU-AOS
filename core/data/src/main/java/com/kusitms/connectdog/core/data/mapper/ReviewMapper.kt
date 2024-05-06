@@ -9,10 +9,11 @@ internal fun ReviewResponseItem.toData(): Review {
         profileNum = profileImageNum,
         dogName = dogName,
         userName = volunteerNickname,
-        contentUrl = mainImage,
+        mainImage = mainImage,
+        contentImages = images,
         date = dateRangeFormat(startDate, endDate),
         location = "$departureLoc → $arrivalLoc",
         organization = intermediaryName,
-        content = content
+        content = content,
     )
 }

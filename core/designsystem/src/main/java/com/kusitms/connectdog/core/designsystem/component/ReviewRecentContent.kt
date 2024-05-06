@@ -2,6 +2,7 @@ package com.kusitms.connectdog.core.designsystem.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,13 +33,48 @@ import com.kusitms.connectdog.core.model.Recent
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.core.util.getProfileImageId
 
+enum class ReviewType {
+    HOME, REVIEW
+}
+
+@Composable
+fun ConnectDogReview(
+    modifier: Modifier = Modifier,
+    review: Review,
+    type: ReviewType
+) {
+    ConnectDogCommunityContent(
+        modifier = modifier,
+        profile = {
+            ProfileContent(
+                profileNum = review.profileNum,
+                dogName = review.dogName,
+                userName = review.userName
+            )
+        },
+        informationContent = {
+            ReviewContent(
+                date = review.date,
+                location = review.location,
+                organization = review.organization
+            )
+        },
+        contentUrl = review.mainImage,
+        reviewUrl = review.contentImages,
+        content = review.content,
+        type = type
+    )
+}
+
 @Composable
 fun ConnectDogCommunityContent(
     modifier: Modifier = Modifier,
     profile: @Composable () -> Unit,
     informationContent: @Composable () -> Unit,
     contentUrl: String,
-    content: String
+    reviewUrl: List<String>?,
+    content: String,
+    type: ReviewType
 ) {
     Column(modifier = modifier.padding(20.dp)) {
         profile()
@@ -46,14 +83,33 @@ fun ConnectDogCommunityContent(
                 .height(20.dp)
                 .fillMaxWidth()
         )
-        NetworkImage(
-            imageUrl = contentUrl,
-            placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer),
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(12.dp))
-                .fillMaxWidth()
-                .height(250.dp)
-        )
+        when(type) {
+            ReviewType.HOME -> {
+                NetworkImage(
+                    imageUrl = contentUrl,
+                    placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer),
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(12.dp))
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
+            }
+            ReviewType.REVIEW -> {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(reviewUrl?.size ?: 0) {
+                        NetworkImage(
+                            imageUrl = reviewUrl?.get(it),
+                            placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer),
+                            modifier = Modifier
+                                .clip(shape = RoundedCornerShape(12.dp))
+                                .size(120.dp)
+                        )
+                    }
+                }
+            }
+        }
         Spacer(
             modifier = Modifier
                 .height(12.dp)
@@ -75,57 +131,33 @@ fun ConnectDogCommunityContent(
     }
 }
 
-@Composable
-fun ConnectDogReview(
-    modifier: Modifier = Modifier,
-    review: Review
-) {
-    ConnectDogCommunityContent(
-        modifier = modifier,
-        profile = {
-            ProfileContent(
-                profileNum = review.profileNum,
-                dogName = review.dogName,
-                userName = review.userName
-            )
-        },
-        informationContent = {
-            ReviewContent(
-                date = review.date,
-                location = review.location,
-                organization = review.organization
-            )
-        },
-        contentUrl = review.contentUrl,
-        content = review.content
-    )
-}
-
-@Composable
-fun ConnectDogRecent(
-    modifier: Modifier = Modifier,
-    recent: Recent
-) {
-    ConnectDogCommunityContent(
-        modifier = modifier,
-        profile = {
-            Text(
-                text = recent.dogName + stringResource(id = R.string.dog_recent),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        informationContent = {
-            ApplicantContent(
-                date = recent.date,
-                location = recent.location,
-                volunteer = recent.volunteer
-            )
-        },
-        contentUrl = recent.contentUrl,
-        content = recent.content
-    )
-}
+//@Composable
+//fun ConnectDogRecent(
+//    modifier: Modifier = Modifier,
+//    recent: Recent,
+//    type: ReviewType
+//) {
+//    ConnectDogCommunityContent(
+//        modifier = modifier,
+//        profile = {
+//            Text(
+//                text = recent.dogName + stringResource(id = R.string.dog_recent),
+//                style = MaterialTheme.typography.titleSmall,
+//                fontWeight = FontWeight.SemiBold
+//            )
+//        },
+//        informationContent = {
+//            ApplicantContent(
+//                date = recent.date,
+//                location = recent.location,
+//                volunteer = recent.volunteer
+//            )
+//        },
+//        contentUrl = recent.contentUrl,
+//        content = recent.content,
+//        type = type
+//    )
+//}
 
 @Composable
 fun ProfileContent(
@@ -172,11 +204,13 @@ private fun ReviewContentPreview() {
             profileNum = 0,
             dogName = "멍멍이",
             userName = "츄",
-            contentUrl = "",
+            mainImage = "",
             date = "23.10.19(목)",
             location = "서울 강남구 -> 서울 도봉구",
             organization = "단체이름",
-            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><"
-        )
+            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><",
+            contentImages = null
+        ),
+        type = ReviewType.HOME
     )
 }
