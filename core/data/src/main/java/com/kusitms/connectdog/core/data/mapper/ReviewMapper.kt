@@ -14,6 +14,6 @@ internal fun ReviewResponseItem.toData(): Review {
         date = dateRangeFormat(startDate, endDate),
         location = "$departureLoc → $arrivalLoc",
         organization = intermediaryName,
-        content = content,
+        content = content
     )
 }

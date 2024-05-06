@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Orange10
-import com.kusitms.connectdog.core.model.Recent
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.core.util.getProfileImageId
 
@@ -83,7 +82,7 @@ fun ConnectDogCommunityContent(
                 .height(20.dp)
                 .fillMaxWidth()
         )
-        when(type) {
+        when (type) {
             ReviewType.HOME -> {
                 NetworkImage(
                     imageUrl = contentUrl,
@@ -131,12 +130,12 @@ fun ConnectDogCommunityContent(
     }
 }
 
-//@Composable
-//fun ConnectDogRecent(
+// @Composable
+// fun ConnectDogRecent(
 //    modifier: Modifier = Modifier,
 //    recent: Recent,
 //    type: ReviewType
-//) {
+// ) {
 //    ConnectDogCommunityContent(
 //        modifier = modifier,
 //        profile = {
@@ -157,7 +156,7 @@ fun ConnectDogCommunityContent(
 //        content = recent.content,
 //        type = type
 //    )
-//}
+// }
 
 @Composable
 fun ProfileContent(

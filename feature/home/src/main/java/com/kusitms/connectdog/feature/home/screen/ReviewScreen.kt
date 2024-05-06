@@ -123,29 +123,35 @@ private fun ReviewItemContent(
     review: Review,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier
-        .fillMaxWidth()
-        .wrapContentSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentSize()
+    ) {
         ConnectDogReview(review = review, type = ReviewType.REVIEW)
         Spacer(modifier = Modifier.height(16.dp))
         Divider(
             Modifier
                 .height(1.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp), color = Gray7)
+                .padding(horizontal = 16.dp),
+            color = Gray7
+        )
         Spacer(modifier = Modifier.height(16.dp))
         IntermediatorInfo(review)
         Spacer(modifier = Modifier.height(16.dp))
         Divider(
             Modifier
                 .height(8.dp)
-                .fillMaxWidth(), color = Gray7)
+                .fillMaxWidth(),
+            color = Gray7
+        )
     }
 }
 
 @Composable
 private fun IntermediatorInfo(
-    review: Review,
+    review: Review
 ) {
     Row(
         modifier = Modifier
