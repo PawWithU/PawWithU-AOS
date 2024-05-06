@@ -54,6 +54,7 @@ import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogReview
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
+import com.kusitms.connectdog.core.designsystem.component.ReviewType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
@@ -405,11 +406,12 @@ private fun ReviewLoading(modifier: Modifier, arrangement: Arrangement.Horizonta
             profileNum = 0,
             dogName = "멍멍이",
             userName = "츄",
-            contentUrl = "",
+            mainImage = "",
             date = "23.10.19(목)",
             location = "서울 강남구 -> 서울 도봉구",
             organization = "단체이름",
-            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><"
+            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><",
+            contentImages = null
         )
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
@@ -462,7 +464,7 @@ private fun ReviewCardContent(
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
     ) {
-        ConnectDogReview(review = review, modifier = Modifier.width(272.dp))
+        ConnectDogReview(review = review, modifier = Modifier.width(272.dp), type = ReviewType.HOME)
     }
 }
 
