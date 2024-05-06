@@ -152,7 +152,7 @@ private fun Content(
         )
         Spacer(modifier = Modifier.height(20.dp))
         ConnectDogNormalButton(
-            content = "완료",
+            content = "신청하기",
             onClick = {
                 viewModel.postApplyVolunteer(
                     postId,
