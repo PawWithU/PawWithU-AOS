@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
@@ -111,6 +112,8 @@ private fun MypageScreen(
         Spacer(modifier = Modifier.height(20.dp))
         InformationBox()
         Spacer(modifier = Modifier.height(40.dp))
+        BannerGuideline({})
+        Spacer(modifier = Modifier.height(20.dp))
         Text(text = "나의 이동봉사", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 20.dp))
         Spacer(modifier = Modifier.height(20.dp))
         MypageTab(painter = R.drawable.ic_bookmark, title = "저장한 이동봉사 공고", onClick = onBookmarkClick)
@@ -124,7 +127,7 @@ private fun MyInformation(
     onEditProfileClick: () -> Unit,
     viewModel: MyPageViewModel
 ) {
-    val userInfo by viewModel.userInfo.observeAsState(null)
+    val userInfo by viewModel.myInfo.observeAsState(null)
 
     Row(
         modifier = Modifier
@@ -203,9 +206,10 @@ private fun InformationBox(
     ) {
         myInformation?.let {
             Row {
-                Information(it.completedCount, "진행한 이동봉사", Modifier.weight(1f))
-                Information(it.reviewCount, "봉사 후기", Modifier.weight(1f))
-                Information(it.dogStatusCount, "입양 근황", Modifier.weight(1f))
+                Information(it.waitingCount, "승인대기중", Modifier.weight(1f))
+                Information(it.progressingCount, "진행중", Modifier.weight(1f))
+                Information(it.completedCount, "완료", Modifier.weight(1f))
+                Information(it.reviewCount, "후기", Modifier.weight(1f))
             }
         }
     }
