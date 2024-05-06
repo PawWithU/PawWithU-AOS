@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.BadgeResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
-import com.kusitms.connectdog.core.data.api.model.volunteer.UserInfoResponse
 import com.kusitms.connectdog.core.data.repository.MyPageRepository
 import com.kusitms.connectdog.feature.mypage.screen.BadgeItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,9 +22,6 @@ class MyPageViewModel @Inject constructor(
 ) : ViewModel() {
     private val _myInfo = MutableLiveData<MyInfoResponseItem?>()
     val myInfo: LiveData<MyInfoResponseItem?> = _myInfo
-
-    private val _userInfo = MutableLiveData<UserInfoResponse?>()
-    val userInfo: LiveData<UserInfoResponse?> = _userInfo
 
     private val _badge = MutableLiveData<List<BadgeResponse>>()
     val badge: LiveData<List<BadgeResponse>> = _badge
@@ -43,10 +39,7 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val myInfoResponse = myPageRepository.getMyInfo()
-                val userInfoResponse = myPageRepository.getUserInfo()
-
                 _myInfo.postValue(myInfoResponse)
-                _userInfo.postValue(userInfoResponse)
             } catch (e: Exception) {
                 Log.d(TAG, e.message.toString())
             }
