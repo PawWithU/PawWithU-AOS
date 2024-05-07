@@ -4,6 +4,7 @@ import com.kusitms.connectdog.core.data.api.ApiService
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.data.mapper.volunteer.toData
 import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.model.AnnouncementSearch
 import com.kusitms.connectdog.core.model.Review
 import javax.inject.Inject
 
@@ -26,7 +27,7 @@ internal class HomeRepositoryImpl @Inject constructor(
         orderCondition: String?,
         page: Int?,
         size: Int?
-    ): List<Announcement> {
+    ): List<AnnouncementSearch> {
         var depart = departureLoc
         if (depart != null) {
             if ("전체" in depart) depart = depart.take(2)

@@ -46,7 +46,7 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun fetchBookmark() {
+    fun fetchBadge() {
         viewModelScope.launch {
             try {
                 val response = myPageRepository.getBadge()
@@ -57,7 +57,7 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun fetchBadge() {
+    fun fetchBookmark() {
         viewModelScope.launch {
             try {
                 val response = myPageRepository.getBookmarkData()
