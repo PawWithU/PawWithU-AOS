@@ -55,6 +55,7 @@ import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogReview
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.component.ReviewType
+import com.kusitms.connectdog.core.designsystem.component.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
@@ -377,7 +378,7 @@ fun AnnouncementLoading(
     arrangement: Arrangement.Horizontal
 ) {
     val list = List(4) {
-        Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1)
+        Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "", "")
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list) {
@@ -406,12 +407,12 @@ private fun ReviewLoading(modifier: Modifier, arrangement: Arrangement.Horizonta
             profileNum = 0,
             dogName = "멍멍이",
             userName = "츄",
-            mainImage = "",
             date = "23.10.19(목)",
             location = "서울 강남구 -> 서울 도봉구",
             organization = "단체이름",
             content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><",
-            contentImages = null
+            contentImages = null,
+            mainImage = ""
         )
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
@@ -440,18 +441,22 @@ private fun AnnouncementCardContent(
                 .shadow(shape = RoundedCornerShape(12.dp), elevation = 1.dp)
         )
         Text(
-            text = announcement.location,
+            text = announcement.dogName,
             maxLines = 2,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 1.dp, top = 10.dp, bottom = 8.dp)
         )
-        AnnouncementContent(
-            date = announcement.date,
-            organization = announcement.organization,
-            hasKennel = announcement.hasKennel,
-            style = MaterialTheme.typography.labelMedium
+        Text(
+            text = announcement.location,
+            color = Gray3,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextWithIcon(text = announcement.date.substringBefore(" "), iconId = R.drawable.ic_clock)
+        Spacer(modifier = Modifier.height(5.dp))
+        TextWithIcon(text = announcement.pickUpTime, iconId = R.drawable.ic_clock)
     }
 }
 
@@ -485,19 +490,19 @@ private fun HomeScreenPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun AnnouncementPreview() {
-    ConnectDogTheme {
-        AnnouncementCardContent(
-            announcement = Announcement(
-                "",
-                "서울시 강남구 -> 서울시 도봉구",
-                "23.10.19(수)",
-                "단체이름이름",
-                true,
-                -1
-            )
-        )
-    }
-}
+// @Preview
+// @Composable
+// private fun AnnouncementPreview() {
+//    ConnectDogTheme {
+//        AnnouncementCardContent(
+//            announcement = Announcement(
+//                "",
+//                "서울시 강남구 -> 서울시 도봉구",
+//                "23.10.19(수)",
+//                "단체이름이름",
+//                true,
+//                -1
+//            )
+//        )
+//    }
+// }
