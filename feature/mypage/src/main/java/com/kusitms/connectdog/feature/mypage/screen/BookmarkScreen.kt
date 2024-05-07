@@ -22,6 +22,7 @@ import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
+import com.kusitms.connectdog.feature.home.screen.AnnouncementContent
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
 
@@ -56,12 +57,16 @@ private fun Content(
     item: List<BookmarkResponseItem>,
     onDetailClick: (Long) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.padding(top = 48.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-        items(item) {
-            BookmarkContent(item = it, onDetailClick = onDetailClick)
+    if (item.isEmpty()) {
+        //TODO 저장된 공고가 비어있는 경우 표시될 UI 추가
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(top = 48.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            items(item) {
+                AnnouncementContent(announcement = it.toData(), onClick = onDetailClick)
+            }
         }
     }
 }
@@ -78,7 +83,7 @@ private fun BookmarkContent(
         imageUrl = item.mainImage,
         location = "${item.departureLoc} → ${item.arrivalLoc}",
         date = "${item.startDate} - ${item.endDate}",
-        organization = item.intermediaryName,
+        organization = item.dogName,
         hasKennel = item.isKennel
     )
     Divider(thickness = 8.dp, color = Gray7)
