@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -22,13 +23,14 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
+import com.kusitms.connectdog.core.designsystem.theme.Gray3
+import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.model.AnnouncementSearch
 import com.kusitms.connectdog.core.model.InterApplication
 
 @Composable
@@ -78,12 +80,67 @@ fun ListForUserItem(
     announcement: Announcement,
     isValid: Boolean = true
 ) {
-    ListItem(modifier = modifier, imageUrl = imageUrl, title = announcement.location, isValid = isValid) {
+    ListItem(
+        modifier = modifier,
+        imageUrl = imageUrl,
+        title = announcement.dogName,
+        isValid = isValid
+    ) {
         AnnouncementContent(
             date = announcement.date,
-            organization = announcement.organization,
-            hasKennel = announcement.hasKennel
+            organization = announcement.date,
+            hasKennel = true
         )
+    }
+}
+
+@Composable
+fun SearchListItem(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    announcement: AnnouncementSearch,
+    isValid: Boolean = true
+) {
+    ListItem(
+        modifier = modifier,
+        imageUrl = imageUrl,
+        title = announcement.dogName,
+        isValid = isValid
+    ) {
+        Column {
+            Text(
+                text = announcement.location,
+                fontSize = 12.sp,
+                color = Gray3,
+                fontWeight = FontWeight.Normal
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            TextWithIcon(text = announcement.date, iconId = R.drawable.ic_clock)
+            Spacer(modifier = Modifier.height(6.dp))
+            TextWithIcon(text = announcement.pickUpTime, iconId = R.drawable.ic_clock)
+            Spacer(modifier = Modifier.height(12.dp))
+            Row {
+                ConnectDogTagWithIcon(
+                    iconId = R.drawable.ic_dog_size,
+                    text = announcement.dogSize,
+                    contentColor = Gray3,
+                    backgroundColor = Gray7
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                ConnectDogTagWithIcon(
+                    iconId = R.drawable.ic_kennel,
+                    text = if (announcement.isKennel) {
+                        stringResource(id = R.string.has_kennel)
+                    } else {
+                        stringResource(
+                            id = R.string.has_not_kennel
+                        )
+                    },
+                    contentColor = Gray3,
+                    backgroundColor = Gray7
+                )
+            }
+        }
     }
 }
 
@@ -113,7 +170,12 @@ fun ListForOrganizationItem(
     applicant: InterApplication,
     isValid: Boolean = true
 ) {
-    ListItem(modifier = modifier, imageUrl = imageUrl, title = applicant.dogName, isValid = isValid) {
+    ListItem(
+        modifier = modifier,
+        imageUrl = imageUrl,
+        title = applicant.dogName,
+        isValid = isValid
+    ) {
         ApplicantContent(
             date = applicant.date,
             location = applicant.location,
@@ -171,14 +233,14 @@ private fun Title(
     )
 }
 
-@Preview
-@Composable
-private fun ListForUserItemPreivew() {
-    ConnectDogTheme {
-        ListForUserItem(
-            imageUrl = "",
-            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1),
-            isValid = false
-        )
-    }
-}
+// @Preview
+// @Composable
+// private fun ListForUserItemPreivew() {
+//    ConnectDogTheme {
+//        ListForUserItem(
+//            imageUrl = "",
+//            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1),
+//            isValid = false
+//        )
+//    }
+// }
