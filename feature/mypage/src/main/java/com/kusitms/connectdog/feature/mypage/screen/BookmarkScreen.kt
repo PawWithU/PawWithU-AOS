@@ -58,7 +58,7 @@ private fun Content(
     onDetailClick: (Long) -> Unit
 ) {
     if (item.isEmpty()) {
-        //TODO 저장된 공고가 비어있는 경우 표시될 UI 추가
+        // TODO 저장된 공고가 비어있는 경우 표시될 UI 추가
     } else {
         LazyColumn(
             modifier = Modifier.padding(top = 48.dp),
