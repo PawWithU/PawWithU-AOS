@@ -126,7 +126,7 @@ private fun VolunteerInfo() {
     ) {
         ListForUserItem(
             imageUrl = "",
-            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1),
+            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", ""),
             isValid = true
         )
     }

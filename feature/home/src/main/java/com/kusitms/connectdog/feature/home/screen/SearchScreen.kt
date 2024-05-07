@@ -27,27 +27,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
-import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.Loading
+import com.kusitms.connectdog.core.designsystem.component.SearchListItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.model.AnnouncementSearch
 import com.kusitms.connectdog.core.util.dateFormat
 import com.kusitms.connectdog.feature.home.R
 import com.kusitms.connectdog.feature.home.SearchViewModel
 import com.kusitms.connectdog.feature.home.model.Filter
-import com.kusitms.connectdog.feature.home.state.AnnouncementUiState
+import com.kusitms.connectdog.feature.home.state.SearchAnnouncementUiState
 import java.time.LocalDate
 
 private val TAG = "SearchScreen"
@@ -85,12 +83,13 @@ internal fun SearchScreen(
         AnnouncementContent(
             uiState = announcementUiState,
             sortBtn = {
-//                SortButton(
-//                    modifier = Modifier
-//                        .padding(top = 20.dp, end = 20.dp)
-//                        .fillMaxWidth(),
-//                    isByDeadline = isByDeadline
-//                ) { viewModel.changeOrderCondition() }
+                SortButton(
+                    modifier = Modifier
+                        .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                        .fillMaxWidth(),
+                    isByDeadline = isByDeadline,
+                    count = 72
+                ) { viewModel.changeOrderCondition() }
             },
             onClick = onDetailClick
         )
@@ -210,9 +209,15 @@ private fun FilterTag(
 private fun SortButton(
     modifier: Modifier = Modifier,
     isByDeadline: Boolean = true,
+    count: Int,
     onClick: () -> Unit
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = "${count}개의 공고",
+            color = Gray3,
+            fontSize = 14.sp
+        )
         Spacer(modifier = Modifier.weight(1f))
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -240,29 +245,29 @@ private fun SortButton(
 
 @Composable
 private fun AnnouncementContent(
-    uiState: AnnouncementUiState,
+    uiState: SearchAnnouncementUiState,
     sortBtn: @Composable () -> Unit,
     onClick: (Long) -> Unit
 ) {
     when (uiState) {
-        is AnnouncementUiState.Announcements -> {
+        is SearchAnnouncementUiState.SearchAnnouncements -> {
             AnnouncementList(list = uiState.announcements, sortBtn = sortBtn, onClick = onClick)
         }
 
-        is AnnouncementUiState.Empty -> {
+        is SearchAnnouncementUiState.Empty -> {
             Empty(
                 titleRes = R.string.filter_no_announcement,
                 descriptionRes = R.string.filter_no_announcement_description
             )
         }
 
-        is AnnouncementUiState.Loading -> Loading()
+        is SearchAnnouncementUiState.Loading -> Loading()
     }
 }
 
 @Composable
 private fun AnnouncementList(
-    list: List<Announcement>,
+    list: List<AnnouncementSearch>,
     sortBtn: @Composable () -> Unit,
     onClick: (Long) -> Unit
 ) {
@@ -281,7 +286,7 @@ private fun AnnouncementLoading(
     sortBtn: @Composable () -> Unit
 ) {
     val list = List(10) {
-        Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1)
+        AnnouncementSearch("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", "", "", false)
     }
     LazyColumn {
         item {
@@ -294,12 +299,12 @@ private fun AnnouncementLoading(
 }
 
 @Composable
-private fun AnnouncementContent(announcement: Announcement, onClick: (Long) -> Unit) {
+fun AnnouncementContent(announcement: AnnouncementSearch, onClick: (Long) -> Unit) {
     Column(
         modifier = Modifier
             .clickable { onClick(announcement.postId.toLong()) }
     ) {
-        ListForUserItem(
+        SearchListItem(
             modifier = Modifier.padding(20.dp),
             imageUrl = announcement.imageUrl,
             announcement = announcement
@@ -312,37 +317,37 @@ private fun AnnouncementContent(announcement: Announcement, onClick: (Long) -> U
     }
 }
 
-@Preview
-@Composable
-private fun SearchScreenPreview() {
-    ConnectDogTheme {
-        Column {
-            TopAppBar { }
-            SearchBar(
-                modifier = Modifier
-                    .padding(horizontal = 13.dp, vertical = 6.dp)
-                    .fillMaxWidth()
-            ) {} // todo 검색 popup
-            FilterBar(
-                modifier = Modifier.padding(start = 13.dp, end = 13.dp, top = 4.dp),
-                filter = Filter(),
-                onClick = { /*TODO*/ }
-            )
-            AnnouncementContent(
-                uiState = AnnouncementUiState.Loading,
-                sortBtn = {
-//                    SortButton(
-//                        modifier = Modifier
-//                            .padding(top = 20.dp, end = 20.dp)
-//                            .fillMaxWidth(),
-//                        isByDeadline = true
-//                    ) { /*todo sort*/ }
-                },
-                onClick = {}
-            )
-        }
-    }
-}
+// @Preview
+// @Composable
+// private fun SearchScreenPreview() {
+//    ConnectDogTheme {
+//        Column {
+//            TopAppBar { }
+//            SearchBar(
+//                modifier = Modifier
+//                    .padding(horizontal = 13.dp, vertical = 6.dp)
+//                    .fillMaxWidth()
+//            ) {} // todo 검색 popup
+//            FilterBar(
+//                modifier = Modifier.padding(start = 13.dp, end = 13.dp, top = 4.dp),
+//                filter = Filter(),
+//                onClick = { /*TODO*/ }
+//            )
+//            AnnouncementContent(
+//                uiState = AnnouncementUiState.Loading,
+//                sortBtn = {
+// //                    SortButton(
+// //                        modifier = Modifier
+// //                            .padding(top = 20.dp, end = 20.dp)
+// //                            .fillMaxWidth(),
+// //                        isByDeadline = true
+// //                    ) { /*todo sort*/ }
+//                },
+//                onClick = {}
+//            )
+//        }
+//    }
+// }
 
 /**
  * UI display

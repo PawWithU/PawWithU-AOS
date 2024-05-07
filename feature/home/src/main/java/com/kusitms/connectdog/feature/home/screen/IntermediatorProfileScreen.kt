@@ -74,9 +74,9 @@ fun IntermediatorProfileScreen(
                 imageUrl = item[it].mainImage,
                 location = "${item[it].departureLoc} → ${item[it].arrivalLoc}",
                 date = "${item[it].startDate} ~ ${item[it].endDate}",
-                organization = item[it].intermediaryName,
-                hasKennel = item[it].isKennel,
-                postId = item[it].postId.toInt()
+                postId = item[it].postId.toInt(),
+                dogName = "강아지 이름",
+                pickUpTime = "픽업 시간"
             )
         }
     }

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.repository.HomeRepository
 import com.kusitms.connectdog.feature.home.model.Detail
 import com.kusitms.connectdog.feature.home.model.Filter
-import com.kusitms.connectdog.feature.home.state.AnnouncementUiState
+import com.kusitms.connectdog.feature.home.state.SearchAnnouncementUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,7 +68,7 @@ class SearchViewModel @Inject constructor(
         _isDetailExpanded.value = !_isDetailExpanded.value
     }
 
-    val announcementUiState: StateFlow<AnnouncementUiState> =
+    val announcementUiState: StateFlow<SearchAnnouncementUiState> =
         flow {
             emit(loadAnnouncementList())
         }.catch {
@@ -76,7 +76,7 @@ class SearchViewModel @Inject constructor(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = AnnouncementUiState.Loading
+            initialValue = SearchAnnouncementUiState.Loading
         )
 
     fun setFilter(filter: Filter) {
@@ -112,7 +112,7 @@ class SearchViewModel @Inject constructor(
     /**
      * Network Communication
      */
-    private suspend fun loadAnnouncementList(): AnnouncementUiState {
+    private suspend fun loadAnnouncementList(): SearchAnnouncementUiState {
         val orderCondition = if (isDeadlineOrder.value) "마감순" else "최신순"
 
         val announcementList = homeRepository.getAnnouncementListWithFilter(
@@ -127,9 +127,9 @@ class SearchViewModel @Inject constructor(
         )
 
         return if (announcementList.isNotEmpty()) {
-            AnnouncementUiState.Announcements(announcementList)
+            SearchAnnouncementUiState.SearchAnnouncements(announcementList)
         } else {
-            AnnouncementUiState.Empty
+            SearchAnnouncementUiState.Empty
         }
     }
 }
