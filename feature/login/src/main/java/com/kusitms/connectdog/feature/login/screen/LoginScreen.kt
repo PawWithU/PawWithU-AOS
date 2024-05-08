@@ -258,7 +258,7 @@ private fun Intermediator(
             content = stringResource(id = R.string.login),
             onClick = {
                 viewModel.initIntermediatorLogin()
-                if(isLoginSuccessful == true) { onNavigateToIntermediatorHome() }
+                if (isLoginSuccessful == true) { onNavigateToIntermediatorHome() }
             }
         )
         Spacer(modifier = Modifier.height(30.dp))
