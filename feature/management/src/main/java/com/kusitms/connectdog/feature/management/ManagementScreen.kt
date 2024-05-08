@@ -1,6 +1,5 @@
 package com.kusitms.connectdog.feature.management
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,13 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -30,12 +26,10 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,6 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementItem
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogSecondaryButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
@@ -59,6 +57,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.Application
+import kotlinx.coroutines.launch
 
 val TAG = "ManagementScreen"
 
@@ -113,7 +112,7 @@ internal fun ManagementRoute(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ManagementScreen(
     firstContent: @Composable () -> Unit,
@@ -127,32 +126,29 @@ private fun ManagementScreen(
     )
 
     Surface(modifier = Modifier.fillMaxSize()) {
-        var selectedTabIndex by remember {
-            mutableIntStateOf(0)
-        }
-        val pagerState = rememberPagerState {
-            tabItems.size
-        }
-        LaunchedEffect(selectedTabIndex) {
-            pagerState.animateScrollToPage(selectedTabIndex)
-        }
-        LaunchedEffect(pagerState.currentPage) {
-            selectedTabIndex = pagerState.currentPage
-        }
-        Column(modifier = Modifier.fillMaxSize()) {
-            TabRow(selectedTabIndex = selectedTabIndex) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Top
+        ) {
+            val pagerState = rememberPagerState()
+            val coroutineScope = rememberCoroutineScope()
+            TabRow(
+                selectedTabIndex = pagerState.currentPage
+            ) {
                 tabItems.forEachIndexed { index, title ->
                     Tab(
-                        selected = index == selectedTabIndex,
+                        selected = pagerState.currentPage == index,
                         onClick = {
-                            selectedTabIndex = index
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(index)
+                            }
                         },
                         text = {
                             Text(
                                 text = title,
                                 style = MaterialTheme.typography.titleSmall,
                                 fontSize = 14.sp,
-                                color = if (index == selectedTabIndex) MaterialTheme.colorScheme.primary else Gray2
+                                color = if (pagerState.currentPage == index) MaterialTheme.colorScheme.primary else Gray2
                             )
                         }
                     )
@@ -160,9 +156,8 @@ private fun ManagementScreen(
             }
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                count = tabItems.size,
+                modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.Top
             ) { index ->
                 when (index) {
@@ -288,13 +283,18 @@ private fun CompletedContent(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            ListForUserItem(
+        Column(
+            modifier = Modifier.padding(20.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Top
+        ) {
+            AnnouncementItem(
                 imageUrl = application.imageUrl,
+                dogName = application.dogName!!,
                 location = application.location,
+                isKennel = application.hasKennel,
+                dogSize = application.dogSize!!,
                 date = application.date,
-                organization = application.organization,
-                hasKennel = application.hasKennel
+                pickUpTime = application.pickUpTime!!
             )
             Spacer(modifier = Modifier.size(20.dp))
             ReviewButton(
