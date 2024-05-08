@@ -62,12 +62,14 @@ import kotlinx.coroutines.launch
 internal fun LoginRoute(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
     LoginScreen(
         onNavigateToNormalLogin = onNavigateToNormalLogin,
         onNavigateToSignup = onNavigateToSignup,
-        onNavigateToVolunteerHome = onNavigateToVolunteerHome
+        onNavigateToVolunteerHome = onNavigateToVolunteerHome,
+        onNavigateToIntermediatorHome = onNavigateToIntermediatorHome
     )
 }
 
@@ -76,7 +78,8 @@ internal fun LoginRoute(
 fun LoginScreen(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -90,7 +93,8 @@ fun LoginScreen(
         LoginContent(
             onNavigateToNormalLogin,
             onNavigateToSignup,
-            onNavigateToVolunteerHome
+            onNavigateToVolunteerHome,
+            onNavigateToIntermediatorHome
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -108,7 +112,8 @@ fun LoginScreen(
 private fun LoginContent(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
     val pages = listOf("이동봉사자 회원", "이동봉사 모집자 회원")
     Column(
@@ -154,7 +159,7 @@ private fun LoginContent(
                 )
 
                 1 -> Intermediator(
-                    onNavigateToNormalLogin = onNavigateToNormalLogin,
+                    onNavigateToIntermediatorHome = onNavigateToIntermediatorHome,
                     onNavigateToSignup = onNavigateToSignup
                 )
             }
@@ -216,7 +221,7 @@ private fun Volunteer(
 
 @Composable
 private fun Intermediator(
-    onNavigateToNormalLogin: (UserType) -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -235,7 +240,7 @@ private fun Intermediator(
             placeholder = "이메일 입력",
             keyboardType = KeyboardType.Text,
             onTextChanged = { viewModel.updateEmail(it) },
-            isError = isLoginSuccessful?.let { !it } ?: run { false }
+            isError = (isLoginSuccessful == false)
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
@@ -244,14 +249,17 @@ private fun Intermediator(
             placeholder = "비밀번호 입력",
             keyboardType = KeyboardType.Password,
             onTextChanged = { viewModel.updatePassword(it) },
-            isError = isLoginSuccessful?.let { !it } ?: run { false }
+            isError = (isLoginSuccessful == false)
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogNormalButton(
             modifier = Modifier
                 .fillMaxWidth(),
             content = stringResource(id = R.string.login),
-            onClick = { viewModel.initIntermediatorLogin() }
+            onClick = {
+                viewModel.initIntermediatorLogin()
+                if (isLoginSuccessful == true) { onNavigateToIntermediatorHome() }
+            }
         )
         Spacer(modifier = Modifier.height(30.dp))
         AccountFind(
