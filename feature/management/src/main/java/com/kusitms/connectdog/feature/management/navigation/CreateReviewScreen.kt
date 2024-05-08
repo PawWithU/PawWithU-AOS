@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,7 +61,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.feature.management.CreateReviewViewModel
 import com.kusitms.connectdog.feature.management.R
 
@@ -126,7 +125,7 @@ private fun VolunteerInfo() {
     ) {
         ListForUserItem(
             imageUrl = "",
-            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", ""),
+            announcementHome = AnnouncementHome("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", ""),
             isValid = true
         )
     }

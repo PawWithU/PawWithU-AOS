@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.core.designsystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,107 +31,104 @@ import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.Announcement
-import com.kusitms.connectdog.core.model.AnnouncementSearch
+import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.InterApplication
-
-@Composable
-fun ListItem(
-    modifier: Modifier = Modifier,
-    imageUrl: String,
-    title: String,
-    isValid: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .wrapContentHeight(Alignment.CenterVertically)
-    ) {
-        Box {
-            NetworkImage(
-                imageUrl = imageUrl,
-                modifier = Modifier
-                    .size(100.dp)
-                    .clip(shape = RoundedCornerShape(12.dp))
-                    .alpha(if (!isValid) 0.4F else 1.0F),
-                placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer)
-            )
-            if (!isValid) {
-                DescriptionTag(
-                    text = stringResource(id = R.string.end_recruit),
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(4.dp)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.size(16.dp))
-        Column {
-            Title(text = title)
-            Spacer(modifier = Modifier.height(9.dp))
-            content()
-        }
-    }
-}
 
 @Composable
 fun ListForUserItem(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    announcement: Announcement,
+    announcementHome: AnnouncementHome,
     isValid: Boolean = true
 ) {
     ListItem(
         modifier = modifier,
         imageUrl = imageUrl,
-        title = announcement.dogName,
+        title = announcementHome.dogName,
         isValid = isValid
     ) {
         AnnouncementContent(
-            date = announcement.date,
-            organization = announcement.date,
+            date = announcementHome.date,
+            organization = announcementHome.date,
             hasKennel = true
         )
     }
 }
 
 @Composable
-fun SearchListItem(
+fun AnnouncementContent(
+    onClick: (Long) -> Unit,
+    postId: Int,
+    imageUrl: String,
+    dogName: String,
+    location: String,
+    isKennel: Boolean,
+    dogSize: String,
+    date: String,
+    pickUpTime: String
+) {
+    Column(
+        modifier = Modifier.clickable { onClick(postId.toLong()) }
+    ) {
+        AnnouncementItem(
+            modifier = Modifier.padding(20.dp),
+            imageUrl = imageUrl,
+            dogName = dogName,
+            location = location,
+            isKennel = isKennel,
+            dogSize = dogSize,
+            date = date,
+            pickUpTime = pickUpTime
+        )
+        Divider(
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.outline,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+    }
+}
+
+@Composable
+fun AnnouncementItem(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    announcement: AnnouncementSearch,
+    dogName: String,
+    location: String,
+    isKennel: Boolean,
+    dogSize: String,
+    date: String,
+    pickUpTime: String,
     isValid: Boolean = true
 ) {
     ListItem(
         modifier = modifier,
         imageUrl = imageUrl,
-        title = announcement.dogName,
+        title = dogName,
         isValid = isValid
     ) {
         Column {
             Text(
-                text = announcement.location,
+                text = location,
                 fontSize = 12.sp,
                 color = Gray3,
                 fontWeight = FontWeight.Normal
             )
             Spacer(modifier = Modifier.height(12.dp))
-            TextWithIcon(text = announcement.date, iconId = R.drawable.ic_clock)
+            TextWithIcon(text = date, iconId = R.drawable.ic_clock)
             Spacer(modifier = Modifier.height(6.dp))
-            TextWithIcon(text = announcement.pickUpTime, iconId = R.drawable.ic_clock)
+            TextWithIcon(text = pickUpTime, iconId = R.drawable.ic_clock)
             Spacer(modifier = Modifier.height(12.dp))
             Row {
                 ConnectDogTagWithIcon(
                     iconId = R.drawable.ic_dog_size,
-                    text = announcement.dogSize,
+                    text = dogSize,
                     contentColor = Gray3,
                     backgroundColor = Gray7
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ConnectDogTagWithIcon(
                     iconId = R.drawable.ic_kennel,
-                    text = if (announcement.isKennel) {
+                    text = if (isKennel) {
                         stringResource(id = R.string.has_kennel)
                     } else {
                         stringResource(
@@ -200,6 +199,46 @@ fun ListForOrganizationItem(
             location = location,
             volunteer = volunteerName
         )
+    }
+}
+
+@Composable
+fun ListItem(
+    modifier: Modifier = Modifier,
+    imageUrl: String,
+    title: String,
+    isValid: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentHeight(Alignment.CenterVertically)
+    ) {
+        Box {
+            NetworkImage(
+                imageUrl = imageUrl,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(shape = RoundedCornerShape(12.dp))
+                    .alpha(if (!isValid) 0.4F else 1.0F),
+                placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer)
+            )
+            if (!isValid) {
+                DescriptionTag(
+                    text = stringResource(id = R.string.end_recruit),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(4.dp)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.size(16.dp))
+        Column {
+            Title(text = title)
+            Spacer(modifier = Modifier.height(4.dp))
+            content()
+        }
     }
 }
 

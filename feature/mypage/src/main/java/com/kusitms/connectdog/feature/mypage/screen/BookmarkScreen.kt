@@ -17,12 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.feature.home.screen.AnnouncementContent
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
 
@@ -65,7 +65,18 @@ private fun Content(
             verticalArrangement = Arrangement.Top
         ) {
             items(item) {
-                AnnouncementContent(announcement = it.toData(), onClick = onDetailClick)
+                val data = it.toData()
+                AnnouncementContent(
+                    postId = data.postId,
+                    imageUrl = data.imageUrl,
+                    dogName = data.dogName,
+                    location = data.location,
+                    isKennel = data.isKennel,
+                    dogSize = data.dogSize,
+                    date = data.date,
+                    pickUpTime = data.pickUpTime,
+                    onClick = onDetailClick
+                )
             }
         }
     }
@@ -77,9 +88,11 @@ private fun BookmarkContent(
     onDetailClick: (Long) -> Unit
 ) {
     ListForUserItem(
-        modifier = Modifier.padding(20.dp).clickable(
-            onClick = { onDetailClick(item.postId) }
-        ),
+        modifier = Modifier
+            .padding(20.dp)
+            .clickable(
+                onClick = { onDetailClick(item.postId) }
+            ),
         imageUrl = item.mainImage,
         location = "${item.departureLoc} → ${item.arrivalLoc}",
         date = "${item.startDate} - ${item.endDate}",

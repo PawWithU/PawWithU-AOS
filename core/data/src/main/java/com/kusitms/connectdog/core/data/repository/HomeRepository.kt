@@ -1,11 +1,11 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.model.Announcement
-import com.kusitms.connectdog.core.model.AnnouncementSearch
+import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Review
 
 interface HomeRepository {
-    suspend fun getAnnouncementList(): List<Announcement>
+    suspend fun getAnnouncementList(): List<AnnouncementHome>
 
     suspend fun getAnnouncementListWithFilter(
         postStatus: String? = null,
@@ -19,7 +19,7 @@ interface HomeRepository {
         orderCondition: String? = null,
         page: Int? = 0,
         size: Int? = 50
-    ): List<AnnouncementSearch>
+    ): List<Announcement>
 
     suspend fun getReviewList(page: Int? = 0, size: Int? = 5): List<Review>
 }
