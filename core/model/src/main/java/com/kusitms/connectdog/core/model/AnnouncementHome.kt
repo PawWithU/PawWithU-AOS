@@ -1,12 +1,10 @@
 package com.kusitms.connectdog.core.model
 
-data class AnnouncementSearch(
+data class AnnouncementHome(
     val imageUrl: String,
     val location: String,
     val date: String,
     val postId: Int,
     val dogName: String,
-    val pickUpTime: String,
-    val dogSize: String,
-    val isKennel: Boolean
+    val pickUpTime: String
 )
