@@ -1,6 +1,6 @@
 package com.kusitms.connectdog.core.data.api.model.volunteer
 
-import com.kusitms.connectdog.core.model.AnnouncementSearch
+import com.kusitms.connectdog.core.model.Announcement
 
 data class BookmarkResponseItem(
     val dogName: String,
@@ -14,7 +14,7 @@ data class BookmarkResponseItem(
     val startDate: String,
     val isKennel: Boolean
 ) {
-    fun toData() = AnnouncementSearch(
+    fun toData() = Announcement(
         imageUrl = mainImage,
         location = "$departureLoc → $arrivalLoc",
         date = startDate,
