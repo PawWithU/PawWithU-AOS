@@ -56,7 +56,8 @@ fun NavGraphBuilder.loginNavGraph(
         LoginRoute(
             onNavigateToNormalLogin,
             onNavigateToSignup,
-            onNavigateToVolunteer
+            onNavigateToVolunteer,
+            onNavigateToIntermediatorHome
         )
     }
 
