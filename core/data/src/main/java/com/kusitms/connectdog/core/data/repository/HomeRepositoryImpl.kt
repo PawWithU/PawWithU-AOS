@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.ApiService
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.data.mapper.volunteer.toData
 import com.kusitms.connectdog.core.model.Announcement
@@ -48,5 +49,9 @@ internal class HomeRepositoryImpl @Inject constructor(
 
     override suspend fun getReviewList(page: Int?, size: Int?): List<Review> {
         return api.getReviewsHome(page ?: 0, size ?: 5).map { it.toData() }
+    }
+
+    override suspend fun postFcmToken(fcmToken: FcmTokenRequestBody) {
+        api.postFcmToken(fcmToken)
     }
 }

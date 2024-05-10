@@ -2,6 +2,7 @@ package com.kusitms.connectdog.core.data.api
 
 import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
@@ -212,4 +213,12 @@ internal interface ApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<ReviewResponseItem>
+
+    /**
+     * fcm
+     */
+    @POST("/volunteers/fcm")
+    suspend fun postFcmToken(
+        @Body fcmToken: FcmTokenRequestBody
+    )
 }

@@ -23,6 +23,7 @@ class DataStoreRepository @Inject constructor(
     private object PreferenceKeys {
         val accessToken = stringPreferencesKey("access_token")
         val refreshToken = stringPreferencesKey("refresh_token")
+        val fcmToken = stringPreferencesKey("fcm_token")
         val appMode = stringPreferencesKey("app_mode")
     }
 
@@ -44,6 +45,12 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
+    suspend fun saveFcmToken(fcmToken: String) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferenceKeys.fcmToken] = fcmToken
+        }
+    }
+
     val accessTokenFlow: Flow<String?> = context.dataStore.data
         .map { preferences ->
             preferences[PreferenceKeys.accessToken]
@@ -60,5 +67,10 @@ class DataStoreRepository @Inject constructor(
     val refreshTokenFlow: Flow<String?> = context.dataStore.data
         .map { preferences ->
             preferences[PreferenceKeys.accessToken]
+        }
+
+    val fcmTokenFlow: Flow<String?> = context.dataStore.data
+        .map { preferences ->
+            preferences[PreferenceKeys.fcmToken]
         }
 }
