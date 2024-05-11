@@ -131,9 +131,7 @@ fun AnnouncementItem(
                     text = if (isKennel) {
                         stringResource(id = R.string.has_kennel)
                     } else {
-                        stringResource(
-                            id = R.string.has_not_kennel
-                        )
+                        stringResource(id = R.string.has_not_kennel)
                     },
                     contentColor = Gray3,
                     backgroundColor = Gray7
