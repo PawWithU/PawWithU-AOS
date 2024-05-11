@@ -3,6 +3,7 @@ package com.kusitms.connectdog.core.data.repository
 import com.kusitms.connectdog.core.data.api.ApiService
 import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
+import com.kusitms.connectdog.core.data.api.model.volunteer.BasicInformationResponse
 import javax.inject.Inject
 
 internal class ApplyRepositoryImpl @Inject constructor(
@@ -18,5 +19,9 @@ internal class ApplyRepositoryImpl @Inject constructor(
 
     override suspend fun getAdditionalAuth(): AdditionalAuthBody {
         return api.getAdditionalAuth()
+    }
+
+    override suspend fun getBasicInformation(): BasicInformationResponse {
+        return api.getBasicInformation()
     }
 }
