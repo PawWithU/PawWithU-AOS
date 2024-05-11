@@ -60,7 +60,7 @@ class ApplyViewModel @Inject constructor(
 
     fun updateIsChecked() {
         _isChecked.value = !_isChecked.value
-        if(_isChecked.value) getBasicInformation()
+        if (_isChecked.value) getBasicInformation()
     }
 
     fun updateName(name: String) {
@@ -76,7 +76,7 @@ class ApplyViewModel @Inject constructor(
         val body = ApplyBody(
             content = content,
             name = name,
-            phone = phoneNumber,
+            phone = phoneNumber
         )
         viewModelScope.launch {
             try {
