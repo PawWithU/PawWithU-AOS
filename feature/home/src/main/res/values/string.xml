@@ -29,7 +29,7 @@
     <string name="filter_small_dog">소형견</string>
     <string name="filter_kennel_no_need">O (준비 불필요)</string>
     <string name="filter_kennel_need">X (준비 필요)</string>
-    <string name="filter_select_departure_region">출발 지역w 선택</string>
+    <string name="filter_select_departure_region">출발 지역 선택</string>
     <string name="filter_select_destination_region">도착 지역 선택</string>
     <string name="filter_button_refresh">초기화</string>
     <string name="filter_button_search">검색하기</string>
