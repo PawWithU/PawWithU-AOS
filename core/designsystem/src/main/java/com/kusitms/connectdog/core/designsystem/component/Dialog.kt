@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.core.designsystem.component
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
 
 @Composable
 fun ConnectDogAlertDialog(
@@ -94,7 +96,8 @@ fun ConnectDogAlertDialog(
                     content = stringResource(id = cancelText),
                     color = MaterialTheme.colorScheme.surface,
                     textColor = Gray2,
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
+                    border = BorderStroke(width = 1.dp, color = Gray5)
                 )
             }
         }
