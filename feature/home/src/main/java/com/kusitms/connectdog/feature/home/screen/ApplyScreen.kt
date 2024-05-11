@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
@@ -99,6 +99,9 @@ private fun Content(
                 interactionSource = interactionSource
             )
     ) {
+        LaunchedEffect(imeHeight) {
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
         Text(
             text = "이동봉사 모집자에게\n전달할 정보를 입력해주세요",
             fontWeight = FontWeight.Bold,
@@ -108,14 +111,15 @@ private fun Content(
         BasicInformation(isChecked) {
             viewModel.updateIsChecked()
         }
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         ConnectDogTextField(
             text = viewModel.name,
             enabled = !isChecked,
             label = "이름",
             placeholder = "이름 입력",
             keyboardType = KeyboardType.Text,
-            onTextChanged = { viewModel.updateName(it) }
+            onTextChanged = { viewModel.updateName(it) },
+            isError = viewModel.isAvailableName == false
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
@@ -147,26 +151,18 @@ private fun Content(
             label = "",
             placeholder = "모집자에게 전달 및 문의 필요한 사항이 있다면\n입력해주세요. ",
             keyboardType = KeyboardType.Text,
-            height = 160,
+            height = 180,
             onTextChanged = { viewModel.updateContent(it) }
         )
         Spacer(modifier = Modifier.height(20.dp))
         ConnectDogNormalButton(
             content = "신청하기",
             onClick = {
-                viewModel.postApplyVolunteer(
-                    postId,
-                    ApplyBody(
-                        content = viewModel.content,
-                        name = viewModel.name,
-                        phone = viewModel.phoneNumber,
-                        transportation = viewModel.transportation
-                    )
-                )
+                viewModel.postApplyVolunteer(postId)
                 onClick()
             }
         )
-        Spacer(modifier = Modifier.height((imeHeight + 32).dp))
+        Spacer(modifier = Modifier.height((imeHeight + 20).dp))
     }
 }
 
