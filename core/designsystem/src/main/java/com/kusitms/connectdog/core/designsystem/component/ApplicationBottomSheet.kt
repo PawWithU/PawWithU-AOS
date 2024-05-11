@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +43,7 @@ fun ApplicationBottomSheet(
     onDismissRequest: () -> Unit,
     bottomButton: @Composable () -> Unit
 ) {
-    ABottomSheet(
+    Content(
         modifier = modifier,
         titleRes = titleRes,
         volunteer = volunteer,
@@ -66,7 +66,7 @@ fun InterApplicationBottomSheet(
     onDismissRequest: () -> Unit,
     bottomButton: @Composable () -> Unit
 ) {
-    ABottomSheet(
+    Content(
         modifier = modifier,
         titleRes = titleRes,
         volunteer = volunteer,
@@ -80,7 +80,7 @@ fun InterApplicationBottomSheet(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ABottomSheet(
+private fun Content(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
     volunteer: Volunteer,
@@ -94,20 +94,17 @@ private fun ABottomSheet(
         onDismissRequest = onDismissRequest
     ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
+            modifier = Modifier.wrapContentSize()
         ) {
             TopAppBar(titleRes = titleRes) { onDismissRequest() }
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(20.dp)
+                modifier = Modifier.padding(20.dp)
             ) {
                 informContent()
                 Divider(
                     thickness = 1.dp,
                     color = Gray6,
-                    modifier = Modifier.padding(vertical = 40.dp)
+                    modifier = Modifier.padding(vertical = 20.dp)
                 )
                 InformationContent(volunteer = volunteer)
             }
@@ -131,12 +128,14 @@ private fun TopAppBar(
 
 @Composable
 private fun ApplicationContent(application: Application) {
-    ListForUserItem(
+    AnnouncementItem(
         imageUrl = application.imageUrl,
+        dogName = application.dogName!!,
         location = application.location,
+        isKennel = application.hasKennel,
+        dogSize = application.dogSize!!,
         date = application.date,
-        organization = application.organization,
-        hasKennel = application.hasKennel
+        pickUpTime = application.pickUpTime!!
     )
 }
 
@@ -154,11 +153,10 @@ private fun InterApplicationContent(application: InterApplication) {
 @Composable
 private fun InformationContent(volunteer: Volunteer) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Information(titleRes = R.string.name, inform = volunteer.name)
-        Information(titleRes = R.string.phone, inform = volunteer.phoneNumber)
-        Information(titleRes = R.string.vehicle, inform = volunteer.vehicle)
+        Information(titleRes = R.string.name, inform = volunteer.volunteerName)
+        Information(titleRes = R.string.phone, inform = volunteer.phone)
         Spacer(modifier = Modifier.size(20.dp))
-        CommentContent(comment = volunteer.comment)
+        CommentContent(comment = volunteer.content)
     }
 }
 
@@ -189,7 +187,7 @@ private fun CommentContent(comment: String) {
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.volunteer_comment),
+            text = stringResource(id = R.string.inquiry),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 14.sp
         )
