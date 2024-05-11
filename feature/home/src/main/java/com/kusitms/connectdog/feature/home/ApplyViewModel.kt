@@ -13,10 +13,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val TAG = "ApplyViewModel"
+
 @HiltViewModel
 class ApplyViewModel @Inject constructor(
     private val applyRepository: ApplyRepository
 ) : ViewModel() {
+    init {
+        getBasicInformation()
+    }
+
     private val _name: MutableState<String> = mutableStateOf("")
     val name: String
         get() = if (_isChecked.value) { _name.value } else { "" }
@@ -54,23 +60,29 @@ class ApplyViewModel @Inject constructor(
 
     fun updateIsChecked() {
         _isChecked.value = !_isChecked.value
+        if(_isChecked.value) getBasicInformation()
     }
 
     fun updateName(name: String) {
         _name.value = name
+        updateIsAvailableName()
     }
 
     fun updatePhoneNumber(phoneNumber: String) {
         _phoneNumber.value = phoneNumber
     }
 
-    fun postApplyVolunteer(postId: Long, applyBody: ApplyBody) {
+    fun postApplyVolunteer(postId: Long) {
+        val body = ApplyBody(
+            content = content,
+            name = name,
+            phone = phoneNumber,
+        )
         viewModelScope.launch {
             try {
-                val response = applyRepository.postApplyVolunteer(postId, applyBody)
-                Log.d("testtts", response.toString())
+                applyRepository.postApplyVolunteer(postId, body)
             } catch (e: Exception) {
-                Log.d("testttserror", e.message.toString())
+                Log.d(TAG, e.message.toString())
             }
         }
     }
@@ -78,18 +90,18 @@ class ApplyViewModel @Inject constructor(
     fun updateIsAvailablePhoneNumber() {
     }
 
-    fun updateIsAvailableName() {
+    private fun updateIsAvailableName() {
+        val koreanRegex = Regex("[가-힣]+")
+        _isAvailableName.value = koreanRegex.matches(_name.value)
     }
 
-    fun getAdditionalAuth() {
-        viewModelScope.launch {
-            try {
-                val response = applyRepository.getAdditionalAuth()
-                _name.value = response.name
-                _phoneNumber.value = response.phone
-            } catch (e: Exception) {
-                Log.d("testttserror", e.message.toString())
-            }
+    private fun getBasicInformation() = viewModelScope.launch {
+        try {
+            val response = applyRepository.getBasicInformation()
+            _name.value = response.name
+            _phoneNumber.value = response.phone
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
         }
     }
 }
