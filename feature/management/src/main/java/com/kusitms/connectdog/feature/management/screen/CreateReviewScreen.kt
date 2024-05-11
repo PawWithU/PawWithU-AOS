@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.management.navigation
+package com.kusitms.connectdog.feature.management.screen
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -62,8 +62,8 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.AnnouncementHome
-import com.kusitms.connectdog.feature.management.CreateReviewViewModel
 import com.kusitms.connectdog.feature.management.R
+import com.kusitms.connectdog.feature.management.viewmodel.CreateReviewViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
