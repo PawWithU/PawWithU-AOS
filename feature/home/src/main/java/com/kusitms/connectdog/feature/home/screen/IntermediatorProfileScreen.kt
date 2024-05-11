@@ -44,7 +44,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.feature.home.IntermediatorProfileViewModel
 import com.kusitms.connectdog.feature.home.R
@@ -70,13 +70,13 @@ fun IntermediatorProfileScreen(
 
     val noticeItem = notice?.let { item ->
         List(item.size) {
-            Announcement(
+            AnnouncementHome(
                 imageUrl = item[it].mainImage,
                 location = "${item[it].departureLoc} → ${item[it].arrivalLoc}",
                 date = "${item[it].startDate} ~ ${item[it].endDate}",
-                organization = item[it].intermediaryName,
-                hasKennel = item[it].isKennel,
-                postId = item[it].postId.toInt()
+                postId = item[it].postId.toInt(),
+                dogName = "강아지 이름",
+                pickUpTime = "픽업 시간"
             )
         }
     }
@@ -108,7 +108,7 @@ fun IntermediatorProfileScreen(
 @Composable
 private fun Content(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<Announcement>,
+    noticeItem: List<AnnouncementHome>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -121,7 +121,7 @@ private fun Content(
 @Composable
 fun IntermediatorProfile(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<Announcement>,
+    noticeItem: List<AnnouncementHome>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -158,7 +158,7 @@ fun IntermediatorProfile(
 @Composable
 fun TabLayout(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<Announcement>,
+    noticeItem: List<AnnouncementHome>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -208,7 +208,7 @@ fun TabLayout(
 @Composable
 fun Information(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<Announcement>,
+    noticeItem: List<AnnouncementHome>,
     onDetailClick: (Long) -> Unit
 ) {
     Column(
@@ -249,7 +249,7 @@ fun IntermediatorInformation(intermediator: IntermediatorInfoResponseItem) {
 }
 
 @Composable
-fun Announcement(noticeItem: List<Announcement>, onDetailClick: (Long) -> Unit) {
+fun Announcement(noticeItem: List<AnnouncementHome>, onDetailClick: (Long) -> Unit) {
     val modifier = Modifier.padding(horizontal = 20.dp)
     Column {
         MoveContent(onClick = { }, titleRes = R.string.home_navigate_search)
@@ -283,11 +283,3 @@ fun News() {
     ) {
     }
 }
-
-// @Preview
-// @Composable
-// private fun test() {
-//    ConnectDogTheme {
-//        IntermediatorProfileScreen(intermediaryId = it.arguments!!.getLong("intermediaryId"))
-//    }
-// }

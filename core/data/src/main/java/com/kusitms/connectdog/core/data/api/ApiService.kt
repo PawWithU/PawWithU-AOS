@@ -2,6 +2,7 @@ package com.kusitms.connectdog.core.data.api
 
 import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
@@ -18,6 +19,7 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.ApplicationInProgres
 import com.kusitms.connectdog.core.data.api.model.volunteer.ApplicationWaitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.BadgeResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.BasicInformationResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationResponseItem
@@ -188,6 +190,12 @@ internal interface ApiService {
     suspend fun getAdditionalAuth(): AdditionalAuthBody
 
     /**
+     * 공고 신청
+     */
+    @GET("/volunteers/applications/my-info")
+    suspend fun getBasicInformation(): BasicInformationResponse
+
+    /**
      * 이동봉사자 > 공고 상세조회 > 중개자 프로필 조회
      */
     @GET("/volunteers/intermediaries/{intermediaryId}")
@@ -212,4 +220,12 @@ internal interface ApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<ReviewResponseItem>
+
+    /**
+     * fcm
+     */
+    @POST("/volunteers/fcm")
+    suspend fun postFcmToken(
+        @Body fcmToken: FcmTokenRequestBody
+    )
 }

@@ -1,22 +1,21 @@
 package com.kusitms.connectdog.feature.home.screen
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -25,8 +24,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,21 +41,26 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
+import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogReview
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
-import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.designsystem.component.ReviewType
+import com.kusitms.connectdog.core.designsystem.component.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
-import com.kusitms.connectdog.core.model.Announcement
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
+import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.feature.home.HomeViewModel
 import com.kusitms.connectdog.feature.home.R
@@ -84,7 +86,9 @@ internal fun HomeRoute(
         viewModel.errorFlow.collectLatest { throwable -> onShowErrorSnackBar(throwable) }
     }
 
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         TopAppBar(
             onClickSearch = onNavigateToFilterSearch,
             onNotificationClick = onNavigateToNotification
@@ -109,10 +113,8 @@ private fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(scrollState)
+        modifier = Modifier.verticalScroll(scrollState).fillMaxSize()
     ) {
-        TopTitle(modifier = Modifier.padding(20.dp))
-        StatisticBanner(modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp))
         BannerGuideline(onNavigateToSearch)
         MoveContent(onClick = { onNavigateToSearch() }, titleRes = R.string.home_navigate_search)
         AnnouncementContent(announcementUiState, onClick = onNavigateToDetail)
@@ -127,40 +129,74 @@ private fun TopAppBar(
     onClickSearch: () -> Unit,
     onNotificationClick: () -> Unit
 ) {
-    ConnectDogTopAppBar(
-        titleRes = null,
-        navigationType = TopAppBarNavigationType.HOME,
-        navigationIconContentDescription = "Navigation icon home",
-        actionButtons = {
-            IconButton(onClick = {
-                Log.d("SearchScreen", "clickSearchIcon")
-                onClickSearch()
-            }) {
-                Icon(
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Navigate to Search"
-                )
-            }
-            IconButton(onClick = {
-                onNotificationClick()
-            }) {
-                Icon(
-                    imageVector = Icons.Outlined.Notifications,
-                    contentDescription = "Navigate to Search"
-                )
-            }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 16.dp)
+    ) {
+        SearchBar(
+            onClick = onClickSearch,
+            modifier = Modifier.weight(1f)
+        )
+        Spacer(modifier = Modifier.width(20.dp))
+        IconButton(onClick = onNotificationClick) {
+            Icon(
+                imageVector = Icons.Outlined.Notifications,
+                contentDescription = "Navigate to Search"
+            )
         }
-    )
+    }
 }
 
 @Composable
-private fun TopTitle(modifier: Modifier) {
-    Text(
-        text = stringResource(id = R.string.home_description_title),
-        style = MaterialTheme.typography.titleMedium,
-        fontSize = 15.sp,
+private fun SearchBar(
+    onClick: () -> Unit,
+    modifier: Modifier
+) {
+    Box(
         modifier = modifier
-    )
+            .height(50.dp)
+            .border(
+                width = 1.dp,
+                color = Gray5,
+                shape = RoundedCornerShape(90.dp)
+            )
+            .clickable { onClick() },
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(start = 20.dp)
+                .size(24.dp),
+            imageVector = Icons.Filled.Search,
+            tint = Gray3,
+            contentDescription = "Navigate to Search"
+        )
+        Text(
+            modifier = Modifier.padding(start = 52.dp),
+            text = buildAnnotatedString {
+                withStyle(
+                    SpanStyle(
+                        color = Gray1,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                ) {
+                    append(stringResource(id = R.string.search_bar_title_1))
+                }
+                withStyle(
+                    SpanStyle(
+                        color = Gray3,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                ) {
+                    append(stringResource(id = R.string.search_bar_title_2))
+                }
+            },
+            lineHeight = 15.sp
+        )
+    }
 }
 
 @Composable
@@ -229,7 +265,7 @@ private fun StatisticInfoItem(
     descriptionRes: Int,
     painter: Painter
 ) {
-    Row() {
+    Row {
         Column(horizontalAlignment = Alignment.Start) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -258,44 +294,6 @@ private fun StatisticInfoItem(
 }
 
 @Composable
-private fun BannerGuideline(
-    onNavigateToReview: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = 52.dp)
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 20.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = stringResource(id = R.string.home_banner),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.background
-        )
-        Button(
-            onClick = onNavigateToReview,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier
-                .wrapContentSize()
-                .defaultMinSize(minHeight = 22.dp, minWidth = 96.dp)
-        ) {
-            Text(
-                text = stringResource(id = R.string.home_banner_button_guideline),
-                style = MaterialTheme.typography.titleMedium,
-                fontSize = 10.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
 fun MoveContent(
     onClick: () -> Unit,
     titleRes: Int
@@ -314,7 +312,7 @@ fun MoveContent(
         )
         IconButton(onClick = { onClick() }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_right_arrow),
+                painter = painterResource(id = com.kusitms.connectdog.core.designsystem.R.drawable.ic_right_arrow),
                 contentDescription = "move to another screen",
                 modifier = Modifier.size(24.dp),
                 tint = Gray2
@@ -329,7 +327,7 @@ private fun AnnouncementContent(uiState: AnnouncementUiState, onClick: (Long) ->
     when (uiState) {
         is AnnouncementUiState.Announcements -> {
             AnnouncementListContent(
-                list = uiState.announcements,
+                list = uiState.announcementHomes,
                 modifier = modifier,
                 arrangement = Arrangement.spacedBy(12.dp),
                 onClick = onClick
@@ -361,14 +359,14 @@ private fun ReviewContent(uiState: ReviewUiState) {
 
 @Composable
 fun AnnouncementListContent(
-    list: List<Announcement>,
+    list: List<AnnouncementHome>,
     modifier: Modifier,
     arrangement: Arrangement.Horizontal,
     onClick: (Long) -> Unit
 ) {
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list.take(10)) {
-            AnnouncementCardContent(announcement = it, onClick = { onClick(it.postId.toLong()) })
+            AnnouncementCardContent(announcementHome = it, onClick = { onClick(it.postId.toLong()) })
         }
     }
 }
@@ -379,11 +377,11 @@ fun AnnouncementLoading(
     arrangement: Arrangement.Horizontal
 ) {
     val list = List(4) {
-        Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1)
+        AnnouncementHome("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "", "")
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list) {
-            AnnouncementCardContent(announcement = it, onClick = {})
+            AnnouncementCardContent(announcementHome = it, onClick = {})
         }
     }
 }
@@ -408,11 +406,12 @@ private fun ReviewLoading(modifier: Modifier, arrangement: Arrangement.Horizonta
             profileNum = 0,
             dogName = "멍멍이",
             userName = "츄",
-            contentUrl = "",
             date = "23.10.19(목)",
             location = "서울 강남구 -> 서울 도봉구",
             organization = "단체이름",
-            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><"
+            content = "진짜 천사같은 아기와 하루를 함께해서 행복했습니다 너무 감사드려요 봉사 또 해야징 ><",
+            contentImages = null,
+            mainImage = ""
         )
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
@@ -424,7 +423,7 @@ private fun ReviewLoading(modifier: Modifier, arrangement: Arrangement.Horizonta
 
 @Composable
 private fun AnnouncementCardContent(
-    announcement: Announcement,
+    announcementHome: AnnouncementHome,
     onClick: () -> Unit = {}
 ) {
     Column(
@@ -434,25 +433,29 @@ private fun AnnouncementCardContent(
             .clickable { onClick() }
     ) {
         NetworkImage(
-            imageUrl = announcement.imageUrl,
+            imageUrl = announcementHome.imageUrl,
             placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer),
             modifier = Modifier
                 .size(150.dp)
                 .shadow(shape = RoundedCornerShape(12.dp), elevation = 1.dp)
         )
         Text(
-            text = announcement.location,
+            text = announcementHome.dogName,
             maxLines = 2,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 1.dp, top = 10.dp, bottom = 8.dp)
         )
-        AnnouncementContent(
-            date = announcement.date,
-            organization = announcement.organization,
-            hasKennel = announcement.hasKennel,
-            style = MaterialTheme.typography.labelMedium
+        Text(
+            text = announcementHome.location,
+            color = Gray3,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Normal
         )
+        Spacer(modifier = Modifier.height(8.dp))
+        TextWithIcon(text = announcementHome.date.substringBefore(" "), iconId = R.drawable.ic_clock)
+        Spacer(modifier = Modifier.height(5.dp))
+        TextWithIcon(text = announcementHome.pickUpTime, iconId = R.drawable.ic_clock)
     }
 }
 
@@ -465,7 +468,7 @@ private fun ReviewCardContent(
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
     ) {
-        ConnectDogReview(review = review, modifier = Modifier.width(272.dp))
+        ConnectDogReview(review = review, modifier = Modifier.width(272.dp), type = ReviewType.HOME)
     }
 }
 
@@ -486,19 +489,19 @@ private fun HomeScreenPreview() {
     }
 }
 
-@Preview
-@Composable
-private fun AnnouncementPreview() {
-    ConnectDogTheme {
-        AnnouncementCardContent(
-            announcement = Announcement(
-                "",
-                "서울시 강남구 -> 서울시 도봉구",
-                "23.10.19(수)",
-                "단체이름이름",
-                true,
-                -1
-            )
-        )
-    }
-}
+// @Preview
+// @Composable
+// private fun AnnouncementPreview() {
+//    ConnectDogTheme {
+//        AnnouncementCardContent(
+//            announcement = Announcement(
+//                "",
+//                "서울시 강남구 -> 서울시 도봉구",
+//                "23.10.19(수)",
+//                "단체이름이름",
+//                true,
+//                -1
+//            )
+//        )
+//    }
+// }

@@ -72,6 +72,7 @@ dependencies {
 
     implementation(libs.firebase.bom)
     implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.messaging)
     implementation(libs.google.service)
 
     implementation(libs.androidx.core.ktx)

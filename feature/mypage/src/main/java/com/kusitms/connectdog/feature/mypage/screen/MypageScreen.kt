@@ -37,10 +37,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.util.getProfileImageId
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
@@ -102,6 +104,8 @@ private fun MypageScreen(
 ) {
     LaunchedEffect(Unit) {
         viewModel.fetchUserInfo()
+        viewModel.fetchBadge()
+        viewModel.fetchBookmark()
     }
 
     Column {
@@ -111,11 +115,27 @@ private fun MypageScreen(
         Spacer(modifier = Modifier.height(20.dp))
         InformationBox()
         Spacer(modifier = Modifier.height(40.dp))
-        Text(text = "나의 이동봉사", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 20.dp))
+        BannerGuideline({})
         Spacer(modifier = Modifier.height(20.dp))
-        MypageTab(painter = R.drawable.ic_bookmark, title = "저장한 이동봉사 공고", onClick = onBookmarkClick)
+        Text(
+            text = "나의 이동봉사",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
         Spacer(modifier = Modifier.height(20.dp))
-        MypageTab(painter = R.drawable.ic_badge, title = "내 활동 배지", onClick = onBadgeClick)
+        MypageTab(
+            painter = R.drawable.ic_bookmark,
+            title = "저장한 이동봉사 공고",
+            onClick = onBookmarkClick,
+            count = viewModel.bookmark.value?.size
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        MypageTab(
+            painter = R.drawable.ic_badge,
+            title = "내 활동 배지",
+            onClick = onBadgeClick,
+            count = viewModel.badge.value?.size
+        )
     }
 }
 
@@ -124,7 +144,7 @@ private fun MyInformation(
     onEditProfileClick: () -> Unit,
     viewModel: MyPageViewModel
 ) {
-    val userInfo by viewModel.userInfo.observeAsState(null)
+    val userInfo by viewModel.myInfo.observeAsState(null)
 
     Row(
         modifier = Modifier
@@ -162,7 +182,8 @@ private fun MyInformation(
 private fun MypageTab(
     @DrawableRes painter: Int,
     title: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    count: Int?
 ) {
     Row(
         modifier = Modifier
@@ -181,8 +202,19 @@ private fun MypageTab(
             text = title,
             style = MaterialTheme.typography.bodyLarge
         )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = count?.toString() ?: "",
+            style = MaterialTheme.typography.bodyLarge,
+            color = PetOrange,
+            fontWeight = FontWeight.Medium
+        )
         Spacer(modifier = Modifier.weight(1f))
-        Icon(painter = painterResource(id = R.drawable.ic_right_arrow), contentDescription = null, modifier = Modifier.size(24.dp))
+        Icon(
+            painter = painterResource(id = R.drawable.ic_right_arrow),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp)
+        )
     }
 }
 
@@ -203,9 +235,10 @@ private fun InformationBox(
     ) {
         myInformation?.let {
             Row {
-                Information(it.completedCount, "진행한 이동봉사", Modifier.weight(1f))
-                Information(it.reviewCount, "봉사 후기", Modifier.weight(1f))
-                Information(it.dogStatusCount, "입양 근황", Modifier.weight(1f))
+                Information(it.waitingCount, "승인대기중", Modifier.weight(1f))
+                Information(it.progressingCount, "진행중", Modifier.weight(1f))
+                Information(it.completedCount, "완료", Modifier.weight(1f))
+                Information(it.reviewCount, "후기", Modifier.weight(1f))
             }
         }
     }
@@ -221,8 +254,20 @@ private fun Information(
         modifier = modifier.fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "${count}회", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally))
-        Text(text = title, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.align(Alignment.CenterHorizontally))
+        Text(
+            text = "${count}회",
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+        Text(
+            text = title,
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
     }
 }
 

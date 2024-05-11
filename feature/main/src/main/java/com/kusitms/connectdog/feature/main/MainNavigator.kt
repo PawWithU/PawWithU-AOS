@@ -13,7 +13,6 @@ import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.home.model.Filter
 import com.kusitms.connectdog.feature.home.navigation.HomeRoute
 import com.kusitms.connectdog.feature.home.navigation.navigateApply
-import com.kusitms.connectdog.feature.home.navigation.navigateCertification
 import com.kusitms.connectdog.feature.home.navigation.navigateComplete
 import com.kusitms.connectdog.feature.home.navigation.navigateDetail
 import com.kusitms.connectdog.feature.home.navigation.navigateFilter
@@ -28,8 +27,13 @@ import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterMana
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateIntermediatorHome
 import com.kusitms.connectdog.feature.login.LoginRoute
+import com.kusitms.connectdog.feature.login.navigateEmailSearch
+import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
+import com.kusitms.connectdog.feature.login.navigatePasswordSearch
+import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
 import com.kusitms.connectdog.feature.login.onLogoutClick
+import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBadge
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBookmark
@@ -45,6 +49,7 @@ import com.kusitms.connectdog.signup.navigateRegisterEmail
 import com.kusitms.connectdog.signup.navigateRegisterPassword
 import com.kusitms.connectdog.signup.navigateSelectProfileImage
 import com.kusitms.connectdog.signup.navigateSignup
+import com.kusitms.connectdog.signup.navigateToCertification
 import com.kusitms.connectdog.signup.navigateToIntermediatorProfile
 import com.kusitms.connectdog.signup.navigateToVolunteerProfile
 
@@ -88,6 +93,10 @@ internal class MainNavigator(
     // login navigator
     fun navigateNormalLogin(userType: UserType) = navController.navigateNormalLogin(userType)
     fun navigateSignup(userType: UserType) = navController.navigateSignup(userType)
+    fun navigateEmailSearch() = navController.navigateEmailSearch()
+    fun navigatePasswordSearch() = navController.navigatePasswordSearch()
+    fun navigateEmailSearchComplete() = navController.navigateEmailSearchComplete()
+    fun navigatePasswordSearchComplete() = navController.navigatePasswordSearchComplete()
     fun onLogoutClick() = navController.onLogoutClick()
 
     // signup navigator
@@ -98,6 +107,7 @@ internal class MainNavigator(
     fun navigateSelectProfileImage() = navController.navigateSelectProfileImage()
     fun navigateCompleteSignUp(userType: UserType) = navController.navigateCompleteSignUp(userType)
     fun navigateIntermediatorInformation() = navController.navigateIntermediatorInformation()
+    fun navigateCertification(userType: UserType) = navController.navigateToCertification(userType)
 
     // volunteer navigator
     fun navigateHome() = navigate(MainTab.HOME)
@@ -107,7 +117,6 @@ internal class MainNavigator(
     fun navigateHomeFilter(filter: Filter) = navController.navigateFilter(filter)
     fun navigateHomeReview() = navController.navigateReview()
     fun navigateHomeDetail(postId: Long) = navController.navigateDetail(postId)
-    fun navigateCertification(postId: Long) = navController.navigateCertification(postId)
     fun navigateApply(postId: Long) = navController.navigateApply(postId)
     fun navigateComplete() = navController.navigateComplete()
     fun navigateIntermediatorProfile(intermediaryId: Long) = navController.navigateIntermediatorProfile(intermediaryId)
@@ -118,6 +127,7 @@ internal class MainNavigator(
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
+    fun navigateCreateReview() = navController.navigateCreateReview()
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateIntermediatorHome()

@@ -35,10 +35,12 @@ internal fun ApplicationCompletedResponseItem.toData(): Application {
         imageUrl = mainImage,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        organization = intermediaryName,
+        organization = "asdf",
         hasKennel = isKennel,
         postId = postId,
         reviewId = reviewId,
-        dogStatusId = dogStatusId
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
 }

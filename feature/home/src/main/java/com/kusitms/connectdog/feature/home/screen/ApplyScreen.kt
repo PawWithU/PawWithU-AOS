@@ -21,12 +21,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -39,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
@@ -48,6 +49,7 @@ import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationTyp
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
+import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.designsystem.theme.Orange20
 import com.kusitms.connectdog.feature.home.ApplyViewModel
 
@@ -97,8 +99,11 @@ private fun Content(
                 interactionSource = interactionSource
             )
     ) {
+        LaunchedEffect(imeHeight) {
+            scrollState.animateScrollTo(scrollState.maxValue)
+        }
         Text(
-            text = "이동봉사 중개 측에 전달할\n정보를 입력해주세요",
+            text = "이동봉사 모집자에게\n전달할 정보를 입력해주세요",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )
@@ -107,82 +112,57 @@ private fun Content(
             viewModel.updateIsChecked()
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "성함을 입력해주세요",
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
-        )
-        Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
             text = viewModel.name,
             enabled = !isChecked,
             label = "이름",
             placeholder = "이름 입력",
             keyboardType = KeyboardType.Text,
-            onTextChanged = { viewModel.updateName(it) }
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-        Text(
-            text = "휴대폰 번호를 입력해주세요",
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
+            onTextChanged = { viewModel.updateName(it) },
+            isError = viewModel.isAvailableName == false
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
             enabled = !isChecked,
             text = viewModel.phoneNumber,
             label = "휴대폰 번호",
-            placeholder = "휴대폰 번호 입력",
+            placeholder = "\'-\' 빼고 입력",
             keyboardType = KeyboardType.Number,
             onTextChanged = { viewModel.updatePhoneNumber(it) }
         )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         NoticeCard()
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "어떤 교통 수단으로 이동봉사를 진행하나요?",
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp
+        Spacer(modifier = Modifier.height(32.dp))
+        Divider(
+            Modifier
+                .height(8.dp)
+                .fillMaxWidth(),
+            color = Gray7
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        ConnectDogTextField(
-            text = viewModel.transportation,
-            label = "교통수단",
-            placeholder = "예) 자차, 택시, KTX, 비행기 등",
-            keyboardType = KeyboardType.Text,
-            onTextChanged = { viewModel.updateTransportation(it) }
-        )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "봉사자의 한마디",
+            text = "전달 및 문의사항",
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
             text = viewModel.content,
-            label = "한마디 입력",
-            placeholder = "신청한 이유, 봉사 이력 등을 간단하게 작성해주세요!\n(10자 이상, 100자 이내로 입력해주세요)",
+            label = "",
+            placeholder = "모집자에게 전달 및 문의 필요한 사항이 있다면\n입력해주세요. ",
             keyboardType = KeyboardType.Text,
-            height = 160,
+            height = 180,
             onTextChanged = { viewModel.updateContent(it) }
         )
+        Spacer(modifier = Modifier.height(20.dp))
         ConnectDogNormalButton(
-            content = "완료",
+            content = "신청하기",
             onClick = {
-                viewModel.postApplyVolunteer(
-                    postId,
-                    ApplyBody(
-                        content = viewModel.content,
-                        name = viewModel.name,
-                        phone = viewModel.phoneNumber,
-                        transportation = viewModel.transportation
-                    )
-                )
+                viewModel.postApplyVolunteer(postId)
                 onClick()
             }
         )
-        Spacer(modifier = Modifier.height((imeHeight + 32).dp))
+        Spacer(modifier = Modifier.height((imeHeight + 20).dp))
     }
 }
 
@@ -196,12 +176,13 @@ fun NoticeCard() {
             .height(40.dp)
     ) {
         Text(
-            text = "이동봉사 중개 측에서 해당 휴대폰 번호로 연락드릴 예정입니다.",
+            text = "이동봉사 모집자 측에서 해당 휴대폰 번호로 연락드릴 예정입니다.",
             color = Gray2,
-            fontSize = 13.sp,
+            fontSize = 12.sp,
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center)
+                .padding(horizontal = 16.dp)
         )
     }
 }

@@ -65,11 +65,16 @@ internal fun MainScreen(
                     startDestination = navigator.startDestination
                 ) {
                     loginNavGraph(
+                        imeHeight = imeHeight,
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onNavigateToNormalLogin = { navigator.navigateNormalLogin(it) },
                         onNavigateToVolunteer = { navigator.navigateHome() },
                         onNavigateToIntermediatorHome = { navigator.navigateIntermediatorHome() },
-                        onNavigateToSignup = { navigator.navigateSignup(it) }
+                        onNavigateToSignup = { navigator.navigateSignup(it) },
+                        onNavigateToEmailSearch = { navigator.navigateEmailSearch() },
+                        onNavigateToPasswordSearch = { navigator.navigatePasswordSearch() },
+                        onNavigateToEmailSearchComplete = { navigator.navigateEmailSearchComplete() },
+                        onNavigateToPasswordSearchComplete = { navigator.navigatePasswordSearchComplete() }
                     )
                     signUpGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -84,7 +89,10 @@ internal fun MainScreen(
                         navigateToIntermediator = { navigator.navigateManageAccount() },
                         imeHeight = imeHeight,
                         signUpViewModel = signUpViewModel,
-                        profileViewModel = profileViewModel
+                        profileViewModel = profileViewModel,
+                        navigateToCertification = { navigator.navigateCertification(it) },
+                        onSendMessage = { sendVerificationCode(it) },
+                        onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } }
                     )
                     homeNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -94,7 +102,6 @@ internal fun MainScreen(
                         onNavigateToFilter = { navigator.navigateHomeFilter(it) },
                         onNavigateToReview = { navigator.navigateHomeReview() },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
-                        onNavigateToCertification = { navigator.navigateCertification(it) },
                         onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToComplete = { navigator.navigateComplete() },
                         onNavigateToIntermediatorProfile = {
@@ -108,7 +115,8 @@ internal fun MainScreen(
                     )
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onShowErrorSnackbar = {}
+                        onShowErrorSnackbar = {},
+                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
                     )
                     mypageNavGraph(
                         padding = it,
@@ -122,9 +130,13 @@ internal fun MainScreen(
                         onBookmarkClick = { navigator.navigateBookmark() },
                         onEditProfileImageClick = { navigator.navigateEditProfileImage() },
                         editProfileViewModel = editProfileViewModel,
-                        onNavigateToCertification = { navigator.navigateCertification(it) },
+                        onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
-                        onNavigateToIntermediatorProfile = { navigator.navigateIntermediatorProfile(it) },
+                        onNavigateToIntermediatorProfile = {
+                            navigator.navigateIntermediatorProfile(
+                                it
+                            )
+                        },
                         onShowErrorSnackbar = {}
                     )
                     intermediatorNavGraph(

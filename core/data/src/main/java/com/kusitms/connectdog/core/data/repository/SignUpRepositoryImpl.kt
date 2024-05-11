@@ -21,7 +21,7 @@ internal class SignUpRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postNormalVolunteerSignUp(signUp: NormalVolunteerSignUpBody) {
-        return api.postNormalVolunteerSignUp(signUp)
+        api.postNormalVolunteerSignUp(signUp)
     }
 
     override suspend fun postSocialVolunteerSignUp(signUp: SocialVolunteerSignUpBody) {

@@ -3,6 +3,7 @@ package com.kusitms.connectdog.feature.home.screen
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,10 +12,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,7 +27,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,11 +54,14 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponse
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationCard
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTag
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogTagWithIcon
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.DetailInfo
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
+import com.kusitms.connectdog.core.designsystem.component.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
+import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
@@ -64,7 +74,7 @@ private const val TAG = "DetailScreen"
 @Composable
 fun DetailScreen(
     onBackClick: () -> Unit,
-    onCertificationClick: (Long) -> Unit,
+    onApplyClick: (Long) -> Unit,
     onIntermediatorProfileClick: (Long) -> Unit,
     postId: Long,
     viewModel: DetailViewModel = hiltViewModel()
@@ -89,7 +99,7 @@ fun DetailScreen(
                         isBookmark = it,
                         onSaveClick = { viewModel.postBookmark(postId) },
                         onDeleteClick = { viewModel.deleteBookmark(postId) },
-                        onClick = { onCertificationClick(postId) }
+                        onClick = { onApplyClick(postId) }
                     )
                 }
         }
@@ -106,9 +116,10 @@ fun DetailScreen(
                         .fillMaxWidth()
                         .height(250.dp)
                 )
-                Content(detail!!)
-                DogInfo(detail!!)
-                IntermediatorInfo(detail!!, onIntermediatorProfileClick)
+                Content(
+                    detail = detail!!,
+                    onIntermediatorProfileClick = onIntermediatorProfileClick
+                )
             }
         }
     }
@@ -178,46 +189,153 @@ fun BookmarkButton(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Content(detail: NoticeDetailResponseItem) {
+fun Content(
+    detail: NoticeDetailResponseItem,
+    onIntermediatorProfileClick: (Long) -> Unit
+) {
+    val tabItems = listOf(
+        "이동봉사 정보",
+        "동물 정보",
+        "모집자 정보"
+    )
+
+    var selectedTabIndex by remember {
+        mutableIntStateOf(0)
+    }
+    val pagerState = rememberPagerState {
+        tabItems.size
+    }
+    LaunchedEffect(selectedTabIndex) {
+        pagerState.animateScrollToPage(selectedTabIndex)
+    }
+    LaunchedEffect(pagerState.currentPage) {
+        selectedTabIndex = pagerState.currentPage
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
+    ) {
+        BasicInfo(detail = detail)
+        Divider(
+            Modifier
+                .height(8.dp)
+                .fillMaxWidth(),
+            color = Gray7
+        )
+        TabRow(selectedTabIndex = selectedTabIndex) {
+            tabItems.forEachIndexed { index, title ->
+                Tab(
+                    selected = index == selectedTabIndex,
+                    onClick = {
+                        selectedTabIndex = index
+                    },
+                    text = {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.titleSmall,
+                            fontSize = 14.sp,
+                            color = if (index == selectedTabIndex) MaterialTheme.colorScheme.primary else Gray2
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.Top
+        ) { index ->
+            when (index) {
+                0 -> VolunteerInfo(detail = detail)
+                1 -> DogInfo(detail = detail)
+                2 -> IntermediatorInfo(detail = detail, onClick = onIntermediatorProfileClick)
+            }
+        }
+    }
+}
+
+@Composable
+private fun BasicInfo(
+    detail: NoticeDetailResponseItem
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
             .padding(all = 24.dp)
     ) {
-        ConnectDogTag(detail.postStatus)
-        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = detail.dogName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            ConnectDogTag(detail.postStatus)
+        }
+        Spacer(modifier = Modifier.height(6.dp))
         Text(
             text = "${detail.departureLoc} → ${detail.arrivalLoc}",
+            fontSize = 12.sp,
+            color = Gray3
+        )
+        Spacer(modifier = Modifier.height(6.dp))
+        TextWithIcon(iconId = R.drawable.ic_clock, text = detail.startDate, size = 14)
+        Spacer(modifier = Modifier.height(8.dp))
+        TextWithIcon(iconId = R.drawable.ic_clock, text = detail.pickUpTime, size = 14)
+        Spacer(modifier = Modifier.height(17.dp))
+        Row {
+            ConnectDogTagWithIcon(
+                iconId = R.drawable.ic_dog_size,
+                backgroundColor = Gray7,
+                contentColor = Gray3,
+                text = detail.dogSize
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            ConnectDogTagWithIcon(
+                iconId = R.drawable.ic_kennel,
+                backgroundColor = Gray7,
+                contentColor = Gray3,
+                text = if (detail.isKennel) {
+                    stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_kennel)
+                } else {
+                    stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_not_kennel)
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun VolunteerInfo(detail: NoticeDetailResponseItem) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 137.dp)
+    ) {
+        Text(
+            text = "이동봉사 정보",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )
         Spacer(modifier = Modifier.height(20.dp))
-        DetailInfo("일정", "${detail.startDate} ~ ${detail.endDate}")
+        DetailInfo("출발지", "${detail.departureLoc}")
         Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("픽업시간", detail.pickUpTime)
+        DetailInfo("도착지", "${detail.arrivalLoc}")
         Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo(
-            "켄넬 여부",
-            if (detail.isKennel) {
-                stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_kennel)
-            } else {
-                stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_not_kennel)
-            }
-        )
+        DetailInfo("픽업 일시", detail.pickUpTime)
+        Spacer(modifier = Modifier.height(8.dp))
         Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = detail.content,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Normal
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Normal,
+            lineHeight = 22.sp
         )
     }
-    Divider(
-        Modifier
-            .height(8.dp)
-            .fillMaxWidth(),
-        color = Gray7
-    )
 }
 
 @Composable
@@ -225,7 +343,7 @@ fun DogInfo(detail: NoticeDetailResponseItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 24.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 137.dp)
     ) {
         Text(
             text = "강아지 정보",
@@ -235,11 +353,7 @@ fun DogInfo(detail: NoticeDetailResponseItem) {
         Spacer(modifier = Modifier.height(20.dp))
         DetailInfo("이름", detail.dogName)
         Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("사이즈", detail.dogSize)
-        Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("성별", detail.dogGender)
-        Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("몸무게", "${detail.dogWeight}kg")
+        DetailInfo("동물 크기", detail.dogSize)
         Spacer(modifier = Modifier.height(20.dp))
         ConnectDogInformationCard(title = "특이사항", content = detail.specifics ?: "없습니다.")
     }
@@ -259,7 +373,7 @@ fun IntermediatorInfo(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 112.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 24.dp, bottom = 137.dp)
     ) {
         Text(
             text = "이동봉사 중개",
@@ -341,7 +455,7 @@ fun ProfileButton(onClick: () -> Unit = {}, modifier: Modifier) {
             text = "프로필 바로가기",
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
-            color = Gray2 // Set the text color here
+            color = Gray2
         )
     }
 }
