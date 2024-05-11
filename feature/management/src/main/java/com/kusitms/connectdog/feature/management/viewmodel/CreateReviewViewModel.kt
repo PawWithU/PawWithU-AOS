@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.management
+package com.kusitms.connectdog.feature.management.viewmodel
 
 import android.net.Uri
 import androidx.compose.runtime.MutableState

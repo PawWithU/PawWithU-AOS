@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.management
+package com.kusitms.connectdog.feature.management.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.padding
@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -18,42 +17,40 @@ import com.kusitms.connectdog.core.designsystem.component.ApplicationBottomSheet
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogAlertDialog
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.model.Application
+import com.kusitms.connectdog.core.model.Volunteer
+import com.kusitms.connectdog.feature.management.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MyApplicationBottomSheet(
     application: Application,
     sheetState: SheetState,
+    volunteer: Volunteer,
     onDismissRequest: () -> Unit,
-    viewModel: ManagementViewModel
+    onDeleteClick: (Long) -> Unit
 ) {
-    val volunteer by viewModel.volunteerResponse.observeAsState(null)
-    application.applicationId?.let { id -> viewModel.getMyApplication(id) }
-
     var isCancelDialogVisible by remember { mutableStateOf(false) }
 
-    volunteer?.let {
-        ApplicationBottomSheet(
-            titleRes = R.string.check_my_appliance,
-            application = application,
-            volunteer = it,
-            sheetState = sheetState,
-            onDismissRequest = onDismissRequest
-        ) {
-            ConnectDogBottomButton(
-                onClick = { isCancelDialogVisible = true },
-                content = stringResource(id = R.string.cancel_appliance),
-                textColor = MaterialTheme.colorScheme.error,
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.error),
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 52.dp)
-            )
-        }
+    ApplicationBottomSheet(
+        titleRes = R.string.check_my_appliance,
+        application = application,
+        volunteer = volunteer,
+        sheetState = sheetState,
+        onDismissRequest = onDismissRequest
+    ) {
+        ConnectDogBottomButton(
+            onClick = { isCancelDialogVisible = true },
+            content = stringResource(id = R.string.cancel_appliance),
+            textColor = MaterialTheme.colorScheme.error,
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.error),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 52.dp)
+        )
     }
 
     if (isCancelDialogVisible) {
         CancelDialog(onDismiss = { isCancelDialogVisible = false }) {
-            viewModel.deleteMyApplication(application.applicationId!!)
+            onDeleteClick(application.applicationId!!)
             onDismissRequest()
         }
     }
