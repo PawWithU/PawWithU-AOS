@@ -4,7 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.kusitms.connectdog.feature.management.ManagementRoute
+import com.kusitms.connectdog.feature.management.screen.CreateReviewScreen
+import com.kusitms.connectdog.feature.management.screen.ManagementRoute
 
 fun NavController.navigateManagement(navOptions: NavOptions) {
     navigate(ManagementRoute.route, navOptions)
