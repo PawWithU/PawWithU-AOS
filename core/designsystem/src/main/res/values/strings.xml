@@ -23,7 +23,7 @@
     <string name="name">이름</string>
     <string name="phone">전화번호</string>
     <string name="vehicle">이동봉사 수단</string>
-    <string name="volunteer_comment">봉사자의 한마디</string>
+    <string name="inquiry">전달 및 문의사항</string>
     <string name="login_error">아이디 혹은 비밀번호가 일치하지 않습니다</string>
     <string name="volunteer_login">이동봉사자 로그인</string>
     <string name="intermediator_login">이동봉사 중개 회원 로그인</string>
