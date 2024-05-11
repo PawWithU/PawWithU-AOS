@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.management
+package com.kusitms.connectdog.feature.management.screen
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +47,6 @@ import com.kusitms.connectdog.core.designsystem.component.AnnouncementItem
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogSecondaryButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
-import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.component.UiState
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
@@ -57,9 +55,13 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.Application
+import com.kusitms.connectdog.feature.management.R
+import com.kusitms.connectdog.feature.management.component.MyApplicationBottomSheet
+import com.kusitms.connectdog.feature.management.state.ApplicationUiState
+import com.kusitms.connectdog.feature.management.viewmodel.ManagementViewModel
 import kotlinx.coroutines.launch
 
-val TAG = "ManagementScreen"
+private const val TAG = "ManagementScreen"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +77,10 @@ internal fun ManagementRoute(
     val inProgressUiState by viewModel.progressUiState.collectAsStateWithLifecycle()
     val completedUiState by viewModel.completedUiState.collectAsStateWithLifecycle()
 
-    val sheetState = rememberModalBottomSheetState()
+    val volunteer by viewModel.volunteer.collectAsStateWithLifecycle()
+    val selectedApplication by viewModel.selectedApplication.collectAsStateWithLifecycle()
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
     val deleteDataState by viewModel.deleteDataUiState.collectAsState()
@@ -93,7 +98,8 @@ internal fun ManagementRoute(
         ManagementScreen(
             firstContent = {
                 PendingApproval(pendingUiState) { application ->
-                    viewModel.selectedApplication = application
+                    viewModel.getVolunteerInfo(application.applicationId!!)
+                    viewModel.updateSelectedApplication(application)
                     isSheetOpen = true
                 }
             },
@@ -102,12 +108,13 @@ internal fun ManagementRoute(
         )
     }
 
-    if (isSheetOpen && viewModel.selectedApplication != null) {
+    if (isSheetOpen && volunteer != null && selectedApplication != null) {
         MyApplicationBottomSheet(
-            application = viewModel.selectedApplication!!,
             sheetState = sheetState,
+            application = selectedApplication!!,
+            volunteer = volunteer!!,
             onDismissRequest = { isSheetOpen = false },
-            viewModel = viewModel
+            onDeleteClick = viewModel::deleteMyApplication
         )
     }
 }
@@ -177,11 +184,17 @@ private fun PendingApproval(
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
-            LazyColumn(verticalArrangement = Arrangement.Top) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp)
+            ) {
                 items(uiState.applications) {
-                    PendingContent(application = it) { onClick(it) }
+                    PendingContent(application = it, onClick = onClick)
                 }
             }
+            Spacer(modifier = Modifier.height(80.dp))
         }
 
         is ApplicationUiState.Empty -> {
@@ -220,7 +233,10 @@ private fun Completed(
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
-            LazyColumn(verticalArrangement = Arrangement.Top) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxSize()
+            ) {
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
@@ -239,37 +255,45 @@ private fun Completed(
 }
 
 @Composable
-private fun PendingContent(application: Application, onClick: () -> Unit) {
+private fun PendingContent(application: Application, onClick: (Application) -> Unit) {
     Column(
         modifier = Modifier
-            .padding(20.dp)
             .fillMaxWidth()
-            .wrapContentSize()
+            .wrapContentHeight()
     ) {
-        ListForUserItem(
-            imageUrl = application.imageUrl,
-            location = application.location,
-            date = application.date,
-            organization = application.organization,
-            hasKennel = application.hasKennel
-        )
-        OutlinedButton(modifier = Modifier.padding(top = 20.dp)) {
-            onClick()
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Top
+        ) {
+            AnnouncementItem(
+                imageUrl = application.imageUrl,
+                dogName = application.dogName!!,
+                location = application.location,
+                isKennel = application.hasKennel,
+                dogSize = application.dogSize!!,
+                date = application.date,
+                pickUpTime = application.pickUpTime!!
+            )
+            OutlinedButton(modifier = Modifier.padding(top = 20.dp)) {
+                onClick(application)
+            }
         }
+        Divider(thickness = 8.dp, color = Gray7)
     }
-    Divider(thickness = 8.dp, color = Gray7)
 }
 
 @Composable
 private fun InProgressContent(application: Application) {
-    ListForUserItem(
-        modifier = Modifier.padding(20.dp),
-        imageUrl = application.imageUrl,
-        location = application.location,
-        date = application.date,
-        organization = application.organization,
-        hasKennel = application.hasKennel
-    )
+//    ListForUserItem(
+//        modifier = Modifier.padding(20.dp),
+//        imageUrl = application.imageUrl,
+//        location = application.location,
+//        date = application.date,
+//        organization = application.organization,
+//        hasKennel = application.hasKennel
+//    )
     Divider(thickness = 8.dp, color = Gray7)
 }
 
@@ -284,7 +308,9 @@ private fun CompletedContent(
             .wrapContentHeight()
     ) {
         Column(
-            modifier = Modifier.padding(20.dp).fillMaxSize(),
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Top
         ) {
             AnnouncementItem(
