@@ -4,9 +4,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class VolunteerResponse(
-    val content: String,
-    val id: Long,
+    val volunteerName: String,
     val phone: String,
-    val transportation: String,
-    val volunteerName: String
+    val createdDate: String,
+    val content: String,
+    val id: Long
 )
