@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.intermediator
+package com.kusitms.connectdog.feature.intermediator.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -9,6 +9,7 @@ import com.kusitms.connectdog.core.data.repository.InterManagementRepository
 import com.kusitms.connectdog.core.model.DataUiState
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.model.Volunteer
+import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
