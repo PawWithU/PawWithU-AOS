@@ -1,14 +1,14 @@
-package com.kusitms.connectdog.feature.management
+package com.kusitms.connectdog.feature.management.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.repository.ManagementRepository
 import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.core.model.DataUiState
 import com.kusitms.connectdog.core.model.Volunteer
+import com.kusitms.connectdog.feature.management.state.ApplicationConfirmUiState
+import com.kusitms.connectdog.feature.management.state.ApplicationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,17 +41,14 @@ class ManagementViewModel @Inject constructor(
     val completedUiState: StateFlow<ApplicationUiState> =
         createUiStateFlow { managementRepository.getApplicationCompleted() }
 
-    private val _volunteerResponse = MutableLiveData<Volunteer>()
-    val volunteerResponse: LiveData<Volunteer> get() = _volunteerResponse
+    private val _volunteer = MutableStateFlow<Volunteer?>(null)
+    val volunteer: StateFlow<Volunteer?> get() = _volunteer
 
-    var selectedApplication: Application? = null
+    private val _selectedApplication = MutableStateFlow<Application?>(null)
+    val selectedApplication: StateFlow<Application?> get() = _selectedApplication
 
     private val _deleteDataState = MutableStateFlow<DataUiState>(DataUiState.Yet)
     val deleteDataUiState = _deleteDataState.asStateFlow()
-
-    init {
-        refreshWaitingApplications()
-    }
 
     fun refreshWaitingApplications() {
         viewModelScope.launch {
@@ -69,10 +66,14 @@ class ManagementViewModel @Inject constructor(
         }
     }
 
-    fun getMyApplication(applicationId: Long) {
+    fun updateSelectedApplication(application: Application) {
+        _selectedApplication.value = application
+    }
+
+    fun getVolunteerInfo(applicationId: Long) {
         viewModelScope.launch {
             try {
-                _volunteerResponse.value = managementRepository.getMyApplication(applicationId)
+                _volunteer.value = managementRepository.getMyApplication(applicationId)
             } catch (e: Exception) {
                 Log.e(TAG, "getMyApplication ${e.stackTrace}")
             }
@@ -90,6 +91,23 @@ class ManagementViewModel @Inject constructor(
             }
         }
     }
+
+    private fun createUiStateFlow(
+        selectedApplication: () -> Application,
+        getVolunteer: suspend (Long) -> Volunteer
+    ): StateFlow<ApplicationConfirmUiState> =
+        flow<ApplicationConfirmUiState> {
+            val application = selectedApplication()
+            val volunteer = getVolunteer(application.applicationId!!)
+            emit(ApplicationConfirmUiState.ApplicationConfirm(application, volunteer))
+        }.catch {
+            _errorFlow.emit(it)
+            Log.e("InterManagementViewModel", "${it.message}")
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ApplicationConfirmUiState.Loading
+        )
 
     private fun createUiStateFlow(getApplication: suspend () -> List<Application>): StateFlow<ApplicationUiState> =
         flow {

@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.management
+package com.kusitms.connectdog.feature.management.state
 
 import com.kusitms.connectdog.core.model.Application
 
