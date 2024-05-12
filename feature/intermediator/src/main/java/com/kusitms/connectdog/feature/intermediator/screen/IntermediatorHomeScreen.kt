@@ -1,7 +1,6 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -59,8 +58,8 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Typography
 import com.kusitms.connectdog.core.model.IntermediatorManage
-import com.kusitms.connectdog.feature.intermediator.viewmodel.InterHomeViewModel
 import com.kusitms.connectdog.feature.intermediator.R
+import com.kusitms.connectdog.feature.intermediator.viewmodel.InterHomeViewModel
 
 val imageList = listOf(
     R.drawable.ic_recruit,
@@ -155,7 +154,7 @@ private fun ProfileCard(
             .fillMaxWidth()
             .height(178.dp)
             .background(MaterialTheme.colorScheme.primary)
-            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)),
+            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
     ) {
         Row(
             modifier = Modifier
@@ -234,7 +233,8 @@ private fun ManageBoard(
                 fontSize = 18.sp
             )
             Text(
-                text = if (list.all { it.value != null }) { list.sumOf { it.value!! }.toString()
+                text = if (list.all { it.value != null }) {
+                    list.sumOf { it.value!! }.toString()
                 } else {
                     ""
                 } + "건",
