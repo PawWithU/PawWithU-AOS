@@ -144,7 +144,8 @@ internal fun MainScreen(
                         onSettingClick = { navigator.navigateSetting() },
                         onNotificationClick = { navigator.navigateNotification() },
                         onManagementClick = { navigator.navigateInterManagement(it) },
-                        onProfileClick = { navigator.navigateInterProfile() }
+                        onProfileClick = { navigator.navigateInterProfile() },
+                        onNavigateToCreateAnnouncementScreen = { navigator.navigateCreateAnnouncement() }
                     )
                 }
             }
