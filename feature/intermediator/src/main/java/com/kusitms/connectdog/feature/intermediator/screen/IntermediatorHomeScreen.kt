@@ -1,7 +1,6 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
@@ -22,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -39,6 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -56,8 +57,9 @@ import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Typography
-import com.kusitms.connectdog.feature.intermediator.InterHomeViewModel
+import com.kusitms.connectdog.core.model.IntermediatorManage
 import com.kusitms.connectdog.feature.intermediator.R
+import com.kusitms.connectdog.feature.intermediator.viewmodel.InterHomeViewModel
 
 val imageList = listOf(
     R.drawable.ic_recruit,
@@ -73,12 +75,6 @@ internal val titleList = listOf(
     R.string.complete
 )
 
-internal data class CardItem(
-    @DrawableRes val image: Int,
-    @StringRes val title: Int,
-    val value: Int
-)
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun IntermediatorHomeScreen(
@@ -86,6 +82,7 @@ fun IntermediatorHomeScreen(
     onSettingClick: () -> Unit,
     onManageClick: (Int) -> Unit,
     onProfileClick: () -> Unit,
+    onNavigateToCreateAnnouncementScreen: () -> Unit,
     viewModel: InterHomeViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
@@ -102,7 +99,8 @@ fun IntermediatorHomeScreen(
         Content(
             viewModel = viewModel,
             onManageClick = onManageClick,
-            onProfileClick = onProfileClick
+            navigateToProfile = onProfileClick,
+            navigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen
         )
     }
 }
@@ -110,7 +108,8 @@ fun IntermediatorHomeScreen(
 @Composable
 private fun Content(
     viewModel: InterHomeViewModel,
-    onProfileClick: () -> Unit,
+    navigateToCreateAnnouncementScreen: () -> Unit,
+    navigateToProfile: () -> Unit,
     onManageClick: (Int) -> Unit
 ) {
     val recruitingCount = viewModel.recruitingCount.collectAsState()
@@ -123,21 +122,24 @@ private fun Content(
         progressingCount.value,
         completedCount.value
     )
+
     val list = cnt.mapIndexedNotNull { index, value ->
-        value?.let {
-            CardItem(
-                image = imageList[index],
-                title = titleList[index],
-                value = value
-            )
-        }
+        IntermediatorManage(
+            image = imageList[index],
+            title = titleList[index],
+            value = value
+        )
     }
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
         Spacer(modifier = Modifier.height(48.dp))
-        ProfileCard(viewModel, onProfileClick)
-        ManageBoard(list) { onManageClick(it) }
+        ProfileCard(viewModel, navigateToProfile)
+        ManageBoard(
+            list = list,
+            onClick = onManageClick,
+            onNavigateToCreateAnnouncementScreen = navigateToCreateAnnouncementScreen
+        )
     }
 }
 
@@ -150,8 +152,9 @@ private fun ProfileCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(172.dp)
+            .height(178.dp)
             .background(MaterialTheme.colorScheme.primary)
+            .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
     ) {
         Row(
             modifier = Modifier
@@ -212,8 +215,9 @@ private fun ProfileCard(
 
 @Composable
 private fun ManageBoard(
-    list: List<CardItem>,
-    onClick: (Int) -> Unit
+    list: List<IntermediatorManage>,
+    onClick: (Int) -> Unit,
+    onNavigateToCreateAnnouncementScreen: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -229,7 +233,11 @@ private fun ManageBoard(
                 fontSize = 18.sp
             )
             Text(
-                text = "${list.sumOf { it.value }}건",
+                text = if (list.all { it.value != null }) {
+                    list.sumOf { it.value!! }.toString()
+                } else {
+                    ""
+                } + "건",
                 modifier = Modifier.padding(start = 5.dp),
                 style = MaterialTheme.typography.titleLarge,
                 color = PetOrange,
@@ -249,7 +257,7 @@ private fun ManageBoard(
                 ManageCard(
                     title = item.title,
                     painter = item.image,
-                    value = item.value
+                    value = if (item.value != null) item.value.toString() else ""
                 ) { onClick(index) }
             }
         }
@@ -258,7 +266,7 @@ private fun ManageBoard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            ApplyButton(onClick = {})
+            ApplyButton(onClick = onNavigateToCreateAnnouncementScreen)
         }
     }
 }
@@ -267,11 +275,9 @@ private fun ManageBoard(
 private fun ApplyButton(onClick: () -> Unit) {
     val context = LocalContext.current
     Button(
-        onClick = { Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show() },
+        onClick = onClick,
         shape = RoundedCornerShape(12.dp),
-        modifier = Modifier
-            .width(117.dp)
-            .height(44.dp),
+        modifier = Modifier.wrapContentSize(),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White
@@ -287,7 +293,8 @@ private fun ApplyButton(onClick: () -> Unit) {
             text = "공고 등록하기",
             color = Color.White,
             style = Typography.titleSmall,
-            fontSize = 12.sp
+            fontSize = 12.sp,
+            modifier = Modifier.padding(vertical = 15.dp)
         )
     }
 }
@@ -296,7 +303,7 @@ private fun ApplyButton(onClick: () -> Unit) {
 private fun ManageCard(
     @StringRes title: Int,
     @DrawableRes painter: Int,
-    value: Int,
+    value: String,
     onClick: () -> Unit
 ) {
     Card(
@@ -305,7 +312,7 @@ private fun ManageCard(
             containerColor = Color.White
         ),
         modifier = Modifier
-            .size(width = 150.dp, height = 180.dp)
+            .size(width = 150.dp, height = 190.dp)
             .clickable { onClick() }
     ) {
         Column(

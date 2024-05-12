@@ -41,7 +41,6 @@ import com.kusitms.connectdog.core.designsystem.component.UiState
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
-import com.kusitms.connectdog.feature.intermediator.InterManagementViewModel
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.component.CompletedContent
 import com.kusitms.connectdog.feature.intermediator.component.CompletedDialog
@@ -49,6 +48,7 @@ import com.kusitms.connectdog.feature.intermediator.component.InProgressContent
 import com.kusitms.connectdog.feature.intermediator.component.PendingContent
 import com.kusitms.connectdog.feature.intermediator.component.RecruitingContent
 import com.kusitms.connectdog.feature.intermediator.component.VolunteerBottomSheet
+import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
