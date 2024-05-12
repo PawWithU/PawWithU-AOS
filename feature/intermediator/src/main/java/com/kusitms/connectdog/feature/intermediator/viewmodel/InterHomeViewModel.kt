@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.intermediator
+package com.kusitms.connectdog.feature.intermediator.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
