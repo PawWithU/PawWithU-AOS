@@ -22,7 +22,7 @@ import com.kusitms.connectdog.core.designsystem.component.InterApplicationBottom
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray6
 import com.kusitms.connectdog.core.model.InterApplication
-import com.kusitms.connectdog.feature.intermediator.InterManagementViewModel
+import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementViewModel
 import com.kusitms.connectdog.feature.intermediator.R
 
 @OptIn(ExperimentalMaterial3Api::class)
