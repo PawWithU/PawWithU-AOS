@@ -61,14 +61,14 @@ import com.kusitms.connectdog.core.model.IntermediatorManage
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.viewmodel.InterHomeViewModel
 
-val imageList = listOf(
+private val imageList = listOf(
     R.drawable.ic_recruit,
     R.drawable.ic_waiting,
     R.drawable.ic_progress,
     R.drawable.ic_complete
 )
 
-internal val titleList = listOf(
+private val titleList = listOf(
     R.string.recruit,
     R.string.waiting,
     R.string.progress,
@@ -77,7 +77,7 @@ internal val titleList = listOf(
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun IntermediatorHomeScreen(
+fun InterHomeScreen(
     onNotificationClick: () -> Unit,
     onSettingClick: () -> Unit,
     onManageClick: (Int) -> Unit,
@@ -100,7 +100,7 @@ fun IntermediatorHomeScreen(
             viewModel = viewModel,
             onManageClick = onManageClick,
             navigateToProfile = onProfileClick,
-            navigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen
+            navigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen,
         )
     }
 }
@@ -153,8 +153,8 @@ private fun ProfileCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(178.dp)
-            .background(MaterialTheme.colorScheme.primary)
             .clip(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         Row(
             modifier = Modifier
