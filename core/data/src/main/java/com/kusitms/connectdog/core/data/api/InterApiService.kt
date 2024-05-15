@@ -1,11 +1,14 @@
 package com.kusitms.connectdog.core.data.api
 
 import com.kusitms.connectdog.core.data.api.model.Response
+import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationCompletedResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationInProgressResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationRecruitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationWaitingResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -63,4 +66,22 @@ internal interface InterApiService {
     suspend fun patchApplicationCompleted(
         @Path("applicationId") applicationId: Long
     ): Response
+
+    /**
+     * 이동봉사 모집자 프로필
+     * */
+    @GET("/intermediaries/my/info")
+    suspend fun getIntermediatorInfo(): InterProfileInfoResponse
+
+    @GET("/intermediaries/my/reviews")
+    suspend fun getIntermediatorReview(
+        @Query("page") page: Int?,
+        @Query("size") size: Int?
+    ): List<ReviewResponseItem>
+
+    @GET("/intermediaries/posts/recruiting")
+    suspend fun getFindingApplication(
+        @Query("page") page: Int?,
+        @Query("size") size: Int?
+    ): List<InterProfileFindingResponseItem>
 }

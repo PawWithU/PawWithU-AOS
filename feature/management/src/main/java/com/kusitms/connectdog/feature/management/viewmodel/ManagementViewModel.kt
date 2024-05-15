@@ -29,6 +29,10 @@ class ManagementViewModel @Inject constructor(
 ) : ViewModel() {
     private val TAG = "ManagementViewModel"
 
+    init {
+        refreshWaitingApplications()
+    }
+
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 

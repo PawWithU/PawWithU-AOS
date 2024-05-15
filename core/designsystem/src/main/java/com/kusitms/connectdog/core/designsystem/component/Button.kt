@@ -26,26 +26,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.designsystem.theme.Orange_40
 import com.kusitms.connectdog.core.designsystem.theme.Typography
 
 @Composable
 fun ConnectDogBottomButton(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary,
+    enabledColor: Color = MaterialTheme.colorScheme.primary,
+    disabledColor: Color = Orange_40,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
     border: BorderStroke = BorderStroke(width = 0.dp, color = MaterialTheme.colorScheme.outline),
     onClick: () -> Unit,
+    paddingValues: PaddingValues = PaddingValues(vertical = 16.dp),
     content: String,
+    enabled: Boolean = true,
     fontSize: Int = 16
 ) {
     Button(
-        onClick = onClick,
-        contentPadding = PaddingValues(vertical = 16.dp),
+        onClick = { if (enabled) onClick() },
+        contentPadding = paddingValues,
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .height(56.dp)
             .fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = textColor),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (enabled) enabledColor else disabledColor,
+            contentColor = textColor
+        ),
         border = border
     ) {
         Text(
@@ -98,7 +105,7 @@ fun ConnectDogNormalButton(
     ConnectDogBottomButton(
         onClick = onClick,
         content = content,
-        color = color,
+        enabledColor = color,
         modifier = modifier,
         textColor = textColor,
         fontSize = fontSize
