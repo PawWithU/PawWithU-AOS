@@ -23,6 +23,5 @@ fun ReviewScreen() {
 @Composable
 private fun Content() {
     Column {
-
     }
 }
