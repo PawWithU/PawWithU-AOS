@@ -57,14 +57,14 @@ internal fun VolunteerBottomSheet(
                     onClick = { isRejectDialogVisible = true },
                     content = stringResource(id = R.string.reject),
                     textColor = Gray1,
-                    color = Gray6,
+                    enabledColor = Gray6,
                     modifier = Modifier.weight(0.5f)
                 )
                 ConnectDogBottomButton(
                     onClick = { isConfirmDialogVisible = true },
                     content = stringResource(id = R.string.confirm),
                     textColor = MaterialTheme.colorScheme.onPrimary,
-                    color = MaterialTheme.colorScheme.primary,
+                    enabledColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(0.5f)
                 )
             }
