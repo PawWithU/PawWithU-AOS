@@ -51,6 +51,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileFindingUiState
+import com.kusitms.connectdog.feature.intermediator.state.InterProfileInfoUiState
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileReviewUiState
 import com.kusitms.connectdog.feature.intermediator.viewmodel.InterProfileViewModel
 import kotlinx.coroutines.launch
@@ -88,24 +89,22 @@ private fun Content(
 ) {
     val reviewUiState by viewModel.interProfileReviewUiState.collectAsStateWithLifecycle()
     val findingUiState by viewModel.interProfileFindingUiState.collectAsStateWithLifecycle()
+    val infoUiState by viewModel.interProfileInfoUiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
-        NetworkImage(imageUrl = "", modifier = Modifier.size(80.dp))
-        Spacer(modifier = Modifier.height(12.dp))
-        Spacer(modifier = Modifier.height(12.dp))
-        Text("중개단체 이름", fontSize = 18.sp, color = Gray1, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "한줄소개 한줄소개 한줄소개 한줄소개 한줄소개 한줄소개 한줄소개 한줄소개",
-            fontSize = 12.sp,
-            color = Gray4,
-            modifier = Modifier.widthIn(min = 0.dp, max = 240.dp),
-            lineHeight = 15.sp
-        )
+        when(infoUiState) {
+            is InterProfileInfoUiState.Loading -> {
+                InterInfo(imageUrl = "", name = "", intro = "")
+            }
+            is InterProfileInfoUiState.InterProfile -> {
+                val data = (infoUiState as InterProfileInfoUiState.InterProfile).data
+                InterInfo(imageUrl = data.profileImage, name = data.name, intro = data.intro)
+            }
+        }
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogBottomButton(
             onClick = onNavigateToInterProfileEdit,
@@ -120,8 +119,34 @@ private fun Content(
         )
         Spacer(modifier = Modifier.height(32.dp))
         TabLayout(
+            info = infoUiState,
             finding = findingUiState,
             review = reviewUiState
+        )
+    }
+}
+
+@Composable
+private fun InterInfo(
+    imageUrl: String,
+    name: String,
+    intro: String
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        NetworkImage(imageUrl = imageUrl, modifier = Modifier.size(80.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(name, fontSize = 18.sp, color = Gray1, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            modifier = Modifier.padding(horizontal = 60.dp),
+            text = intro,
+            fontSize = 12.sp,
+            color = Gray4,
+            lineHeight = 15.sp
         )
     }
 }
@@ -129,6 +154,7 @@ private fun Content(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TabLayout(
+    info: InterProfileInfoUiState,
     finding: InterProfileFindingUiState,
     review: InterProfileReviewUiState
 ) {
@@ -166,7 +192,7 @@ private fun TabLayout(
                 state = pagerState
             ) {
                 when (it) {
-                    0 -> IntermediatorInformation()
+                    0 -> IntermediatorInformation(info)
                     1 -> Finding(finding)
                     2 -> CompleteAndReview(review)
                 }
@@ -176,7 +202,9 @@ private fun TabLayout(
 }
 
 @Composable
-private fun IntermediatorInformation() {
+private fun IntermediatorInformation(
+    info: InterProfileInfoUiState
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -191,11 +219,16 @@ private fun IntermediatorInformation() {
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(20.dp))
-        DetailInfo("이름", "밍밍이")
-        Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("이름", "밍밍이")
-        Spacer(modifier = Modifier.height(20.dp))
-        ConnectDogInformationCard(title = "안내사항", content = "안내사항")
+        when(info) {
+            is InterProfileInfoUiState.Loading -> Loading()
+            is InterProfileInfoUiState.InterProfile -> {
+                DetailInfo("링크", info.data.url)
+                Spacer(modifier = Modifier.height(8.dp))
+                DetailInfo("문의", info.data.contact)
+                Spacer(modifier = Modifier.height(20.dp))
+                ConnectDogInformationCard(title = "안내사항", content = info.data.guide)
+            }
+        }
     }
 }
 
@@ -238,7 +271,6 @@ fun CompleteAndReview(
     data: InterProfileReviewUiState
 ) {
     Column(
-        modifier = Modifier.padding(all = 24.dp),
         verticalArrangement = Arrangement.Top
     ) {
         when (data) {

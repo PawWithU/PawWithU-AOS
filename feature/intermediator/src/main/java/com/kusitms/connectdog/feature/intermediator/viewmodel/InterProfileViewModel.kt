@@ -3,10 +3,12 @@ package com.kusitms.connectdog.feature.intermediator.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.repository.InterProfileRepository
 import com.kusitms.connectdog.core.model.Announcement
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileFindingUiState
+import com.kusitms.connectdog.feature.intermediator.state.InterProfileInfoUiState
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileReviewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,30 +28,30 @@ class InterProfileViewModel @Inject constructor(
 ) : ViewModel() {
     private val _errorFlow = MutableSharedFlow<Throwable>()
 
+    val interProfileInfoUiState: StateFlow<InterProfileInfoUiState> = createProfileInfoUiStateFlow {
+        repository.getInterProfileInfo()
+    }
+
     val interProfileReviewUiState: StateFlow<InterProfileReviewUiState> = createUiStateFlow {
-        repository.getInterReview(0, 1)
+        repository.getInterReview(0, 20)
     }
 
-    val interProfileFindingUiState: StateFlow<InterProfileFindingUiState> = createFindingUiStateFlow {
-        repository.getInterFinding(0, 20)
-    }
+    val interProfileFindingUiState: StateFlow<InterProfileFindingUiState> =
+        createFindingUiStateFlow {
+            repository.getInterFinding(0, 20)
+        }
 
-//    private fun <T, V> test(getData: suspend () -> T): StateFlow<V> =
-//        flow {
-//            emit(getData())
-//        }.map {
-//            if(it.isNotEmpty()) {
-//
-//            } else {
-//
-//            }
-//        }.catch {
-//
-//        }.stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(5_000),
-//            initialValue =
-//        )
+
+    private fun createProfileInfoUiStateFlow(getData: suspend () -> InterProfileInfoResponse): StateFlow<InterProfileInfoUiState> =
+        flow {
+            emit(getData())
+        }.map {
+            InterProfileInfoUiState.InterProfile(it)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = InterProfileInfoUiState.Loading
+        )
 
     private fun createFindingUiStateFlow(getData: suspend () -> List<Announcement>): StateFlow<InterProfileFindingUiState> =
         flow {
