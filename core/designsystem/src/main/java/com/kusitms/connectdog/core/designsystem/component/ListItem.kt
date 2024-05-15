@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,17 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.InterApplication
+import com.kusitms.connectdog.core.model.Review
 
 @Composable
 fun ListForUserItem(
@@ -270,14 +275,93 @@ private fun Title(
     )
 }
 
-// @Preview
-// @Composable
-// private fun ListForUserItemPreivew() {
-//    ConnectDogTheme {
-//        ListForUserItem(
-//            imageUrl = "",
-//            announcement = Announcement("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, -1),
-//            isValid = false
-//        )
-//    }
-// }
+@Composable
+fun ReviewItemContent(
+    review: Review,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .wrapContentSize()
+    ) {
+        ConnectDogReview(review = review, type = ReviewType.REVIEW)
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider(
+            Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            color = Gray7
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        IntermediatorInfo(review)
+        Spacer(modifier = Modifier.height(16.dp))
+        Divider(
+            Modifier
+                .height(8.dp)
+                .fillMaxWidth(),
+            color = Gray7
+        )
+    }
+}
+
+@Composable
+private fun IntermediatorInfo(
+    review: Review
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        NetworkImage(
+            imageUrl = "",
+            modifier = Modifier.size(50.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column {
+            Row {
+                Text(
+                    text = review.organization,
+                    fontSize = 12.sp,
+                    color = Gray1,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "프로필 보기",
+                    fontSize = 12.sp,
+                    color = Gray3,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = review.dogName,
+                    fontSize = 14.sp,
+                    color = Gray1,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = review.location,
+                    fontSize = 12.sp,
+                    color = Gray3,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+            Spacer(modifier = Modifier.height(7.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(painter = painterResource(id = R.drawable.ic_clock), contentDescription = null, tint = Gray2)
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(text = "text", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Gray2)
+            }
+        }
+    }
+}
