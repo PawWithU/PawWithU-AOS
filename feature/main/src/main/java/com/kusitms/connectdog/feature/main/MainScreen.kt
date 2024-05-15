@@ -145,7 +145,8 @@ internal fun MainScreen(
                         onManagementClick = { navigator.navigateInterManagement(it) },
                         onProfileClick = { navigator.navigateInterProfile() },
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
-                        onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() }
+                        onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
+                        onNavigateToReview = { navigator.navigateToReview(it) }
                     )
                 }
             }
