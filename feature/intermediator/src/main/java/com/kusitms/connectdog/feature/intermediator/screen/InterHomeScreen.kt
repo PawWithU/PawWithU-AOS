@@ -100,7 +100,7 @@ fun InterHomeScreen(
             viewModel = viewModel,
             onManageClick = onManageClick,
             navigateToProfile = onProfileClick,
-            navigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen,
+            navigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen
         )
     }
 }
