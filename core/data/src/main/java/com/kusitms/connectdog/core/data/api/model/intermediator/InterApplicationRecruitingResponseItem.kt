@@ -8,9 +8,11 @@ data class InterApplicationRecruitingResponseItem(
     val arrivalLoc: String,
     val departureLoc: String,
     val dogName: String,
+    val dogSize: String,
+    val isKennel: Boolean,
+    val pickUpTime: String,
     val endDate: String,
     val mainImage: String,
     val postStatus: String,
-    val startDate: String,
-    val volunteerName: String?
+    val startDate: String
 )
