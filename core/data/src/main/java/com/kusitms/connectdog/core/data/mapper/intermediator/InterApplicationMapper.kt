@@ -4,6 +4,8 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationInProgressResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationRecruitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationWaitingResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
+import com.kusitms.connectdog.core.model.Announcement
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.util.dateRangeFormat
 
@@ -52,4 +54,16 @@ internal fun InterApplicationCompletedResponseItem.toData(): InterApplication =
         applicationId = applicationId,
         reviewId = reviewId,
         dogStatusId = dogStatusId
+    )
+
+internal fun InterProfileFindingResponseItem.toData(): Announcement =
+    Announcement(
+        imageUrl = mainImage,
+        location = "${this.departureLoc} → ${this.arrivalLoc}",
+        date = dateRangeFormat(startDate, endDate),
+        isKennel = isKennel,
+        postId = 1,
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
