@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.InterApiService
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.mapper.intermediator.toData
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.model.Announcement
@@ -16,5 +17,9 @@ internal class InterProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getInterFinding(page: Int, size: Int?): List<Announcement> {
         return apiService.getFindingApplication(page, size).map { it.toData() }
+    }
+
+    override suspend fun getInterProfileInfo(): InterProfileInfoResponse {
+        return apiService.getIntermediatorInfo()
     }
 }
