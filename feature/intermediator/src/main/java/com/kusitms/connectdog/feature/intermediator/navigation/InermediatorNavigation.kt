@@ -6,11 +6,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kusitms.connectdog.feature.intermediator.screen.CreateAnnouncementScreen
+import com.kusitms.connectdog.feature.intermediator.screen.InterHomeScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterManagementRoute
+import com.kusitms.connectdog.feature.intermediator.screen.InterProfileEditScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileScreen
-import com.kusitms.connectdog.feature.intermediator.screen.IntermediatorHomeScreen
 
-fun NavController.navigateIntermediatorHome() {
+fun NavController.navigateInterHome() {
     navigate(IntermediatorRoute.route)
 }
 
@@ -28,21 +29,27 @@ fun NavController.navigateToCreateAnnouncementScreen() {
     navigate(IntermediatorRoute.create_announcement)
 }
 
+fun NavController.navigateToInterProfileEdit() {
+    navigate(IntermediatorRoute.inter_profile_edit)
+}
+
 fun NavGraphBuilder.intermediatorNavGraph(
+    imeHeight: Int,
     onBackClick: () -> Unit,
     onSettingClick: () -> Unit,
     onNotificationClick: () -> Unit,
     onProfileClick: () -> Unit,
     onManagementClick: (Int) -> Unit,
-    onNavigateToCreateAnnouncementScreen: () -> Unit
+    onNavigateToCreateAnnouncement: () -> Unit,
+    onNavigateToInterProfileEdit: () -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
-        IntermediatorHomeScreen(
+        InterHomeScreen(
             onNotificationClick = onNotificationClick,
             onSettingClick = onSettingClick,
             onManageClick = onManagementClick,
             onProfileClick = onProfileClick,
-            onNavigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncementScreen
+            onNavigateToCreateAnnouncementScreen = onNavigateToCreateAnnouncement
         )
     }
 
@@ -58,12 +65,20 @@ fun NavGraphBuilder.intermediatorNavGraph(
 
     composable(route = IntermediatorRoute.inter_profile) {
         InterProfileScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onNavigateToInterProfileEdit = onNavigateToInterProfileEdit
         )
     }
 
     composable(route = IntermediatorRoute.create_announcement) {
         CreateAnnouncementScreen()
+    }
+
+    composable(route = IntermediatorRoute.inter_profile_edit) {
+        InterProfileEditScreen(
+            imeHeight = imeHeight,
+            onBackClick = onBackClick
+        )
     }
 }
 
@@ -72,4 +87,5 @@ object IntermediatorRoute {
     const val management = "inter_management"
     const val inter_profile = "inter_profile"
     const val create_announcement = "create_announcement"
+    const val inter_profile_edit = "inter_profile_edit"
 }
