@@ -1,8 +1,6 @@
 package com.kusitms.connectdog.feature.intermediator.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.repository.InterManagementRepository
@@ -10,6 +8,7 @@ import com.kusitms.connectdog.core.model.DataUiState
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.model.Volunteer
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
+import com.kusitms.connectdog.feature.intermediator.state.VolunteerBottomSheetUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,13 +44,15 @@ class InterManagementViewModel @Inject constructor(
         MutableStateFlow<InterApplicationUiState>(InterApplicationUiState.Loading)
     val progressUiState: StateFlow<InterApplicationUiState> = _progressUiState
 
-    private val _completedUiState = MutableStateFlow<InterApplicationUiState>(InterApplicationUiState.Loading)
+    private val _completedUiState =
+        MutableStateFlow<InterApplicationUiState>(InterApplicationUiState.Loading)
     val completedUiState: StateFlow<InterApplicationUiState> = _completedUiState
 
-    private val _volunteerResponse = MutableLiveData<Volunteer>()
-    val volunteerResponse: LiveData<Volunteer> get() = _volunteerResponse
+    val getVolunteerUiState: StateFlow<VolunteerBottomSheetUiState> =
+        createVolunteerUiStateFlow { id -> managementRepository.getApplicationVolunteer(id) }
 
-    var selectedApplication: InterApplication? = null
+    private val _selectedApplication = MutableStateFlow<InterApplication?>(null)
+    val selectedApplication: StateFlow<InterApplication?> get() = _selectedApplication
 
     private val _pendingDataState = MutableStateFlow<DataUiState>(DataUiState.Yet)
     val pendingDataState = _pendingDataState.asStateFlow()
@@ -65,15 +66,8 @@ class InterManagementViewModel @Inject constructor(
         refreshCompletedUiState()
     }
 
-    fun getVolunteer(applicationId: Long) {
-        viewModelScope.launch {
-            try {
-                _volunteerResponse.value =
-                    managementRepository.getApplicationVolunteer(applicationId)
-            } catch (e: Exception) {
-                Log.e(TAG, "getVolunteer ${e.stackTrace}")
-            }
-        }
+    fun updateSelectedApplication(application: InterApplication) {
+        _selectedApplication.value = application
     }
 
     fun confirmVolunteer(applicationId: Long) {
@@ -106,7 +100,7 @@ class InterManagementViewModel @Inject constructor(
         _progressDataState.value = DataUiState.Loading
         viewModelScope.launch {
             try {
-                managementRepository.completeApllication(applicationId).let {
+                managementRepository.completeApplication(applicationId).let {
                     if (it.isSuccess) _progressDataState.value = DataUiState.Success
                 }
             } catch (e: Exception) {
@@ -144,6 +138,23 @@ class InterManagementViewModel @Inject constructor(
             )
         }
     }
+
+    private fun createVolunteerUiStateFlow(getVolunteer: suspend (Long) -> Volunteer): StateFlow<VolunteerBottomSheetUiState> =
+        flow {
+            _selectedApplication.value?.applicationId?.let { emit(getVolunteer(it)) }
+        }.map {
+            VolunteerBottomSheetUiState.VolunteerInfo(
+                application = _selectedApplication.value!!,
+                volunteer = it
+            )
+        }.catch {
+            _errorFlow.emit(it)
+            Log.e("InterManagementViewModel", "${it.message}")
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = VolunteerBottomSheetUiState.Loading
+        )
 
     private suspend fun refreshUiState(
         getApplications: suspend () -> List<InterApplication>,
