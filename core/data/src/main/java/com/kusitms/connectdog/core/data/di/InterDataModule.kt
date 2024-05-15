@@ -3,6 +3,8 @@ package com.kusitms.connectdog.core.data.di
 import com.kusitms.connectdog.core.data.api.InterApiService
 import com.kusitms.connectdog.core.data.repository.InterManagementRepository
 import com.kusitms.connectdog.core.data.repository.InterManagementRepositoryImpl
+import com.kusitms.connectdog.core.data.repository.InterProfileRepository
+import com.kusitms.connectdog.core.data.repository.InterProfileRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,5 +19,11 @@ internal class InterDataModule {
     @Singleton
     fun provideInterManagementRepository(apiService: InterApiService): InterManagementRepository {
         return InterManagementRepositoryImpl(apiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideInterProfileRepository(apiService: InterApiService): InterProfileRepository {
+        return InterProfileRepositoryImpl(apiService)
     }
 }
