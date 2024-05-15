@@ -32,6 +32,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Typography
 @Composable
 fun ConnectDogBottomButton(
     modifier: Modifier = Modifier,
+    height: Int = 56,
     enabledColor: Color = MaterialTheme.colorScheme.primary,
     disabledColor: Color = Orange_40,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
@@ -40,14 +41,15 @@ fun ConnectDogBottomButton(
     paddingValues: PaddingValues = PaddingValues(vertical = 16.dp),
     content: String,
     enabled: Boolean = true,
-    fontSize: Int = 16
+    fontSize: Int = 16,
+    radius: Int = 12
 ) {
     Button(
         onClick = { if (enabled) onClick() },
         contentPadding = paddingValues,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(radius.dp),
         modifier = modifier
-            .height(56.dp)
+            .height(height.dp)
             .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (enabled) enabledColor else disabledColor,
