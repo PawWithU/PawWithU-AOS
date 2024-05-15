@@ -41,7 +41,6 @@ class InterProfileViewModel @Inject constructor(
             repository.getInterFinding(0, 20)
         }
 
-
     private fun createProfileInfoUiStateFlow(getData: suspend () -> InterProfileInfoResponse): StateFlow<InterProfileInfoUiState> =
         flow {
             emit(getData())

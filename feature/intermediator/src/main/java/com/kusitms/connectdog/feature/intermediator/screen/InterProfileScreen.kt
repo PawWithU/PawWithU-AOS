@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -96,7 +96,7 @@ private fun Content(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(80.dp))
-        when(infoUiState) {
+        when (infoUiState) {
             is InterProfileInfoUiState.Loading -> {
                 InterInfo(imageUrl = "", name = "", intro = "")
             }
@@ -115,7 +115,8 @@ private fun Content(
                 .height(40.dp)
                 .padding(horizontal = 20.dp),
             fontSize = 12,
-            paddingValues = PaddingValues(vertical = 11.dp)
+            paddingValues = PaddingValues(vertical = 11.dp),
+            border = BorderStroke(0.dp, color = Gray7)
         )
         Spacer(modifier = Modifier.height(32.dp))
         TabLayout(
@@ -219,7 +220,7 @@ private fun IntermediatorInformation(
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(20.dp))
-        when(info) {
+        when (info) {
             is InterProfileInfoUiState.Loading -> Loading()
             is InterProfileInfoUiState.InterProfile -> {
                 DetailInfo("링크", info.data.url)
