@@ -60,7 +60,7 @@ fun ApplicationBottomSheet(
 fun InterApplicationBottomSheet(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
-    interApplication: InterApplication,
+    application: InterApplication,
     volunteer: Volunteer,
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
@@ -74,7 +74,7 @@ fun InterApplicationBottomSheet(
         onDismissRequest = onDismissRequest,
         bottomButton = bottomButton
     ) {
-        InterApplicationContent(application = interApplication)
+        InterApplicationContent(application = application)
     }
 }
 

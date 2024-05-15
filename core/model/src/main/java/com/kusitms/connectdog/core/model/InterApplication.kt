@@ -11,5 +11,8 @@ data class InterApplication(
     val applicationTime: String? = null,
     val applicationId: Long ? = null,
     val reviewId: Long? = null,
-    val dogStatusId: Long? = null
+    val dogStatusId: Long? = null,
+    val dogSize: String? = null,
+    val isKennel: Boolean? = null,
+    val pickUpTime: String? = null
 )

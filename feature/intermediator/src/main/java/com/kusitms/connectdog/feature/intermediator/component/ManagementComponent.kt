@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.intermediator.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -7,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,18 +27,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementItem
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogAlertDialog
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogSecondaryButton
 import com.kusitms.connectdog.core.designsystem.component.ListForOrganizationItem
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
+import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.designsystem.theme.Red2
 import com.kusitms.connectdog.core.model.InterApplication
@@ -81,18 +87,20 @@ internal fun PendingContent(application: InterApplication, onClick: () -> Unit) 
             )
             Spacer(modifier = Modifier.size(5.dp))
             Text(
-                text = "$diffTime ${stringResource(id = R.string.will_be_canceled)}",
+                text = stringResource(id = R.string.will_be_canceled, "$diffTime"),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.error
             )
         }
-        ListForOrganizationItem(
-            modifier = Modifier.padding(20.dp),
+        AnnouncementItem(
+            modifier = Modifier.padding(vertical = 20.dp),
             imageUrl = application.imageUrl,
             dogName = application.dogName,
-            date = application.date,
             location = application.location,
-            volunteerName = application.volunteerName
+            isKennel = application.isKennel ?: false,
+            dogSize = application.dogSize ?: "",
+            date = application.date,
+            pickUpTime = application.pickUpTime ?: ""
         )
         ConnectDogSecondaryButton(
             contentRes = R.string.check_volunteer
@@ -139,20 +147,28 @@ internal fun CompletedContent(
             .wrapContentHeight()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            ListForOrganizationItem(
+            AnnouncementItem(
+                modifier = Modifier.padding(bottom = 20.dp),
                 imageUrl = application.imageUrl,
                 dogName = application.dogName,
-                date = application.date,
                 location = application.location,
-                volunteerName = application.volunteerName
+                isKennel = application.isKennel ?: false,
+                dogSize = application.dogSize ?: "",
+                date = application.date,
+                pickUpTime = application.pickUpTime ?: ""
             )
-            Spacer(modifier = Modifier.size(20.dp))
-            ReviewRecentButton(
-                modifier = Modifier.height(40.dp),
-                hasReview = application.reviewId != null,
-                hasRecent = application.dogStatusId != null,
-                onClickReview = onClickReview,
-                onClickRecent = onClickRecent
+            ConnectDogBottomButton(
+                height = 40,
+                onClick = { /*TODO*/ },
+                content = "받은 후기 확인",
+                enabled = application.reviewId != null,
+                enabledColor = Color.White,
+                disabledColor = Gray7,
+                textColor = if (application.reviewId == null) Gray3 else Gray1,
+                border = BorderStroke(1.dp, Gray5),
+                fontSize = 12,
+                paddingValues = PaddingValues(vertical = 11.dp),
+                radius = 6
             )
         }
         Divider(thickness = 8.dp, color = Gray7)

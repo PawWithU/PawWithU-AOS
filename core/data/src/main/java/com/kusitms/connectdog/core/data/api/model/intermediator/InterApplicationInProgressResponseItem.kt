@@ -12,5 +12,7 @@ data class InterApplicationInProgressResponseItem(
     val endDate: String,
     val mainImage: String,
     val startDate: String,
-    val volunteerName: String
+    val isKennel: Boolean,
+    val dogSize: String,
+    val pickUpTime: String
 )

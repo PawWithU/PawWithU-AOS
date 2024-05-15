@@ -15,9 +15,11 @@ internal fun InterApplicationRecruitingResponseItem.toData(): InterApplication =
         dogName = dogName,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        volunteerName = volunteerName ?: "-",
         postId = postId,
-        postStatus = postStatus
+        postStatus = postStatus,
+        pickUpTime = pickUpTime,
+        isKennel = isKennel,
+        dogSize = dogSize
     )
 
 internal fun InterApplicationWaitingResponseItem.toData(): InterApplication =
@@ -26,10 +28,12 @@ internal fun InterApplicationWaitingResponseItem.toData(): InterApplication =
         dogName = dogName,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        volunteerName = volunteerName,
         postId = postId,
-        applicationTime = applicationTime,
-        applicationId = applicationId
+        pickUpTime = pickUpTime,
+        isKennel = isKennel,
+        dogSize = dogSize,
+        applicationId = applicationId,
+        applicationTime = applicationTime
     )
 
 internal fun InterApplicationInProgressResponseItem.toData(): InterApplication =
@@ -38,8 +42,10 @@ internal fun InterApplicationInProgressResponseItem.toData(): InterApplication =
         dogName = dogName,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        volunteerName = volunteerName,
         postId = postId,
+        pickUpTime = pickUpTime,
+        isKennel = isKennel,
+        dogSize = dogSize,
         applicationId = applicationId
     )
 
@@ -49,11 +55,11 @@ internal fun InterApplicationCompletedResponseItem.toData(): InterApplication =
         dogName = dogName,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        volunteerName = volunteerName,
         postId = postId,
-        applicationId = applicationId,
-        reviewId = reviewId,
-        dogStatusId = dogStatusId
+        pickUpTime = pickUpTime,
+        isKennel = isKennel,
+        dogSize = dogSize,
+        reviewId = reviewId
     )
 
 internal fun InterProfileFindingResponseItem.toData(): Announcement =

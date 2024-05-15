@@ -8,7 +8,7 @@
 
     <!-- 봉사 관리 -->
     <string name="manage_application">봉사 관리</string>
-    <string name="will_be_canceled">뒤 자동으로 취소됩니다</string>
+    <string name="will_be_canceled">확정하지 않으면 %s뒤 자동으로 취소됩니다</string>
     <string name="check_volunteer">이동봉사자 확인하기</string>
     <string name="check_volunteer_top_title">이동봉사자 확인</string>
     <string name="make_complete">봉사 완료하기</string>
@@ -31,6 +31,7 @@
     <string name="no_progressing">진행중인 공고가 없어요</string>
     <string name="no_completed">완료된 공고가 없어요</string>
     <string name="no_description">홈에서 이동봉사 공고를 등록해주세요!</string>
+    <string name="review">이동봉사 후기</string>
 
     <!--모집자 프로필-->
     <string name="inter_profile">프로필 보기</string>

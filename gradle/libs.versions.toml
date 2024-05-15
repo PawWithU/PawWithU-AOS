@@ -49,6 +49,7 @@ org-jetbrains-kotlin-jvm = "1.8.10"
 relay = "0.3.02"
 
 gson = "2.10.1"
+chucker = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "andoroidCoreKtx" }

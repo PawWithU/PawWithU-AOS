@@ -1,6 +1,5 @@
 package com.kusitms.connectdog.feature.intermediator.navigation
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -10,13 +9,13 @@ import com.kusitms.connectdog.feature.intermediator.screen.InterHomeScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterManagementRoute
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileEditScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileScreen
+import com.kusitms.connectdog.feature.intermediator.screen.ReviewScreen
 
 fun NavController.navigateInterHome() {
     navigate(IntermediatorRoute.route)
 }
 
 fun NavController.navigateInterManagement(tabIndex: Int) {
-    Log.d("InterNavigation", "navigateInterManagement: tabIndex = $tabIndex")
     val route = "${IntermediatorRoute.management}?tabIndex=$tabIndex"
     navigate(route)
 }
@@ -33,6 +32,11 @@ fun NavController.navigateToInterProfileEdit() {
     navigate(IntermediatorRoute.inter_profile_edit)
 }
 
+fun NavController.navigateToReview(id: Long) {
+    val route = "${IntermediatorRoute.inter_review}?id=$id"
+    navigate(route)
+}
+
 fun NavGraphBuilder.intermediatorNavGraph(
     imeHeight: Int,
     onBackClick: () -> Unit,
@@ -41,7 +45,8 @@ fun NavGraphBuilder.intermediatorNavGraph(
     onProfileClick: () -> Unit,
     onManagementClick: (Int) -> Unit,
     onNavigateToCreateAnnouncement: () -> Unit,
-    onNavigateToInterProfileEdit: () -> Unit
+    onNavigateToInterProfileEdit: () -> Unit,
+    onNavigateToReview: (Long) -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
         InterHomeScreen(
@@ -80,6 +85,10 @@ fun NavGraphBuilder.intermediatorNavGraph(
             onBackClick = onBackClick
         )
     }
+
+    composable(route = IntermediatorRoute.inter_review) {
+        ReviewScreen()
+    }
 }
 
 object IntermediatorRoute {
@@ -88,4 +97,5 @@ object IntermediatorRoute {
     const val inter_profile = "inter_profile"
     const val create_announcement = "create_announcement"
     const val inter_profile_edit = "inter_profile_edit"
+    const val inter_review = "inter_review"
 }
