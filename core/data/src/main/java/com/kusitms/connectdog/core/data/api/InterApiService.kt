@@ -8,6 +8,7 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationRecruitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationWaitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -69,7 +70,10 @@ internal interface InterApiService {
     /**
      * 이동봉사 모집자 프로필
      * */
-    @GET("/intermediaries/reviews")
+    @GET("/intermediaries/my/info")
+    suspend fun getIntermediatorInfo(): InterProfileInfoResponse
+
+    @GET("/intermediaries/my/reviews")
     suspend fun getIntermediatorReview(
         @Query("page") page: Int?,
         @Query("size") size: Int?
