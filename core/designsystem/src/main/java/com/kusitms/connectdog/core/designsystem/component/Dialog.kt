@@ -94,7 +94,7 @@ fun ConnectDogAlertDialog(
                 ConnectDogBottomButton(
                     onClick = onDismissRequest,
                     content = stringResource(id = cancelText),
-                    color = MaterialTheme.colorScheme.surface,
+                    enabledColor = MaterialTheme.colorScheme.surface,
                     textColor = Gray2,
                     modifier = modifier.fillMaxWidth(),
                     border = BorderStroke(width = 1.dp, color = Gray5)
