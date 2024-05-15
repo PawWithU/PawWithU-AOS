@@ -56,7 +56,7 @@ import com.kusitms.connectdog.feature.intermediator.state.InterProfileReviewUiSt
 import com.kusitms.connectdog.feature.intermediator.viewmodel.InterProfileViewModel
 import kotlinx.coroutines.launch
 
-private val pages = listOf("기본 정보", "후기", "근황")
+private val pages = listOf("기본 정보", "모집중", "완료 및 후기")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
