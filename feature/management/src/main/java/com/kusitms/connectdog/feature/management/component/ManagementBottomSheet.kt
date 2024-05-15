@@ -42,7 +42,7 @@ internal fun MyApplicationBottomSheet(
             onClick = { isCancelDialogVisible = true },
             content = stringResource(id = R.string.cancel_appliance),
             textColor = MaterialTheme.colorScheme.error,
-            color = MaterialTheme.colorScheme.surface,
+            enabledColor = MaterialTheme.colorScheme.surface,
             border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.error),
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 52.dp)
         )
