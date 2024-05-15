@@ -155,7 +155,7 @@ internal fun CompletedContent(
                 isKennel = application.isKennel ?: false,
                 dogSize = application.dogSize ?: "",
                 date = application.date,
-                pickUpTime = application.pickUpTime ?: "",
+                pickUpTime = application.pickUpTime ?: ""
             )
             ConnectDogBottomButton(
                 height = 40,
