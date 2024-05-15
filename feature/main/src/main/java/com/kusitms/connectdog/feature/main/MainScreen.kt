@@ -133,19 +133,19 @@ internal fun MainScreen(
                         onNavigateToApply = { navigator.navigateApply(it) },
                         onNavigateToDetail = { navigator.navigateHomeDetail(it) },
                         onNavigateToIntermediatorProfile = {
-                            navigator.navigateIntermediatorProfile(
-                                it
-                            )
+                            navigator.navigateIntermediatorProfile(it)
                         },
                         onShowErrorSnackbar = {}
                     )
                     intermediatorNavGraph(
+                        imeHeight = imeHeight,
                         onBackClick = navigator::popBackStackIfNotHome,
                         onSettingClick = { navigator.navigateSetting() },
                         onNotificationClick = { navigator.navigateNotification() },
                         onManagementClick = { navigator.navigateInterManagement(it) },
                         onProfileClick = { navigator.navigateInterProfile() },
-                        onNavigateToCreateAnnouncementScreen = { navigator.navigateCreateAnnouncement() }
+                        onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
+                        onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() }
                     )
                 }
             }
