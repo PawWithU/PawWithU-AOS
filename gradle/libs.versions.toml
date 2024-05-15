@@ -49,6 +49,7 @@ org-jetbrains-kotlin-jvm = "1.8.10"
 relay = "0.3.02"
 
 gson = "2.10.1"
+chucker = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "andoroidCoreKtx" }
@@ -111,6 +112,8 @@ google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gs
 google-service = { group = "com.google.gms", name = "google-services", version.ref = "googleService" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
+
+chucker = {group = "com.github.chuckerteam", name = "chucker:library", version.ref = "chucker"}
 
 # modular graph
 dependency-graph = { group = "com.vanniktech", name = "gradle-dependency-graph-generator-plugin", version.ref = "dependencyGraph" }
