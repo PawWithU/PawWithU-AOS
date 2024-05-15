@@ -30,7 +30,7 @@ import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.feature.intermediator.R
-import com.kusitms.connectdog.feature.intermediator.component.DateBottomSheet
+import com.kusitms.connectdog.feature.intermediator.component.CalendarBottomSheet
 import com.kusitms.connectdog.feature.intermediator.component.TimeBottomSheet
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -74,7 +74,7 @@ private fun Content() {
     }
 
     if (isScheduleSheetOpen) {
-        DateBottomSheet(
+        CalendarBottomSheet(
             sheetState = scheduleSheetState,
             start = null,
             end = null,
