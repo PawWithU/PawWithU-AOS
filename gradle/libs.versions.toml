@@ -113,8 +113,6 @@ google-service = { group = "com.google.gms", name = "google-services", version.r
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
-chucker = {group = "com.github.chuckerteam", name = "chucker:library", version.ref = "chucker"}
-
 # modular graph
 dependency-graph = { group = "com.vanniktech", name = "gradle-dependency-graph-generator-plugin", version.ref = "dependencyGraph" }
 

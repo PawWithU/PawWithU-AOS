@@ -53,7 +53,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.datastore)
-    implementation(libs.chucker)
 
     implementation(libs.naver.oauth)
     implementation(libs.kakao.oauth)
