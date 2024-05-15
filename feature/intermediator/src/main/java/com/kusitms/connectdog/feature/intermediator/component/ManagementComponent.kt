@@ -147,14 +147,16 @@ internal fun CompletedContent(
             .wrapContentHeight()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            ListForOrganizationItem(
+            AnnouncementItem(
+                modifier = Modifier.padding(bottom = 20.dp),
                 imageUrl = application.imageUrl,
                 dogName = application.dogName,
-                date = application.date,
                 location = application.location,
-                volunteerName = application.volunteerName
+                isKennel = application.isKennel ?: false,
+                dogSize = application.dogSize ?: "",
+                date = application.date,
+                pickUpTime = application.pickUpTime ?: "",
             )
-            Spacer(modifier = Modifier.size(20.dp))
             ConnectDogBottomButton(
                 height = 40,
                 onClick = { /*TODO*/ },
