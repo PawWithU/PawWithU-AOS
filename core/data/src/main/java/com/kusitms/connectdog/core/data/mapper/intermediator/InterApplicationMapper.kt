@@ -56,6 +56,9 @@ internal fun InterApplicationCompletedResponseItem.toData(): InterApplication =
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
         postId = postId,
+        pickUpTime = pickUpTime,
+        isKennel = isKennel,
+        dogSize = dogSize,
         reviewId = reviewId
     )
 
