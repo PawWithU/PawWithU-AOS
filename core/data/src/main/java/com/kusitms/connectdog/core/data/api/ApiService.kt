@@ -163,6 +163,9 @@ internal interface ApiService {
         @Body userInfo: UserInfoResponse
     )
 
+    @DELETE("/volunteers/logout")
+    suspend fun logout()
+
     /**
      * 이동봉사자 > 공고 상세조회
      */
