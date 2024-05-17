@@ -27,6 +27,7 @@ import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterHome
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterManagement
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateAnnouncementScreen
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateDog
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToInterProfileEdit
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToReview
 import com.kusitms.connectdog.feature.login.LoginRoute
@@ -139,6 +140,7 @@ internal class MainNavigator(
     fun navigateCreateAnnouncement() = navController.navigateToCreateAnnouncementScreen()
     fun navigateToInterProfileEdit() = navController.navigateToInterProfileEdit()
     fun navigateToReview(id: Long) = navController.navigateToReview(id)
+    fun navigateToCreateDog() = navController.navigateToCreateDog()
 
     fun popBackStackIfNotHome() {
         if (!isSameCurrentDestination(HomeRoute.route)) {
