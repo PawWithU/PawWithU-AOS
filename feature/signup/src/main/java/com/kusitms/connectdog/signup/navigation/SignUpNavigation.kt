@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.signup
+package com.kusitms.connectdog.signup.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -7,10 +7,10 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kusitms.connectdog.core.util.UserType
-import com.kusitms.connectdog.signup.screen.CompleteSignUpScreen
-import com.kusitms.connectdog.signup.screen.RegisterEmailScreen
-import com.kusitms.connectdog.signup.screen.RegisterPasswordScreen
-import com.kusitms.connectdog.signup.screen.SignUpRoute
+import com.kusitms.connectdog.signup.screen.common.CompleteSignUpScreen
+import com.kusitms.connectdog.signup.screen.common.RegisterEmailScreen
+import com.kusitms.connectdog.signup.screen.common.RegisterPasswordScreen
+import com.kusitms.connectdog.signup.screen.common.SignUpRoute
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorInformationScreen
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorProfileScreen
 import com.kusitms.connectdog.signup.screen.volunteer.CertificationScreen
@@ -70,6 +70,7 @@ fun NavGraphBuilder.signUpGraph(
     navigateToVolunteer: () -> Unit,
     navigateToIntermediator: () -> Unit,
     navigateToCertification: (UserType) -> Unit,
+    navigateToLogin: () -> Unit,
     onSendMessage: (String) -> Unit,
     onVerifyCode: (String, (Boolean) -> Unit) -> Unit,
     imeHeight: Int,
@@ -87,9 +88,8 @@ fun NavGraphBuilder.signUpGraph(
         arguments = userTypeArgument
     ) {
         SignUpRoute(
-            onBackClick = onBackClick,
+            onBackClick = navigateToLogin,
             userType = it.arguments!!.getSerializable("type") as UserType,
-            navigateToVolunteerProfile = navigateToVolunteerProfile,
             navigateToIntermediatorInformation = navigateToIntermediatorInformation,
             navigateToCertification = navigateToCertification
         )
@@ -141,7 +141,7 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorProfileScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            navigateToCompleteSignUp = navigateToCompleteSignUp
+            navigateToIntermediatorInfo = navigateToIntermediatorInformation
         )
     }
 
@@ -149,7 +149,7 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorInformationScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            onNavigateToRegisterEmail = navigateToRegisterEmail
+            onNavigateToCompleteSignUp = navigateToCompleteSignUp
         )
     }
 
