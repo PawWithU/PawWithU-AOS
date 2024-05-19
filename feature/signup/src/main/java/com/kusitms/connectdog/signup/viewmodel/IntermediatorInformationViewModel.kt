@@ -8,11 +8,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IntermediatorInformationViewModel @Inject constructor() : ViewModel() {
-    private val _name: MutableState<String> = mutableStateOf("")
-    val name: String
-        get() = _name.value
+    private val _url: MutableState<String> = mutableStateOf("")
+    val url: String
+        get() = _url.value
 
-    fun updateName(name: String) {
-        _name.value = name
+    private val _contact: MutableState<String> = mutableStateOf("")
+    val contact: String
+        get() = _contact.value
+
+    fun updateUrl(name: String) {
+        _url.value = name
+    }
+
+    fun updateContact(contact: String) {
+        _contact.value = contact
     }
 }
