@@ -20,7 +20,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Close
@@ -33,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,7 +48,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -56,7 +58,6 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
@@ -69,6 +70,7 @@ import com.kusitms.connectdog.feature.management.viewmodel.CreateReviewViewModel
 @Composable
 fun CreateReviewScreen(
     onBackClick: () -> Unit,
+//    application: Application,
     viewModel: CreateReviewViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -92,6 +94,7 @@ private fun Content(
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -102,6 +105,7 @@ private fun Content(
                 indication = null,
                 interactionSource = interactionSource
             )
+            .verticalScroll(scrollState)
     ) {
         VolunteerInfo()
         ReviewContent(viewModel)
@@ -144,16 +148,17 @@ private fun ReviewContent(
             fontSize = 14.sp
         )
         ConnectDogTextField(
-            height = 244,
+            height = 273,
             text = viewModel.review,
-            onTextChanged = { viewModel.updateReview(it) },
+            onTextChanged = { if (it.length <= 300) viewModel.updateReview(it) },
             label = "느꼈던 감정, 후기를 작성해주세요",
             placeholder = ""
         )
+        Spacer(modifier = Modifier.height(4.dp))
         Row {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "최소 글자수 10",
+                text = "최소 글자수 20자",
                 fontSize = 10.sp,
                 color = Gray4
             )
@@ -172,11 +177,13 @@ private fun ReviewContent(
 private fun UploadPhoto(
     viewModel: CreateReviewViewModel
 ) {
+    val test = remember { mutableIntStateOf(0) }
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
             it.forEach { uri ->
                 viewModel.updateUriList(uri)
             }
+            test.intValue = viewModel.uriList.value.size
         }
     val uriList by viewModel.uriList.collectAsStateWithLifecycle()
 
@@ -205,7 +212,10 @@ private fun UploadPhoto(
                     if (index < uriList.size) {
                         Photo(
                             uri = uriList[index],
-                            onRemoveClick = { viewModel.removeUriList(uriList[index]) }
+                            onRemoveClick = {
+                                viewModel.removeUriList(uriList[index])
+                                test.intValue--
+                            }
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                     } else {
@@ -286,16 +296,6 @@ private fun AddPhotoButton(onClick: () -> Unit) {
             modifier = Modifier
                 .size(20.dp)
                 .align(Alignment.Center)
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun CreateReviewScreenPreview() {
-    ConnectDogTheme {
-        CreateReviewScreen(
-            onBackClick = {}
         )
     }
 }
