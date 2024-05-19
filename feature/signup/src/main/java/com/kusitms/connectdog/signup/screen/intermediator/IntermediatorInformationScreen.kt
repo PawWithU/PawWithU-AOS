@@ -30,7 +30,7 @@ import com.kusitms.connectdog.signup.viewmodel.IntermediatorInformationViewModel
 @Composable
 fun IntermediatorInformationScreen(
     onBackClick: () -> Unit,
-    onNavigateToRegisterEmail: (UserType) -> Unit,
+    onNavigateToCompleteSignUp: (UserType) -> Unit,
     imeHeight: Int,
     viewModel: IntermediatorInformationViewModel = hiltViewModel()
 ) {
@@ -57,28 +57,29 @@ fun IntermediatorInformationScreen(
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             Text(
-                text = "중개 회원 정보를\n입력해 주세요",
+                text = "모집자 프로필에 사용할\n정보를 입력해주세요 (선택)",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(40.dp))
             ConnectDogTextField(
-                text = viewModel.name,
-                onTextChanged = { viewModel.updateName(it) },
-                label = "중개자명",
-                placeholder = "중개자 이름, 중개 단체명 입력"
+                text = viewModel.url,
+                onTextChanged = { viewModel.updateUrl(it) },
+                label = "링크",
+                placeholder = "모집자 정보를 보여줄 수 있는 URL 입력"
             )
             Spacer(modifier = Modifier.height(12.dp))
             ConnectDogTextField(
-                text = viewModel.name,
-                onTextChanged = { viewModel.updateName(it) },
-                label = "중개자명",
-                placeholder = "중개자 이름, 중개 단체명 입력"
+                text = viewModel.contact,
+                onTextChanged = viewModel::updateContact,
+                label = "문의 받을 연락처",
+                placeholder = "문의 받을 채널과 연락처를 입력해주세요",
+                height = 144
             )
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogNormalButton(
                 content = "다음",
-                onClick = { onNavigateToRegisterEmail(UserType.INTERMEDIATOR) },
+                onClick = { onNavigateToCompleteSignUp(UserType.INTERMEDIATOR) },
                 modifier =
                 Modifier
                     .fillMaxWidth()
