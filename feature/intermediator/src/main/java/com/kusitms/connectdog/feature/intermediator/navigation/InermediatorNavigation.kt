@@ -13,7 +13,11 @@ import com.kusitms.connectdog.feature.intermediator.screen.InterProfileScreen
 import com.kusitms.connectdog.feature.intermediator.screen.ReviewScreen
 
 fun NavController.navigateInterHome() {
-    navigate(IntermediatorRoute.route)
+    navigate(IntermediatorRoute.route) {
+        popUpTo(graph.id) {
+            inclusive = true
+        }
+    }
 }
 
 fun NavController.navigateInterManagement(tabIndex: Int) {

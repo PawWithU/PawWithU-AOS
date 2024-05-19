@@ -104,25 +104,23 @@ class LoginViewModel @Inject constructor(
             Provider.NAVER -> initNaverLogin(context)
             Provider.KAKAO -> initKakaoLogin(context)
         }
-        val body = _accessToken.value?.let {
-            SocialLoginBody(
-                accessToken = it,
-                provider = provider.toString()
-            )
-        }
+
         viewModelScope.launch {
             try {
-                body?.let {
-                    val response = loginRepository.postSocialLoginData(it)
+                _accessToken.collect {
+                    if (it == null) return@collect
+                    val body = SocialLoginBody(accessToken = it, provider = provider.toString())
+                    val response = loginRepository.postSocialLoginData(body)
                     dataStoreRepository.saveAccessToken(response.accessToken)
                     dataStoreRepository.saveRefreshToken(response.refreshToken)
                     when (response.roleName) {
-                        "GUEST" -> _socialType.value = SocialType.GUEST
+                        "GUEST" -> _socialType.emit(SocialType.GUEST)
                         "VOLUNTEER" -> {
-                            _socialType.value = SocialType.VOLUNTEER
+                            _socialType.emit(SocialType.VOLUNTEER)
                             dataStoreRepository.saveAppMode(AppMode.VOLUNTEER)
                         }
                     }
+                    Log.d(TAG, response.toString())
                 }
             } catch (e: Exception) {
                 Log.d(TAG, e.message.toString())
@@ -194,6 +192,8 @@ class LoginViewModel @Inject constructor(
                     )
                 } else if (token != null) {
                     Log.i("Kakao Login", "카카오 로그인 성공 ${token.accessToken}")
+                    _accessToken.value = token.accessToken
+
                     UserApiClient.instance.me { user, error ->
                         if (error != null) {
                             Log.e("Kakao Login", "사용자 정보 요청 실패", error)

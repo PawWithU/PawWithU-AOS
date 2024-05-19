@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +22,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +35,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -81,8 +85,17 @@ fun LoginScreen(
     onNavigateToVolunteerHome: () -> Unit,
     onNavigateToIntermediatorHome: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                onClick = { focusManager.clearFocus() },
+                indication = null,
+                interactionSource = interactionSource
+            )
     ) {
         Text(
             modifier = Modifier.padding(start = 20.dp, top = 32.dp, bottom = 32.dp),
@@ -177,6 +190,13 @@ private fun Volunteer(
     val context = LocalContext.current
     val socialType by viewModel.socialType.collectAsState()
 
+    socialType?.let {
+        when (it) {
+            SocialType.VOLUNTEER -> onNavigateToVolunteerHome()
+            SocialType.GUEST -> onNavigateToSignup(UserType.SOCIAL_VOLUNTEER)
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -210,13 +230,6 @@ private fun Volunteer(
         Spacer(modifier = Modifier.height(30.dp))
         SignUpOrLogin(onNavigateToSignup, onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
     }
-
-    socialType?.let {
-        when (it) {
-            SocialType.VOLUNTEER -> onNavigateToVolunteerHome()
-            SocialType.GUEST -> {}
-        }
-    }
 }
 
 @Composable
@@ -226,6 +239,12 @@ private fun Intermediator(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val isLoginSuccessful by viewModel.isLoginSuccessful.collectAsState()
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.isLoginSuccessful.collect {
+            if (it == true) { onNavigateToIntermediatorHome() }
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -258,7 +277,6 @@ private fun Intermediator(
             content = stringResource(id = R.string.login),
             onClick = {
                 viewModel.initIntermediatorLogin()
-                if (isLoginSuccessful == true) { onNavigateToIntermediatorHome() }
             }
         )
         Spacer(modifier = Modifier.height(30.dp))

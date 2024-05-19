@@ -36,7 +36,7 @@ import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
 import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
-import com.kusitms.connectdog.feature.login.onLogoutClick
+import com.kusitms.connectdog.feature.login.navigateToLoginRoute
 import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBadge
@@ -47,15 +47,15 @@ import com.kusitms.connectdog.feature.mypage.navigation.navigateManageAccount
 import com.kusitms.connectdog.feature.mypage.navigation.navigateMypage
 import com.kusitms.connectdog.feature.mypage.navigation.navigateNotification
 import com.kusitms.connectdog.feature.mypage.navigation.navigateSetting
-import com.kusitms.connectdog.signup.navigateCompleteSignUp
-import com.kusitms.connectdog.signup.navigateIntermediatorInformation
-import com.kusitms.connectdog.signup.navigateRegisterEmail
-import com.kusitms.connectdog.signup.navigateRegisterPassword
-import com.kusitms.connectdog.signup.navigateSelectProfileImage
-import com.kusitms.connectdog.signup.navigateSignup
-import com.kusitms.connectdog.signup.navigateToCertification
-import com.kusitms.connectdog.signup.navigateToIntermediatorProfile
-import com.kusitms.connectdog.signup.navigateToVolunteerProfile
+import com.kusitms.connectdog.signup.navigation.navigateCompleteSignUp
+import com.kusitms.connectdog.signup.navigation.navigateIntermediatorInformation
+import com.kusitms.connectdog.signup.navigation.navigateRegisterEmail
+import com.kusitms.connectdog.signup.navigation.navigateRegisterPassword
+import com.kusitms.connectdog.signup.navigation.navigateSelectProfileImage
+import com.kusitms.connectdog.signup.navigation.navigateSignup
+import com.kusitms.connectdog.signup.navigation.navigateToCertification
+import com.kusitms.connectdog.signup.navigation.navigateToIntermediatorProfile
+import com.kusitms.connectdog.signup.navigation.navigateToVolunteerProfile
 
 internal class MainNavigator(
     val navController: NavHostController,
@@ -101,7 +101,7 @@ internal class MainNavigator(
     fun navigatePasswordSearch() = navController.navigatePasswordSearch()
     fun navigateEmailSearchComplete() = navController.navigateEmailSearchComplete()
     fun navigatePasswordSearchComplete() = navController.navigatePasswordSearchComplete()
-    fun onLogoutClick() = navController.onLogoutClick()
+    fun onLogoutClick() = navController.navigateToLoginRoute()
 
     // signup navigator
     fun navigateVolunteerProfile(userType: UserType) = navController.navigateToVolunteerProfile(userType)

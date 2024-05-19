@@ -2,4 +2,7 @@
 <resources>
     <string name="volunteer_signup">이동봉사자 회원가입</string>
     <string name="intermediator_signup">이동봉사 모집자 회원가입</string>
+
+    <!--휴대폰 인증-->
+    <string name="certification_title">이름과 휴대폰 번호를\n입력해주세요</string>
 </resources>
