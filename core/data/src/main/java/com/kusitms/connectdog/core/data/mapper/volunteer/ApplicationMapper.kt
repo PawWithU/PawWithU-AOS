@@ -26,7 +26,11 @@ internal fun ApplicationInProgressResponseItem.toData(): Application {
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
         hasKennel = isKennel,
-        postId = postId
+        postId = postId,
+        applicationId = applicationId,
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
 }
 
