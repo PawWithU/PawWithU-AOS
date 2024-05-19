@@ -9,9 +9,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class IntermediatorProfileViewModel @Inject constructor() : ViewModel() {
+    private val _name: MutableState<String> = mutableStateOf("")
+    val name: String
+        get() = _name.value
+
     private val _introduce: MutableState<String> = mutableStateOf("")
     val introduce: String
         get() = _introduce.value
+
+    fun updateName(name: String) {
+        _name.value = name
+    }
 
     fun updateIntroduce(introduce: String) {
         _introduce.value = introduce
