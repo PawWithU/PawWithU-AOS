@@ -94,21 +94,6 @@ fun ConnectDogTextField(
             shape = RoundedCornerShape(12.dp),
             isError = isError,
             enabled = enabled,
-            supportingText = {
-                if (isError) {
-                    Text(
-                        text = stringResource(id = errorMessageRes),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                } else if (supportingText != null) {
-                    Text(
-                        text = stringResource(id = supportingText),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Gray3
-                    )
-                }
-            },
             colors =
             OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = borderColor,
