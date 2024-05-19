@@ -56,7 +56,6 @@ import com.kusitms.connectdog.signup.navigation.navigateToCertification
 import com.kusitms.connectdog.signup.navigation.navigateToIntermediatorProfile
 import com.kusitms.connectdog.signup.navigation.navigateToVolunteerProfile
 
-
 internal class MainNavigator(
     val navController: NavHostController,
     mode: AppMode

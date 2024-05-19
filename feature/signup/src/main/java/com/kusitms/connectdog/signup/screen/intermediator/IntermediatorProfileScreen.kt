@@ -158,7 +158,6 @@ fun IntermediatorProfileScreen(
                 padding = 5,
                 onTextChanged = viewModel::updateName,
                 onClick = {
-
                 }
             )
 
