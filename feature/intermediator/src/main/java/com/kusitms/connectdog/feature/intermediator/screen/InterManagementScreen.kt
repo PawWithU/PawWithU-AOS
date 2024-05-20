@@ -96,7 +96,7 @@ internal fun InterManagementRoute(
             thirdContent = {
                 InProgress(
                     uiState = inProgressUiState,
-                    onClick = {
+                    onCompleteClick = {
                         viewModel.completeApplication(it.applicationId!!)
                         isCompletedDialogVisible = true
                     }
@@ -198,13 +198,13 @@ private fun PendingApproval(
 @Composable
 private fun InProgress(
     uiState: InterApplicationUiState,
-    onClick: (InterApplication) -> Unit
+    onCompleteClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    InProgressContent(application = it) { onClick(it) }
+                    InProgressContent(application = it) { onCompleteClick(it) }
                 }
             }
         }
