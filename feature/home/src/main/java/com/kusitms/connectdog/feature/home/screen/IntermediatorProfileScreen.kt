@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -20,6 +21,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,8 +36,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorInfoResponseItem
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationCard
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.DetailInfo
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
@@ -43,14 +45,12 @@ import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationTyp
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
-import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.AnnouncementHome
+import com.kusitms.connectdog.core.model.Announcement
 import com.kusitms.connectdog.core.model.Review
 import com.kusitms.connectdog.feature.home.IntermediatorProfileViewModel
-import com.kusitms.connectdog.feature.home.R
 import kotlinx.coroutines.launch
 
-val pages = listOf("기본 정보", "후기", "근황")
+private val pages = listOf("기본 정보", "모집중", "완료 및 후기")
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -60,23 +60,27 @@ fun IntermediatorProfileScreen(
     intermediaryId: Long,
     viewModel: IntermediatorProfileViewModel = hiltViewModel()
 ) {
-    viewModel.initIntermediatorProfile(intermediaryId)
-    viewModel.initIntermediatorNotice(intermediaryId)
-    viewModel.initIntermediatorReview(intermediaryId)
-
     val intermediator by viewModel.intermediator.observeAsState(null)
     val notice by viewModel.notice.observeAsState(null)
     val review by viewModel.review.observeAsState(null)
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.initIntermediatorProfile(intermediaryId)
+        viewModel.initIntermediatorNotice(intermediaryId)
+        viewModel.initIntermediatorReview(intermediaryId)
+    }
+
     val noticeItem = notice?.let { item ->
         List(item.size) {
-            AnnouncementHome(
+            Announcement(
                 imageUrl = item[it].mainImage,
                 location = "${item[it].departureLoc} → ${item[it].arrivalLoc}",
                 date = "${item[it].startDate} ~ ${item[it].endDate}",
                 postId = item[it].postId.toInt(),
-                dogName = "강아지 이름",
-                pickUpTime = "픽업 시간"
+                dogName = item[it].dogName,
+                pickUpTime = item[it].pickUpTime,
+                dogSize = item[it].dogSize,
+                isKennel = item[it].isKennel
             )
         }
     }
@@ -108,7 +112,7 @@ fun IntermediatorProfileScreen(
 @Composable
 private fun Content(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<AnnouncementHome>,
+    noticeItem: List<Announcement>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -121,7 +125,7 @@ private fun Content(
 @Composable
 fun IntermediatorProfile(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<AnnouncementHome>,
+    noticeItem: List<Announcement>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -130,14 +134,6 @@ fun IntermediatorProfile(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NetworkImage(imageUrl = intermediator.profileImage, modifier = Modifier.size(80.dp))
-        Spacer(modifier = Modifier.height(12.dp))
-        ConnectDogOutlinedButton(
-            width = 80,
-            height = 26,
-            text = "봉사 ${intermediator.completedPostCount}회 진행",
-            padding = 5,
-            onClick = {}
-        )
         Spacer(modifier = Modifier.height(12.dp))
         Text(intermediator.name, fontSize = 18.sp, color = Gray1, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
@@ -158,7 +154,7 @@ fun IntermediatorProfile(
 @Composable
 fun TabLayout(
     intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<AnnouncementHome>,
+    noticeItem: List<Announcement>,
     reviewItem: List<Review>,
     onDetailClick: (Long) -> Unit
 ) {
@@ -196,9 +192,9 @@ fun TabLayout(
                 state = pagerState
             ) {
                 when (it) {
-                    0 -> Information(intermediator, noticeItem, onDetailClick)
-                    1 -> Review(reviewItem)
-                    2 -> News()
+                    0 -> Information(intermediator)
+                    1 -> InProgress(noticeItem, onDetailClick)
+                    2 -> Review(reviewItem)
                 }
             }
         }
@@ -206,10 +202,8 @@ fun TabLayout(
 }
 
 @Composable
-fun Information(
-    intermediator: IntermediatorInfoResponseItem,
-    noticeItem: List<AnnouncementHome>,
-    onDetailClick: (Long) -> Unit
+private fun Information(
+    intermediator: IntermediatorInfoResponseItem
 ) {
     Column(
         modifier = Modifier
@@ -217,19 +211,12 @@ fun Information(
             .verticalScroll(rememberScrollState())
     ) {
         IntermediatorInformation(intermediator)
-        Divider(
-            Modifier
-                .height(8.dp)
-                .fillMaxWidth(),
-            color = Gray7
-        )
-        Announcement(noticeItem, onDetailClick)
         Spacer(modifier = Modifier.height(30.dp))
     }
 }
 
 @Composable
-fun IntermediatorInformation(intermediator: IntermediatorInfoResponseItem) {
+private fun IntermediatorInformation(intermediator: IntermediatorInfoResponseItem) {
     Column(
         modifier = Modifier.padding(all = 24.dp),
         verticalArrangement = Arrangement.Top
@@ -249,21 +236,7 @@ fun IntermediatorInformation(intermediator: IntermediatorInfoResponseItem) {
 }
 
 @Composable
-fun Announcement(noticeItem: List<AnnouncementHome>, onDetailClick: (Long) -> Unit) {
-    val modifier = Modifier.padding(horizontal = 20.dp)
-    Column {
-        MoveContent(onClick = { }, titleRes = R.string.home_navigate_search)
-        AnnouncementListContent(
-            list = noticeItem,
-            modifier = modifier,
-            arrangement = Arrangement.spacedBy(12.dp),
-            onClick = onDetailClick
-        )
-    }
-}
-
-@Composable
-fun Review(reviewItem: List<Review>) {
+private fun Review(reviewItem: List<Review>) {
     val modifier = Modifier.padding(horizontal = 0.dp)
     Column(
         verticalArrangement = Arrangement.Top
@@ -276,10 +249,27 @@ fun Review(reviewItem: List<Review>) {
 }
 
 @Composable
-fun News() {
+private fun InProgress(
+    list: List<Announcement>,
+    onDetailClick: (Long) -> Unit
+) {
     Column(
-        modifier = Modifier.padding(all = 24.dp),
         verticalArrangement = Arrangement.Top
     ) {
+        LazyColumn {
+            items(list) {
+                AnnouncementContent(
+                    postId = it.postId,
+                    imageUrl = it.imageUrl,
+                    dogName = it.dogName,
+                    location = it.location,
+                    isKennel = it.isKennel,
+                    dogSize = it.dogSize,
+                    date = it.date,
+                    pickUpTime = it.pickUpTime,
+                    onClick = onDetailClick
+                )
+            }
+        }
     }
 }
