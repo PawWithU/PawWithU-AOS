@@ -145,7 +145,7 @@ class MainActivity : ComponentActivity() {
             val imeHeight =
                 (windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom / density).toInt()
             if (imeHeight != 0) {
-                this@MainActivity.imeHeight = imeHeight - 20
+                this@MainActivity.imeHeight = imeHeight - 50
             } else {
                 this@MainActivity.imeHeight = 0
             }
