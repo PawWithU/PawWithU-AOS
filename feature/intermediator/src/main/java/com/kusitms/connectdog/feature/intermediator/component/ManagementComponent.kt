@@ -44,6 +44,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Red2
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.util.calDateTimeDifference
@@ -112,7 +113,7 @@ internal fun PendingContent(application: InterApplication, onClick: () -> Unit) 
 @Composable
 internal fun InProgressContent(
     application: InterApplication,
-    onClick: () -> Unit
+    onCompleteClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -127,10 +128,21 @@ internal fun InProgressContent(
             location = application.location,
             volunteerName = application.volunteerName
         )
-        ConnectDogSecondaryButton(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
-            contentRes = R.string.make_complete
-        ) { onClick() }
+        Row(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            ConnectDogSecondaryButton(
+                modifier = Modifier.padding(start = 20.dp, bottom = 20.dp).weight(1f),
+                contentRes = R.string.check_volunteer
+            ) { onCompleteClick() }
+            Spacer(modifier = Modifier.width(8.dp))
+            ConnectDogSecondaryButton(
+                color = PetOrange,
+                textColor = Color.White,
+                modifier = Modifier.padding(end = 20.dp, bottom = 20.dp).weight(1f),
+                contentRes = R.string.make_complete
+            ) { onCompleteClick() }
+        }
     }
     Divider(thickness = 8.dp, color = Gray7)
 }

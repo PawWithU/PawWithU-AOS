@@ -4,7 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.kusitms.connectdog.feature.intermediator.screen.CreateAnnouncementScreen
+import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationDogScreen
+import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationInfoScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterHomeScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterManagementRoute
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileEditScreen
@@ -41,6 +42,10 @@ fun NavController.navigateToReview(id: Long) {
     navigate(route)
 }
 
+fun NavController.navigateToCreateDog() {
+    navigate(IntermediatorRoute.create_application_dog)
+}
+
 fun NavGraphBuilder.intermediatorNavGraph(
     imeHeight: Int,
     onBackClick: () -> Unit,
@@ -50,7 +55,8 @@ fun NavGraphBuilder.intermediatorNavGraph(
     onManagementClick: (Int) -> Unit,
     onNavigateToCreateAnnouncement: () -> Unit,
     onNavigateToInterProfileEdit: () -> Unit,
-    onNavigateToReview: (Long) -> Unit
+    onNavigateToReview: (Long) -> Unit,
+    onNavigateToCreateDog: () -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
         InterHomeScreen(
@@ -80,7 +86,11 @@ fun NavGraphBuilder.intermediatorNavGraph(
     }
 
     composable(route = IntermediatorRoute.create_announcement) {
-        CreateAnnouncementScreen()
+        CreateApplicationInfoScreen(
+            onBackClick = onBackClick,
+            navigateToCreateDog = onNavigateToCreateDog,
+            imeHeight = imeHeight
+        )
     }
 
     composable(route = IntermediatorRoute.inter_profile_edit) {
@@ -93,6 +103,12 @@ fun NavGraphBuilder.intermediatorNavGraph(
     composable(route = IntermediatorRoute.inter_review) {
         ReviewScreen()
     }
+
+    composable(route = IntermediatorRoute.create_application_dog) {
+        CreateApplicationDogScreen(
+            onBackClick = onBackClick
+        )
+    }
 }
 
 object IntermediatorRoute {
@@ -102,4 +118,5 @@ object IntermediatorRoute {
     const val create_announcement = "create_announcement"
     const val inter_profile_edit = "inter_profile_edit"
     const val inter_review = "inter_review"
+    const val create_application_dog = "create_application_dog"
 }

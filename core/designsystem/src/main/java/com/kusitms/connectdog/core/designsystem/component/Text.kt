@@ -41,7 +41,8 @@ fun DetailInfo(
 fun TextWithIcon(
     text: String,
     iconId: Int,
-    size: Int = 12
+    size: Int = 12,
+    spacer: Int = 6
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
@@ -51,7 +52,7 @@ fun TextWithIcon(
             contentDescription = null,
             tint = Gray2
         )
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(spacer.dp))
         Text(
             text = text,
             fontSize = size.sp,
