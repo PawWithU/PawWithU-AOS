@@ -43,15 +43,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.feature.signup.R
 import com.kusitms.connectdog.signup.viewmodel.IntermediatorProfileViewModel
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -59,7 +59,8 @@ fun IntermediatorProfileScreen(
     onBackClick: () -> Unit,
     navigateToIntermediatorInfo: () -> Unit,
     imeHeight: Int,
-    viewModel: IntermediatorProfileViewModel = hiltViewModel()
+    viewModel: IntermediatorProfileViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel
 ) {
     val context = LocalContext.current
 
@@ -169,22 +170,16 @@ fun IntermediatorProfileScreen(
                 placeholder = "한 줄 소개 입력",
                 height = 130
             )
-//            ConnectDogTextField(
-//                text = viewModel.introduce,
-//                onTextChanged = { viewModel.updateIntroduce(it) },
-//                label = "문의 받을 연락처",
-//                placeholder = "문의받을 연락처를 입력해주세요.",
-//                height = 200
-//            )
             Spacer(modifier = Modifier.weight(1f))
-            ConnectDogNormalButton(
+            ConnectDogBottomButton(
                 content = "다음",
-                modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                color = PetOrange,
-                onClick = navigateToIntermediatorInfo
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                enabled = viewModel.name != "" && viewModel.introduce != "",
+                onClick = {
+                    navigateToIntermediatorInfo()
+                    signUpViewModel.updateIntro(viewModel.introduce)
+                    signUpViewModel.updateNickname(viewModel.name)
+                }
             )
             Spacer(modifier = Modifier.height((imeHeight + 32).dp))
         }
