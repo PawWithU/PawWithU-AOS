@@ -86,7 +86,7 @@ internal fun MainScreen(
                         navigateToSelectProfileImage = { navigator.navigateSelectProfileImage() },
                         navigateToCompleteSignUp = { navigator.navigateCompleteSignUp(it) },
                         navigateToVolunteer = { navigator.navigateHome() },
-                        navigateToIntermediator = { navigator.navigateManageAccount() },
+                        navigateToIntermediator = { navigator.navigateIntermediatorHome() },
                         imeHeight = imeHeight,
                         signUpViewModel = signUpViewModel,
                         profileViewModel = profileViewModel,

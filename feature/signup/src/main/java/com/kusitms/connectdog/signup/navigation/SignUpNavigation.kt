@@ -141,7 +141,8 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorProfileScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            navigateToIntermediatorInfo = navigateToIntermediatorInformation
+            navigateToIntermediatorInfo = navigateToIntermediatorInformation,
+            signUpViewModel = signUpViewModel
         )
     }
 
@@ -149,7 +150,8 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorInformationScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            onNavigateToCompleteSignUp = navigateToCompleteSignUp
+            onNavigateToCompleteSignUp = navigateToCompleteSignUp,
+            signUpViewModel = signUpViewModel
         )
     }
 
@@ -183,7 +185,8 @@ fun NavGraphBuilder.signUpGraph(
             onSendMessageClick = onSendMessage,
             onVerifyCodeClick = onVerifyCode,
             imeHeight = imeHeight,
-            userType = it.arguments!!.getSerializable("type") as UserType
+            userType = it.arguments!!.getSerializable("type") as UserType,
+            signUpViewModel = signUpViewModel
         )
     }
 }

@@ -4,6 +4,8 @@ import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
 import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
@@ -88,6 +90,11 @@ internal interface ApiService {
     suspend fun postSocialVolunteerSignUp(
         @Body socialVolunteerSignUpBody: SocialVolunteerSignUpBody
     )
+
+    @POST("/volunteers/phone/isDuplicated")
+    suspend fun getIsDuplicatePhoneNumber(
+        @Body isDuplicatePhoneNumberBody: IsDuplicatePhoneNumberBody
+    ): IsDuplicatePhoneNumberResponse
 
     /**
      * 봉사관리
