@@ -1,5 +1,7 @@
 package com.kusitms.connectdog.core.data.api
 
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.Response
 import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
@@ -10,13 +12,30 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorSignUpBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface InterApiService {
+
+    /**
+     * 회원가입
+     */
+    @POST("/intermediaries/sign-up")
+    suspend fun intermediatorSignUp(
+        @Body body: IntermediatorSignUpBody
+    )
+
+    @POST("/intermediaries/phone/isDuplicated")
+    suspend fun getIsDuplicatePhoneNumber(
+        @Body body: IsDuplicatePhoneNumberBody
+    ): IsDuplicatePhoneNumberResponse
+
     /**
      * 봉사관리
      */
