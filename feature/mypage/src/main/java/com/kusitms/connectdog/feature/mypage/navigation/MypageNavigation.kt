@@ -82,7 +82,7 @@ fun NavGraphBuilder.mypageNavGraph(
     composable(route = MypageRoute.editProfile) {
         EditProfileScreen(
             onBackClick = onBackClick,
-            onEditProfileImageClick = onEditProfileImageClick,
+            onEditProfileImageClick = onEditProfileImageClick
         )
     }
 

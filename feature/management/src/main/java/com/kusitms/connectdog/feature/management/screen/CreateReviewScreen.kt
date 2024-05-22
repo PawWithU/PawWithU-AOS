@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,12 +57,10 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.feature.management.R
 import com.kusitms.connectdog.feature.management.dialog.CreateReviewDialog
@@ -311,12 +308,12 @@ private fun AddPhotoButton(onClick: () -> Unit) {
     }
 }
 
-//@Preview
-//@Composable
-//private fun CreateReviewScreenPreview() {
+// @Preview
+// @Composable
+// private fun CreateReviewScreenPreview() {
 //    ConnectDogTheme {
 //        CreateReviewScreen(
 //            onBackClick = {}
 //        )
 //    }
-//}
+// }
