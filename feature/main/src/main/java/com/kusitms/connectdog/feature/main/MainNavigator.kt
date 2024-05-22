@@ -131,7 +131,7 @@ internal class MainNavigator(
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
-    fun navigateCreateReview() = navController.navigateCreateReview()
+    fun navigateCreateReview(application: String) = navController.navigateCreateReview(application)
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateInterHome()

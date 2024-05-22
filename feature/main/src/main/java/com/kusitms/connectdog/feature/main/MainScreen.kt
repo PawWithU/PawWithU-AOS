@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.main
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.google.gson.Gson
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.util.AppMode
 import com.kusitms.connectdog.feature.home.navigation.homeNavGraph
@@ -117,7 +119,10 @@ internal fun MainScreen(
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackbar = {},
-                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
+                        onNavigateToCreateReview = {
+                            val jsonData = Uri.encode(Gson().toJson(it))
+                            navigator.navigateCreateReview(jsonData)
+                        }
                     )
                     mypageNavGraph(
                         padding = it,
