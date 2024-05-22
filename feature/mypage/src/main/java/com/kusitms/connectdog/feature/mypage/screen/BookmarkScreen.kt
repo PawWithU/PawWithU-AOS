@@ -1,12 +1,10 @@
 package com.kusitms.connectdog.feature.mypage.screen
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,10 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
 import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
-import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
-import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
 
@@ -80,26 +76,6 @@ private fun Content(
             }
         }
     }
-}
-
-@Composable
-private fun BookmarkContent(
-    item: BookmarkResponseItem,
-    onDetailClick: (Long) -> Unit
-) {
-    ListForUserItem(
-        modifier = Modifier
-            .padding(20.dp)
-            .clickable(
-                onClick = { onDetailClick(item.postId) }
-            ),
-        imageUrl = item.mainImage,
-        location = "${item.departureLoc} → ${item.arrivalLoc}",
-        date = "${item.startDate} - ${item.endDate}",
-        organization = item.dogName,
-        hasKennel = item.isKennel
-    )
-    Divider(thickness = 8.dp, color = Gray7)
 }
 
 @Preview
