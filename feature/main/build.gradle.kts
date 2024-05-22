@@ -63,6 +63,7 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
     implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation(libs.google.gson)
 
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
