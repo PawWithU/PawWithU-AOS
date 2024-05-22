@@ -4,14 +4,16 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class InterApplicationWaitingResponseItem(
-    val applicationId: Long,
     val postId: Long,
-    val applicationTime: String,
+    val applicationId: Long,
     val arrivalLoc: String,
     val departureLoc: String,
     val dogName: String,
     val endDate: String,
     val mainImage: String,
     val startDate: String,
-    val volunteerName: String
+    val isKennel: Boolean,
+    val pickUpTime: String,
+    val dogSize: String,
+    val applicationTime: String
 )

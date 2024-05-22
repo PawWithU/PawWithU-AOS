@@ -58,6 +58,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTagWithIcon
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.DetailInfo
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
+import com.kusitms.connectdog.core.designsystem.component.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
@@ -282,10 +283,9 @@ private fun BasicInfo(
             color = Gray3
         )
         Spacer(modifier = Modifier.height(6.dp))
-
-        test(iconId = R.drawable.ic_clock, text = detail.startDate)
+        TextWithIcon(iconId = R.drawable.ic_clock, text = detail.startDate, size = 14)
         Spacer(modifier = Modifier.height(8.dp))
-        test(iconId = R.drawable.ic_clock, text = detail.pickUpTime)
+        TextWithIcon(iconId = R.drawable.ic_clock, text = detail.pickUpTime, size = 14)
         Spacer(modifier = Modifier.height(17.dp))
         Row {
             ConnectDogTagWithIcon(
@@ -306,20 +306,6 @@ private fun BasicInfo(
                 }
             )
         }
-    }
-}
-
-@Composable
-private fun test(
-    iconId: Int,
-    text: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(painter = painterResource(id = iconId), contentDescription = null, tint = Gray2)
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(text = text, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Gray2)
     }
 }
 

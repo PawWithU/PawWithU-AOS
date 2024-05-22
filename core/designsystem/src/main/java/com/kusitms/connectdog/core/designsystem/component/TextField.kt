@@ -52,7 +52,8 @@ fun ConnectDogTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     isError: Boolean = false,
     @SuppressLint("PrivateResource") @StringRes errorMessageRes: Int = R.string.default_error_message,
-    height: Int = 65
+    height: Int = 65,
+    modifier: Modifier = Modifier
 ) {
     val visualTransformation =
         if (keyboardType == KeyboardType.Password) {
@@ -62,7 +63,7 @@ fun ConnectDogTextField(
         }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .height(height.dp)
             .fillMaxWidth()
     ) {
@@ -94,21 +95,6 @@ fun ConnectDogTextField(
             shape = RoundedCornerShape(12.dp),
             isError = isError,
             enabled = enabled,
-            supportingText = {
-                if (isError) {
-                    Text(
-                        text = stringResource(id = errorMessageRes),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                } else if (supportingText != null) {
-                    Text(
-                        text = stringResource(id = supportingText),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Gray3
-                    )
-                }
-            },
             colors =
             OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = borderColor,

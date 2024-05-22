@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,8 +22,10 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +35,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,12 +66,14 @@ import kotlinx.coroutines.launch
 internal fun LoginRoute(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
     LoginScreen(
         onNavigateToNormalLogin = onNavigateToNormalLogin,
         onNavigateToSignup = onNavigateToSignup,
-        onNavigateToVolunteerHome = onNavigateToVolunteerHome
+        onNavigateToVolunteerHome = onNavigateToVolunteerHome,
+        onNavigateToIntermediatorHome = onNavigateToIntermediatorHome
     )
 }
 
@@ -76,10 +82,20 @@ internal fun LoginRoute(
 fun LoginScreen(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                onClick = { focusManager.clearFocus() },
+                indication = null,
+                interactionSource = interactionSource
+            )
     ) {
         Text(
             modifier = Modifier.padding(start = 20.dp, top = 32.dp, bottom = 32.dp),
@@ -90,7 +106,8 @@ fun LoginScreen(
         LoginContent(
             onNavigateToNormalLogin,
             onNavigateToSignup,
-            onNavigateToVolunteerHome
+            onNavigateToVolunteerHome,
+            onNavigateToIntermediatorHome
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -108,7 +125,8 @@ fun LoginScreen(
 private fun LoginContent(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToVolunteerHome: () -> Unit
+    onNavigateToVolunteerHome: () -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit
 ) {
     val pages = listOf("이동봉사자 회원", "이동봉사 모집자 회원")
     Column(
@@ -154,7 +172,7 @@ private fun LoginContent(
                 )
 
                 1 -> Intermediator(
-                    onNavigateToNormalLogin = onNavigateToNormalLogin,
+                    onNavigateToIntermediatorHome = onNavigateToIntermediatorHome,
                     onNavigateToSignup = onNavigateToSignup
                 )
             }
@@ -171,6 +189,13 @@ private fun Volunteer(
 ) {
     val context = LocalContext.current
     val socialType by viewModel.socialType.collectAsState()
+
+    socialType?.let {
+        when (it) {
+            SocialType.VOLUNTEER -> onNavigateToVolunteerHome()
+            SocialType.GUEST -> onNavigateToSignup(UserType.SOCIAL_VOLUNTEER)
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -205,22 +230,21 @@ private fun Volunteer(
         Spacer(modifier = Modifier.height(30.dp))
         SignUpOrLogin(onNavigateToSignup, onNavigateToNormalLogin, UserType.NORMAL_VOLUNTEER)
     }
-
-    socialType?.let {
-        when (it) {
-            SocialType.VOLUNTEER -> onNavigateToVolunteerHome()
-            SocialType.GUEST -> {}
-        }
-    }
 }
 
 @Composable
 private fun Intermediator(
-    onNavigateToNormalLogin: (UserType) -> Unit,
+    onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val isLoginSuccessful by viewModel.isLoginSuccessful.collectAsState()
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.isLoginSuccessful.collect {
+            if (it == true) { onNavigateToIntermediatorHome() }
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -235,7 +259,7 @@ private fun Intermediator(
             placeholder = "이메일 입력",
             keyboardType = KeyboardType.Text,
             onTextChanged = { viewModel.updateEmail(it) },
-            isError = isLoginSuccessful?.let { !it } ?: run { false }
+            isError = (isLoginSuccessful == false)
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogTextField(
@@ -244,14 +268,16 @@ private fun Intermediator(
             placeholder = "비밀번호 입력",
             keyboardType = KeyboardType.Password,
             onTextChanged = { viewModel.updatePassword(it) },
-            isError = isLoginSuccessful?.let { !it } ?: run { false }
+            isError = (isLoginSuccessful == false)
         )
         Spacer(modifier = Modifier.height(12.dp))
         ConnectDogNormalButton(
             modifier = Modifier
                 .fillMaxWidth(),
             content = stringResource(id = R.string.login),
-            onClick = { viewModel.initIntermediatorLogin() }
+            onClick = {
+                viewModel.initIntermediatorLogin()
+            }
         )
         Spacer(modifier = Modifier.height(30.dp))
         AccountFind(

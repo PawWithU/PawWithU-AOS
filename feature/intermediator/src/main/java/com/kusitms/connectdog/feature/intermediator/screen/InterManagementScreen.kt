@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
 import com.kusitms.connectdog.core.designsystem.component.Loading
@@ -41,14 +42,13 @@ import com.kusitms.connectdog.core.designsystem.component.UiState
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
-import com.kusitms.connectdog.feature.intermediator.InterManagementViewModel
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.component.CompletedContent
 import com.kusitms.connectdog.feature.intermediator.component.CompletedDialog
 import com.kusitms.connectdog.feature.intermediator.component.InProgressContent
 import com.kusitms.connectdog.feature.intermediator.component.PendingContent
-import com.kusitms.connectdog.feature.intermediator.component.RecruitingContent
 import com.kusitms.connectdog.feature.intermediator.component.VolunteerBottomSheet
+import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,15 +58,16 @@ internal fun InterManagementRoute(
     viewModel: InterManagementViewModel = hiltViewModel()
 ) {
     val recruitingUiState by viewModel.recruitingUiState.collectAsStateWithLifecycle()
-    val pendingUiState by viewModel.waitingUiState.collectAsStateWithLifecycle()
+    val waitingUiState by viewModel.waitingUiState.collectAsStateWithLifecycle()
     val inProgressUiState by viewModel.progressUiState.collectAsStateWithLifecycle()
     val completedUiState by viewModel.completedUiState.collectAsStateWithLifecycle()
 
-    val sheetState = rememberModalBottomSheetState()
+    val selectedApplication by viewModel.selectedApplication.collectAsStateWithLifecycle()
+
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
     val pendingDataState by viewModel.pendingDataState.collectAsState()
-    // Log.d("InterManagementRoute", "dataUiState = $dataUiState")
     UiState(dataUiState = pendingDataState) {
         viewModel.refreshWaitingUiState()
     }
@@ -83,17 +84,19 @@ internal fun InterManagementRoute(
         TopAppBar(titleRes = R.string.manage_application) { onBackClick() }
         ManagementScreen(
             tabIndex = tabIndex,
-            firstContent = { Recruiting(uiState = recruitingUiState) },
+            firstContent = {
+                Recruiting(uiState = recruitingUiState, onClick = {})
+            },
             secondContent = {
-                PendingApproval(uiState = pendingUiState, onClick = {
-                    viewModel.selectedApplication = it
+                PendingApproval(uiState = waitingUiState) { application ->
+                    viewModel.updateSelectedApplication(application)
                     isSheetOpen = true
-                })
+                }
             },
             thirdContent = {
                 InProgress(
                     uiState = inProgressUiState,
-                    onClick = {
+                    onCompleteClick = {
                         viewModel.completeApplication(it.applicationId!!)
                         isCompletedDialogVisible = true
                     }
@@ -109,9 +112,9 @@ internal fun InterManagementRoute(
         )
     }
 
-    if (isSheetOpen && viewModel.selectedApplication != null) {
+    if (isSheetOpen && selectedApplication != null) {
         VolunteerBottomSheet(
-            interApplication = viewModel.selectedApplication!!,
+            interApplication = selectedApplication!!,
             sheetState = sheetState,
             onDismissRequest = { isSheetOpen = false },
             viewModel = viewModel
@@ -140,19 +143,32 @@ private fun TopAppBar(
 
 @Composable
 private fun Recruiting(
-    uiState: InterApplicationUiState
+    uiState: InterApplicationUiState,
+    onClick: (Long) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    RecruitingContent(application = it)
+                    AnnouncementContent(
+                        postId = it.postId.toInt(),
+                        imageUrl = it.imageUrl,
+                        dogName = it.dogName,
+                        location = it.location,
+                        isKennel = it.isKennel ?: false,
+                        dogSize = it.dogSize ?: "",
+                        date = it.date,
+                        pickUpTime = it.pickUpTime ?: "",
+                        onClick = onClick
+                    )
                 }
             }
         }
+
         is InterApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_recruiting, descriptionRes = R.string.no_description)
         }
+
         is InterApplicationUiState.Loading -> Loading()
     }
 }
@@ -170,9 +186,11 @@ private fun PendingApproval(
                 }
             }
         }
+
         is InterApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_waiting, descriptionRes = R.string.no_description)
         }
+
         is InterApplicationUiState.Loading -> Loading()
     }
 }
@@ -180,19 +198,21 @@ private fun PendingApproval(
 @Composable
 private fun InProgress(
     uiState: InterApplicationUiState,
-    onClick: (InterApplication) -> Unit
+    onCompleteClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    InProgressContent(application = it) { onClick(it) }
+                    InProgressContent(application = it) { onCompleteClick(it) }
                 }
             }
         }
+
         is InterApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_progressing, descriptionRes = R.string.no_description)
         }
+
         is InterApplicationUiState.Loading -> Loading()
     }
 }
@@ -215,9 +235,11 @@ private fun Completed(
                 }
             }
         }
+
         is InterApplicationUiState.Empty -> {
             Empty(titleRes = R.string.no_completed, descriptionRes = R.string.no_description)
         }
+
         is InterApplicationUiState.Loading -> Loading()
     }
 }

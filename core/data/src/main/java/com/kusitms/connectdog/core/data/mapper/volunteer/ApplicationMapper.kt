@@ -11,11 +11,12 @@ internal fun ApplicationWaitingResponseItem.toData(): Application {
         imageUrl = mainImage,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        organization = intermediaryName,
         hasKennel = isKennel,
         postId = postId,
         applicationId = applicationId,
-        reviewId = -1
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
 }
 
@@ -24,9 +25,12 @@ internal fun ApplicationInProgressResponseItem.toData(): Application {
         imageUrl = mainImage,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        organization = intermediaryName,
         hasKennel = isKennel,
-        postId = postId
+        postId = postId,
+        applicationId = applicationId,
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
 }
 
@@ -35,10 +39,11 @@ internal fun ApplicationCompletedResponseItem.toData(): Application {
         imageUrl = mainImage,
         location = "${this.departureLoc} → ${this.arrivalLoc}",
         date = dateRangeFormat(startDate, endDate),
-        organization = intermediaryName,
         hasKennel = isKennel,
         postId = postId,
         reviewId = reviewId,
-        dogStatusId = dogStatusId
+        dogName = dogName,
+        dogSize = dogSize,
+        pickUpTime = pickUpTime
     )
 }

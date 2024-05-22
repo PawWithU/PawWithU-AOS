@@ -12,7 +12,7 @@ import com.kusitms.connectdog.feature.login.screen.LoginRoute
 import com.kusitms.connectdog.feature.login.screen.NormalLoginScreen
 import com.kusitms.connectdog.feature.login.screen.PasswordSearchScreen
 
-fun NavController.onLogoutClick() {
+fun NavController.navigateToLoginRoute() {
     navigate(LoginRoute.route) {
         popUpTo(graph.id) {
             inclusive = true
@@ -56,7 +56,8 @@ fun NavGraphBuilder.loginNavGraph(
         LoginRoute(
             onNavigateToNormalLogin,
             onNavigateToSignup,
-            onNavigateToVolunteer
+            onNavigateToVolunteer,
+            onNavigateToIntermediatorHome
         )
     }
 

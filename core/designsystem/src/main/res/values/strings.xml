@@ -23,11 +23,25 @@
     <string name="name">이름</string>
     <string name="phone">전화번호</string>
     <string name="vehicle">이동봉사 수단</string>
-    <string name="volunteer_comment">봉사자의 한마디</string>
+    <string name="inquiry">전달 및 문의사항</string>
     <string name="login_error">아이디 혹은 비밀번호가 일치하지 않습니다</string>
     <string name="volunteer_login">이동봉사자 로그인</string>
     <string name="intermediator_login">이동봉사 중개 회원 로그인</string>
     <string name="home_banner_1">이동봉사가 처음이라면?\n</string>
     <string name="home_banner_2">한눈에 보는 이동봉사 가이드!</string>
     <string name="home_banner_button_guideline">가이드 확인하기</string>
+
+    <string name="filter_select_departure">출발지 선택</string>
+    <string name="filter_departure">출발</string>
+    <string name="filter_select_destination">도착지 선택</string>
+    <string name="filter_destination">도착</string>
+    <string name="filter_select_departure_region">출발 지역 선택</string>
+    <string name="filter_select_destination_region">도착 지역 선택</string>
+
+    <string name="filter_kennel_no_need">O (준비 불필요)</string>
+    <string name="filter_kennel_need">X (준비 필요)</string>
+
+    <string name="filter_big_dog">대형견</string>
+    <string name="filter_middle_dog">중형견</string>
+    <string name="filter_small_dog">소형견</string>
 </resources>

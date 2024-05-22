@@ -1,24 +1,33 @@
 package com.kusitms.connectdog.feature.main
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.messaging.FirebaseMessaging
 import com.kusitms.connectdog.core.data.repository.DataStoreRepository
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,10 +45,13 @@ class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var verificationId: String
     private var imeHeight by mutableIntStateOf(0)
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
+        askNotificationPermission()
+        initializeFcmToken()
         auth = FirebaseAuth.getInstance()
 
         installSplashScreen()
@@ -133,11 +145,43 @@ class MainActivity : ComponentActivity() {
             val imeHeight =
                 (windowInsets.getInsets(WindowInsetsCompat.Type.ime()).bottom / density).toInt()
             if (imeHeight != 0) {
-                this@MainActivity.imeHeight = imeHeight - 20
+                this@MainActivity.imeHeight = imeHeight - 50
             } else {
                 this@MainActivity.imeHeight = 0
             }
             ViewCompat.onApplyWindowInsets(view, windowInsets)
+        }
+    }
+
+    private fun initializeFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) return@OnCompleteListener
+                val token = task.result
+                viewModel.updateFcmToken(token)
+            }
+        )
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+        } else {
+        }
+    }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    // 이미 권한을 거절한 경우 권한 설정 화면으로 이동
+                } else {
+                    // 처음 권한 요청을 할 경우
+                    registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+                    }.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
         }
     }
 }

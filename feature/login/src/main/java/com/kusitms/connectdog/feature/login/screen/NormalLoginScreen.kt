@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -56,11 +57,13 @@ internal fun NormalLoginScreen(
     val interactionSource = remember { MutableInteractionSource() }
     val isLoginSuccessful by viewModel.isLoginSuccessful.collectAsState()
 
-    isLoginSuccessful?.let {
-        if (it) {
-            when (userType) {
-                UserType.INTERMEDIATOR -> onNavigateToIntermediatorHome()
-                else -> onNavigateToVolunteerHome()
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.isLoginSuccessful.collect {
+            if (it == true) {
+                when (userType) {
+                    UserType.INTERMEDIATOR -> onNavigateToIntermediatorHome()
+                    else -> onNavigateToVolunteerHome()
+                }
             }
         }
     }
@@ -136,19 +139,7 @@ private fun Content(
             ConnectDogNormalButton(
                 content = "로그인",
                 color = MaterialTheme.colorScheme.primary,
-                onClick = {
-                    when (userType) {
-                        UserType.INTERMEDIATOR -> {
-                            viewModel.initIntermediatorLogin()
-                        }
-
-                        UserType.NORMAL_VOLUNTEER -> {
-                            viewModel.initVolunteerLogin()
-                        }
-
-                        UserType.SOCIAL_VOLUNTEER -> {}
-                    }
-                },
+                onClick = { viewModel.initVolunteerLogin() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

@@ -7,9 +7,9 @@ data class AnnouncementHomeResponseItem(
     val arrivalLoc: String,
     val departureLoc: String,
     val endDate: String,
-    val intermediaryName: String,
-    val isKennel: Boolean,
     val mainImage: String,
     val postId: Int,
-    val startDate: String
+    val startDate: String,
+    val dogName: String,
+    val pickUpTime: String
 )

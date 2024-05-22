@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
+import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ListForUserItem
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
@@ -56,12 +57,27 @@ private fun Content(
     item: List<BookmarkResponseItem>,
     onDetailClick: (Long) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.padding(top = 48.dp),
-        verticalArrangement = Arrangement.Top
-    ) {
-        items(item) {
-            BookmarkContent(item = it, onDetailClick = onDetailClick)
+    if (item.isEmpty()) {
+        // TODO 저장된 공고가 비어있는 경우 표시될 UI 추가
+    } else {
+        LazyColumn(
+            modifier = Modifier.padding(top = 48.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            items(item) {
+                val data = it.toData()
+                AnnouncementContent(
+                    postId = data.postId,
+                    imageUrl = data.imageUrl,
+                    dogName = data.dogName,
+                    location = data.location,
+                    isKennel = data.isKennel,
+                    dogSize = data.dogSize,
+                    date = data.date,
+                    pickUpTime = data.pickUpTime,
+                    onClick = onDetailClick
+                )
+            }
         }
     }
 }
@@ -72,13 +88,15 @@ private fun BookmarkContent(
     onDetailClick: (Long) -> Unit
 ) {
     ListForUserItem(
-        modifier = Modifier.padding(20.dp).clickable(
-            onClick = { onDetailClick(item.postId) }
-        ),
+        modifier = Modifier
+            .padding(20.dp)
+            .clickable(
+                onClick = { onDetailClick(item.postId) }
+            ),
         imageUrl = item.mainImage,
         location = "${item.departureLoc} → ${item.arrivalLoc}",
         date = "${item.startDate} - ${item.endDate}",
-        organization = item.intermediaryName,
+        organization = item.dogName,
         hasKennel = item.isKennel
     )
     Divider(thickness = 8.dp, color = Gray7)

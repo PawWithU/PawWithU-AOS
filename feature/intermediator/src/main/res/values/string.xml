@@ -8,7 +8,7 @@
 
     <!-- 봉사 관리 -->
     <string name="manage_application">봉사 관리</string>
-    <string name="will_be_canceled">뒤 자동으로 취소됩니다</string>
+    <string name="will_be_canceled">확정하지 않으면 %s뒤 자동으로 취소됩니다</string>
     <string name="check_volunteer">이동봉사자 확인하기</string>
     <string name="check_volunteer_top_title">이동봉사자 확인</string>
     <string name="make_complete">봉사 완료하기</string>
@@ -31,4 +31,27 @@
     <string name="no_progressing">진행중인 공고가 없어요</string>
     <string name="no_completed">완료된 공고가 없어요</string>
     <string name="no_description">홈에서 이동봉사 공고를 등록해주세요!</string>
+    <string name="review">이동봉사 후기</string>
+
+    <!--모집자 프로필-->
+    <string name="inter_profile">프로필 보기</string>
+    <string name="inter_profile_edit">프로필 수정</string>
+
+
+    <!--이동봉사 공고 등록-->
+    <string name="create_announcement">이동봉사 공고 등록</string>
+    <string name="create_announcement_title">이동봉사 정보를 입력해 주세요</string>
+    <string name="create_announcement_subtitle_1">이동봉사가 필요한 지역은 어디인가요?</string>
+    <string name="create_announcement_subtitle_2">이동봉사가 필요한 날짜는 언제인가요?</string>
+    <string name="create_announcement_subtitle_3">봉사자가 출발지에 도착해야하는 시간은 언제인가요?</string>
+    <string name="create_announcement_subtitle_4">봉사자가 켄넬을 준비해야하나요?</string>
+    <string name="create_announcement_subtitle_5">이동봉사에 대한 자세한 설명을 입력해주세요</string>
+    <string name="calendar_title">일정 선택</string>
+
+    <string name="create_announcement_dog_title">동물 정보를 입력해 주세요</string>
+    <string name="create_announcement_dog_subtitle_1">동물 이름을 알려주세요.</string>
+    <string name="create_announcement_dog_subtitle_2">동물 크기를 알려주세요.</string>
+    <string name="create_announcement_dog_subtitle_3">사진 (최대 5장)</string>
+    <string name="create_announcement_dog_subtitle_4">이동 동물의 특이사항이 있다면 알려주세요</string>
+    <string name="create_announcement_dog_comment">아직 이름이 없다면 예명을 지어주세요!</string>
 </resources>

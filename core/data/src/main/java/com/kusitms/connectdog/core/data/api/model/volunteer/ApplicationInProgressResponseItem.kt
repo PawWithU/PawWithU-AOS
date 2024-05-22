@@ -6,10 +6,13 @@ import com.squareup.moshi.JsonClass
 data class ApplicationInProgressResponseItem(
     val arrivalLoc: String,
     val departureLoc: String,
+    val startDate: String,
     val endDate: String,
-    val intermediaryName: String,
     val isKennel: Boolean,
     val mainImage: String,
     val postId: Long,
-    val startDate: String
+    val dogName: String,
+    val pickUpTime: String,
+    val dogSize: String,
+    val applicationId: Long
 )

@@ -2,7 +2,10 @@ package com.kusitms.connectdog.core.data.api
 
 import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
@@ -18,6 +21,7 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.ApplicationInProgres
 import com.kusitms.connectdog.core.data.api.model.volunteer.ApplicationWaitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.BadgeResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.BasicInformationResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationResponseItem
@@ -86,6 +90,11 @@ internal interface ApiService {
     suspend fun postSocialVolunteerSignUp(
         @Body socialVolunteerSignUpBody: SocialVolunteerSignUpBody
     )
+
+    @POST("/volunteers/phone/isDuplicated")
+    suspend fun getIsDuplicatePhoneNumber(
+        @Body isDuplicatePhoneNumberBody: IsDuplicatePhoneNumberBody
+    ): IsDuplicatePhoneNumberResponse
 
     /**
      * 봉사관리
@@ -161,6 +170,9 @@ internal interface ApiService {
         @Body userInfo: UserInfoResponse
     )
 
+    @DELETE("/volunteers/logout")
+    suspend fun logout()
+
     /**
      * 이동봉사자 > 공고 상세조회
      */
@@ -188,6 +200,12 @@ internal interface ApiService {
     suspend fun getAdditionalAuth(): AdditionalAuthBody
 
     /**
+     * 공고 신청
+     */
+    @GET("/volunteers/applications/my-info")
+    suspend fun getBasicInformation(): BasicInformationResponse
+
+    /**
      * 이동봉사자 > 공고 상세조회 > 중개자 프로필 조회
      */
     @GET("/volunteers/intermediaries/{intermediaryId}")
@@ -212,4 +230,12 @@ internal interface ApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<ReviewResponseItem>
+
+    /**
+     * fcm
+     */
+    @POST("/volunteers/fcm")
+    suspend fun postFcmToken(
+        @Body fcmToken: FcmTokenRequestBody
+    )
 }

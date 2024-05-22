@@ -171,7 +171,9 @@ private fun Content(
             .fillMaxSize()
             .padding(top = 48.dp)
     ) {
+        Spacer(modifier = Modifier.height(30.dp))
         BadgeGrid(titleRes = R.string.volunteer_title, volunteerItems)
+        Spacer(modifier = Modifier.height(30.dp))
         BadgeGrid(titleRes = R.string.review_title, reviewItems)
     }
 }
@@ -185,7 +187,7 @@ private fun BadgeGrid(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 30.dp)
+            .padding(horizontal = 20.dp)
     ) {
         Text(
             text = stringResource(id = titleRes),
