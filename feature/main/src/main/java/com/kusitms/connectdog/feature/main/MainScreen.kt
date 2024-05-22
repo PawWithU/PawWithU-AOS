@@ -35,7 +35,7 @@ import com.kusitms.connectdog.feature.login.loginNavGraph
 import com.kusitms.connectdog.feature.management.navigation.managementNavGraph
 import com.kusitms.connectdog.feature.mypage.navigation.mypageNavGraph
 import com.kusitms.connectdog.feature.mypage.viewmodel.EditProfileViewModel
-import com.kusitms.connectdog.signup.signUpGraph
+import com.kusitms.connectdog.signup.navigation.signUpGraph
 import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 import com.kusitms.connectdog.signup.viewmodel.VolunteerProfileViewModel
 import kotlinx.collections.immutable.toPersistentList
@@ -86,13 +86,14 @@ internal fun MainScreen(
                         navigateToSelectProfileImage = { navigator.navigateSelectProfileImage() },
                         navigateToCompleteSignUp = { navigator.navigateCompleteSignUp(it) },
                         navigateToVolunteer = { navigator.navigateHome() },
-                        navigateToIntermediator = { navigator.navigateManageAccount() },
+                        navigateToIntermediator = { navigator.navigateIntermediatorHome() },
                         imeHeight = imeHeight,
                         signUpViewModel = signUpViewModel,
                         profileViewModel = profileViewModel,
                         navigateToCertification = { navigator.navigateCertification(it) },
                         onSendMessage = { sendVerificationCode(it) },
-                        onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } }
+                        onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } },
+                        navigateToLogin = { navigator.onLogoutClick() }
                     )
                     homeNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -146,7 +147,8 @@ internal fun MainScreen(
                         onProfileClick = { navigator.navigateInterProfile() },
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
                         onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
-                        onNavigateToReview = { navigator.navigateToReview(it) }
+                        onNavigateToReview = { navigator.navigateToReview(it) },
+                        onNavigateToCreateDog = { navigator.navigateToCreateDog() }
                     )
                 }
             }

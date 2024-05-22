@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.signup.screen
+package com.kusitms.connectdog.signup.screen.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,7 +58,8 @@ fun CompleteSignUpScreen(
         Image(
             painter = painterResource(id = R.drawable.background),
             contentDescription = "",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            alignment = Alignment.BottomCenter
         )
         Column(
             modifier = Modifier
@@ -98,13 +99,14 @@ fun CompleteSignUpScreen(
             onClick = {
                 when (userType) {
                     UserType.INTERMEDIATOR -> {
-                        viewModel.setAutoLogin(AppMode.INTERMEDIATOR)
+                        viewModel.setAutoLogin(AppMode.INTERMEDIATOR, UserType.INTERMEDIATOR)
                         navigateToIntermediator()
                     }
-                    else -> {
-                        viewModel.setAutoLogin(AppMode.VOLUNTEER)
+                    UserType.NORMAL_VOLUNTEER -> {
+                        viewModel.setAutoLogin(AppMode.VOLUNTEER, UserType.NORMAL_VOLUNTEER)
                         navigateToVolunteer()
                     }
+                    UserType.SOCIAL_VOLUNTEER -> {}
                 }
             }
         )

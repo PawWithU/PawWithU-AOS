@@ -16,4 +16,6 @@ interface LoginRepository {
     suspend fun postIntermediatorLoginData(
         loginBody: NormalLoginBody
     ): LoginResponseItem
+
+    suspend fun logout()
 }

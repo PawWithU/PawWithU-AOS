@@ -13,12 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -34,6 +36,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Orange40
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.signup.viewmodel.CertificationViewModel
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -45,6 +48,7 @@ fun CertificationScreen(
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
     imeHeight: Int,
     userType: UserType,
+    signUpViewModel: SignUpViewModel,
     viewModel: CertificationViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -65,9 +69,10 @@ fun CertificationScreen(
             onNavigateToVolunteerProfile = { onNavigateToVolunteerProfile(userType) },
             onSendMessageClick = onSendMessageClick,
             onVerifyCodeClick = onVerifyCodeClick,
-            viewModel = viewModel,
             imeHeight = imeHeight,
-            userType = userType
+            userType = userType,
+            viewModel = viewModel,
+            signUpViewModel = signUpViewModel
         )
     }
 }
@@ -80,6 +85,7 @@ private fun Content(
     onNavigateToVolunteerProfile: (UserType) -> Unit,
     onSendMessageClick: (String) -> Unit,
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
+    signUpViewModel: SignUpViewModel,
     viewModel: CertificationViewModel
 ) {
     val focusManager = LocalFocusManager.current
@@ -87,6 +93,18 @@ private fun Content(
     val context = LocalContext.current
     val isSendNumber by remember { viewModel.isSendNumber }.collectAsState()
     val isCertified by remember { viewModel.isCertified }.collectAsState()
+//    val isDuplicatePhoneNumber = signUpViewModel.isDuplicatePhoneNumber.collectAsState()
+
+    LaunchedEffect(key1 = signUpViewModel) {
+        signUpViewModel.isDuplicatePhoneNumber.collect {
+            if (it) {
+                Toast.makeText(context, "중복된 휴대폰 번호입니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "인증번호를 전송하였습니다.", Toast.LENGTH_SHORT).show()
+                onSendMessageClick(viewModel.phoneNumber)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -99,7 +117,7 @@ private fun Content(
     ) {
         Spacer(modifier = Modifier.height(48.dp))
         Text(
-            text = "이동봉사를 신청하려면,\n이름과 휴대폰 번호 인증이 필요해요!",
+            text = stringResource(id = com.kusitms.connectdog.feature.signup.R.string.certification_title),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -126,7 +144,7 @@ private fun Content(
                 if (viewModel.phoneNumber.isEmpty()) {
                     Toast.makeText(context, "휴대폰 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
                 } else {
-                    onSendMessageClick(it)
+                    signUpViewModel.checkIsDuplicatePhoneNumber(userType, viewModel.phoneNumber)
                     viewModel.updateIsSendNumber(true)
                 }
             }
@@ -173,6 +191,8 @@ private fun Content(
             onClick = {
                 if (viewModel.name.isNotEmpty() && isCertified) {
                     viewModel.postAdditionalAuth()
+                    signUpViewModel.updatePhoneNumber(viewModel.phoneNumber)
+                    signUpViewModel.updateName(viewModel.name)
                     when (userType) {
                         UserType.SOCIAL_VOLUNTEER -> onNavigateToVolunteerProfile(userType)
                         else -> onNavigateToRegisterEmail(userType)
@@ -180,6 +200,6 @@ private fun Content(
                 }
             }
         )
-        Spacer(modifier = Modifier.height((imeHeight + 32).dp))
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }

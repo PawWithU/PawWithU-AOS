@@ -33,7 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
+import com.kusitms.connectdog.core.designsystem.theme.Orange10
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Red1
 import com.kusitms.connectdog.core.designsystem.theme.Red2
 
@@ -116,8 +119,8 @@ fun ConnectDogCardButton(
 ) {
     Surface(
         modifier = modifier.clickable { onSelected() },
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
-        color = if (!isSelected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary,
+        border = BorderStroke(width = 1.dp, color = if (isSelected) PetOrange else Gray5),
+        color = if (!isSelected) MaterialTheme.colorScheme.surface else Orange10,
         shape = RoundedCornerShape(12.dp),
         content = content
     )

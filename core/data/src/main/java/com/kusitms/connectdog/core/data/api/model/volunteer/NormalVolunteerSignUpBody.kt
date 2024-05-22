@@ -5,5 +5,7 @@ data class NormalVolunteerSignUpBody(
     val password: String,
     val nickname: String,
     val profileImageNum: Int,
-    val isOptionAgr: Boolean = true
+    val isOptionAgr: Boolean = true,
+    val phone: String,
+    val name: String
 )

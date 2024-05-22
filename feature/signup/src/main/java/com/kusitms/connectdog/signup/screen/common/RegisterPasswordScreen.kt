@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.signup.screen
+package com.kusitms.connectdog.signup.screen.common
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

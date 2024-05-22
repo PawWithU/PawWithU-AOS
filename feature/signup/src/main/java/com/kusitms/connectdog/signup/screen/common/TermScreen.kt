@@ -1,7 +1,8 @@
-package com.kusitms.connectdog.signup.screen
+package com.kusitms.connectdog.signup.screen.common
 
 import android.view.Gravity
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -53,25 +54,22 @@ import com.kusitms.connectdog.signup.viewmodel.TermsViewModel
 @Composable
 internal fun SignUpRoute(
     onBackClick: () -> Unit,
-    navigateToVolunteerProfile: (UserType) -> Unit,
     navigateToIntermediatorInformation: () -> Unit,
     navigateToCertification: (UserType) -> Unit,
     userType: UserType
 ) {
-    SignUpScreen(
+    TermScreen(
         onBackClick = onBackClick,
         userType = userType,
-        navigateToVolunteerProfile = navigateToVolunteerProfile,
         navigateToCertification = navigateToCertification,
         navigateToIntermediatorProfile = navigateToIntermediatorInformation
     )
 }
 
 @Composable
-fun SignUpScreen(
+fun TermScreen(
     userType: UserType,
     onBackClick: () -> Unit,
-    navigateToVolunteerProfile: (UserType) -> Unit,
     navigateToCertification: (UserType) -> Unit,
     navigateToIntermediatorProfile: () -> Unit,
     viewModel: TermsViewModel = hiltViewModel()
@@ -80,10 +78,13 @@ fun SignUpScreen(
     val privacyChecked by viewModel.privacyChecked.observeAsState(initial = false)
     val advertisementChecked by viewModel.advertisementChecked.observeAsState(initial = false)
     val termsChecked by viewModel.termsChecked.observeAsState(initial = false)
-    val context = LocalContext.current
+    val isAvailableNext by viewModel.isAvailableNext.observeAsState(initial = false)
 
+    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+
+    BackHandler { onBackClick() }
 
     Box(
         modifier =
@@ -125,6 +126,7 @@ fun SignUpScreen(
                 viewModel.updateAllChecked()
                 viewModel.updateTermsChecked()
                 viewModel.updatePrivacyChecked()
+                viewModel.updateAdvertisementChecked()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -144,7 +146,7 @@ fun SignUpScreen(
         }
         ConnectDogNormalButton(
             content = "다음",
-            color = if (allChecked) {
+            color = if (isAvailableNext) {
                 PetOrange
             } else {
                 Orange_40
@@ -156,12 +158,8 @@ fun SignUpScreen(
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 20.dp),
             onClick = {
-                if (allChecked) {
-                    when (userType) {
-                        UserType.NORMAL_VOLUNTEER -> navigateToCertification(userType)
-                        UserType.SOCIAL_VOLUNTEER -> navigateToVolunteerProfile(userType)
-                        UserType.INTERMEDIATOR -> navigateToIntermediatorProfile()
-                    }
+                if (isAvailableNext) {
+                    navigateToCertification(userType)
                 } else {
                     val toast = Toast.makeText(context, "모든 약관에 동의해주세요", Toast.LENGTH_SHORT)
                     toast.setGravity(Gravity.BOTTOM, 10, 1000)

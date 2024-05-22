@@ -39,26 +39,28 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.PetOrange
-import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.signup.R
 import com.kusitms.connectdog.signup.viewmodel.IntermediatorProfileViewModel
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun IntermediatorProfileScreen(
     onBackClick: () -> Unit,
-    navigateToCompleteSignUp: (UserType) -> Unit,
+    navigateToIntermediatorInfo: () -> Unit,
     imeHeight: Int,
-    viewModel: IntermediatorProfileViewModel = hiltViewModel()
+    viewModel: IntermediatorProfileViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel
 ) {
     val context = LocalContext.current
 
@@ -102,7 +104,7 @@ fun IntermediatorProfileScreen(
             }
             Spacer(modifier = Modifier.height(80.dp))
             Text(
-                text = "프로필 정보를\n입력해주세요",
+                text = "모집자 프로필에 사용할\n정보를 입력해주세요",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -146,29 +148,38 @@ fun IntermediatorProfileScreen(
                 )
             }
             Spacer(modifier = Modifier.height(40.dp))
+            ConnectDogTextFieldWithButton(
+                text = viewModel.name,
+                width = 62,
+                height = 27,
+                textFieldLabel = "모집자명",
+                placeholder = "모집자명 입력",
+                buttonLabel = "중복 확인",
+                keyboardType = KeyboardType.Number,
+                padding = 5,
+                onTextChanged = viewModel::updateName,
+                onClick = {
+                }
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
             ConnectDogTextField(
                 text = viewModel.introduce,
                 onTextChanged = { viewModel.updateIntroduce(it) },
-                label = "한줄 소개",
-                placeholder = "소개 입력",
+                label = "한 줄 소개",
+                placeholder = "한 줄 소개 입력",
                 height = 130
             )
-            ConnectDogTextField(
-                text = viewModel.introduce,
-                onTextChanged = { viewModel.updateIntroduce(it) },
-                label = "문의 받을 연락처",
-                placeholder = "문의받을 연락처를 입력해주세요.",
-                height = 200
-            )
             Spacer(modifier = Modifier.weight(1f))
-            ConnectDogNormalButton(
+            ConnectDogBottomButton(
                 content = "다음",
-                modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                color = PetOrange,
-                onClick = { navigateToCompleteSignUp(UserType.INTERMEDIATOR) }
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                enabled = viewModel.name != "" && viewModel.introduce != "",
+                onClick = {
+                    navigateToIntermediatorInfo()
+                    signUpViewModel.updateIntro(viewModel.introduce)
+                    signUpViewModel.updateNickname(viewModel.name)
+                }
             )
             Spacer(modifier = Modifier.height((imeHeight + 32).dp))
         }
