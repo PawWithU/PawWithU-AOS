@@ -33,6 +33,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 
 @Composable
 fun CompleteApplyScreen(
+    onBackClick: () -> Unit = {},
     onClick: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
@@ -52,7 +53,8 @@ fun CompleteApplyScreen(
         Image(
             painter = painterResource(id = R.drawable.background),
             contentDescription = "",
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            alignment = Alignment.BottomCenter
         )
         Column(
             modifier = Modifier
