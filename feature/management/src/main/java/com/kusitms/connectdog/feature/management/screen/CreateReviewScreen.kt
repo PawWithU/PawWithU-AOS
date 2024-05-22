@@ -33,7 +33,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,12 +64,15 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.AnnouncementHome
+import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.feature.management.R
+import com.kusitms.connectdog.feature.management.dialog.CreateReviewDialog
 import com.kusitms.connectdog.feature.management.viewmodel.CreateReviewViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateReviewScreen(
+    application: Application,
     onBackClick: () -> Unit,
     viewModel: CreateReviewViewModel = hiltViewModel()
 ) {
@@ -81,17 +86,23 @@ fun CreateReviewScreen(
         }
     ) {
         Content(
-            viewModel = viewModel
+            viewModel = viewModel,
+            onBackClick = onBackClick,
+            application = application
         )
     }
 }
 
 @Composable
 private fun Content(
+    onBackClick: () -> Unit,
+    application: Application,
     viewModel: CreateReviewViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+
+    var isConfirmDialogVisible by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -103,29 +114,39 @@ private fun Content(
                 interactionSource = interactionSource
             )
     ) {
-        VolunteerInfo()
+        VolunteerInfo(application)
         ReviewContent(viewModel)
         Divider(thickness = 8.dp, color = Gray7)
         UploadPhoto(viewModel)
         Spacer(modifier = Modifier.weight(1f))
         ConnectDogBottomButton(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 32.dp),
-            onClick = {},
-            content = "후기 등록"
+            onClick = { isConfirmDialogVisible = true },
+            content = "후기 등록",
+            enabled = viewModel.review.length >= 10
+        )
+    }
+
+    if (isConfirmDialogVisible) {
+        CreateReviewDialog(
+            onConfirmClick = onBackClick,
+            onDismiss = { isConfirmDialogVisible = false }
         )
     }
 }
 
 @Composable
-private fun VolunteerInfo() {
+private fun VolunteerInfo(
+    application: Application
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
         ListForUserItem(
-            imageUrl = "",
-            announcementHome = AnnouncementHome("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", ""),
+            imageUrl = application.imageUrl,
+            announcementHome = AnnouncementHome(application.imageUrl, application.location, application.date, -1, application.dogName ?: "", application.pickUpTime ?: ""),
             isValid = true
         )
     }
@@ -290,12 +311,12 @@ private fun AddPhotoButton(onClick: () -> Unit) {
     }
 }
 
-@Preview
-@Composable
-private fun CreateReviewScreenPreview() {
-    ConnectDogTheme {
-        CreateReviewScreen(
-            onBackClick = {}
-        )
-    }
-}
+//@Preview
+//@Composable
+//private fun CreateReviewScreenPreview() {
+//    ConnectDogTheme {
+//        CreateReviewScreen(
+//            onBackClick = {}
+//        )
+//    }
+//}
