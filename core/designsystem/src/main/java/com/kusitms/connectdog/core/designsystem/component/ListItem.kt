@@ -35,7 +35,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.core.model.AnnouncementHome
+import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.model.Review
 
@@ -43,18 +43,18 @@ import com.kusitms.connectdog.core.model.Review
 fun ListForUserItem(
     modifier: Modifier = Modifier,
     imageUrl: String,
-    announcementHome: AnnouncementHome,
+    application: Application,
     isValid: Boolean = true
 ) {
     ListItem(
         modifier = modifier,
         imageUrl = imageUrl,
-        title = announcementHome.dogName,
+        title = application.dogName ?: "",
         isValid = isValid
     ) {
         AnnouncementContent(
-            date = announcementHome.date,
-            organization = announcementHome.date,
+            date = application.date,
+            location = application.location,
             hasKennel = true
         )
     }
@@ -201,11 +201,11 @@ fun ListForUserItem(
     isValid: Boolean = true
 ) {
     ListItem(modifier = modifier, imageUrl = imageUrl, title = location, isValid = isValid) {
-        AnnouncementContent(
-            date = date,
-            organization = organization,
-            hasKennel = hasKennel
-        )
+//        AnnouncementContent(
+//            date = date,
+//            organization = organization,
+//            hasKennel = hasKennel
+//        )
     }
 }
 
