@@ -83,7 +83,6 @@ fun NavGraphBuilder.mypageNavGraph(
         EditProfileScreen(
             onBackClick = onBackClick,
             onEditProfileImageClick = onEditProfileImageClick,
-            viewModel = editProfileViewModel
         )
     }
 
