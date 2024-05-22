@@ -67,7 +67,7 @@ private const val TAG = "ManagementScreen"
 @Composable
 internal fun ManagementRoute(
     onBackClick: () -> Unit,
-    onNavigateToCreateReview: () -> Unit,
+    onNavigateToCreateReview: (Application) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: ManagementViewModel = hiltViewModel()
 ) {
@@ -227,7 +227,7 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: ApplicationUiState,
-    onClickReview: () -> Unit
+    onClickReview: (Application) -> Unit
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
@@ -238,7 +238,7 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = onClickReview
+                        onClickReview = { onClickReview(it) }
                     )
                 }
             }
