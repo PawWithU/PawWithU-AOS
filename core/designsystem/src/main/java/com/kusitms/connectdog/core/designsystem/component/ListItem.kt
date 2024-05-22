@@ -278,14 +278,16 @@ private fun Title(
 @Composable
 fun ReviewItemContent(
     review: Review,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    reviewType: ReviewType = ReviewType.REVIEW,
+    onInterProfileClick: (Long) -> Unit = {}
 ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentSize()
     ) {
-        ConnectDogReview(review = review, type = ReviewType.REVIEW)
+        ConnectDogReview(review = review, type = reviewType)
         Spacer(modifier = Modifier.height(16.dp))
         Divider(
             Modifier
@@ -295,7 +297,9 @@ fun ReviewItemContent(
             color = Gray7
         )
         Spacer(modifier = Modifier.height(16.dp))
-        IntermediatorInfo(review)
+        IntermediatorInfo(review) {
+            review.intermediaryId?.let { onInterProfileClick(it) }
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Divider(
             Modifier
@@ -308,7 +312,8 @@ fun ReviewItemContent(
 
 @Composable
 private fun IntermediatorInfo(
-    review: Review
+    review: Review,
+    onInterProfileClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -333,7 +338,8 @@ private fun IntermediatorInfo(
                     text = "프로필 보기",
                     fontSize = 12.sp,
                     color = Gray3,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.clickable { onInterProfileClick() }
                 )
             }
             Spacer(modifier = Modifier.height(6.dp))

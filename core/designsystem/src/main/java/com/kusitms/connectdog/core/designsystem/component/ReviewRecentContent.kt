@@ -52,11 +52,13 @@ fun ConnectDogReview(
             )
         },
         informationContent = {
-            ReviewContent(
-                date = review.date,
-                location = review.location,
-                organization = review.organization
-            )
+            if (type == ReviewType.HOME) {
+                ReviewContent(
+                    date = review.date,
+                    location = review.location,
+                    organization = review.organization
+                )
+            }
         },
         contentUrl = review.mainImage,
         reviewUrl = review.contentImages,
