@@ -6,16 +6,16 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.gson.Gson
 import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.feature.management.screen.CreateReviewScreen
 import com.kusitms.connectdog.feature.management.screen.ManagementRoute
-import com.kusitms.connectdog.core.util.test
 
 fun NavController.navigateManagement(navOptions: NavOptions) {
     navigate(ManagementRoute.route, navOptions)
 }
 
-fun NavController.navigateCreateReview(application: Application) {
+fun NavController.navigateCreateReview(application: String) {
     navigate("${ManagementRoute.create_review}/$application")
 }
 
@@ -39,7 +39,7 @@ fun NavGraphBuilder.managementNavGraph(
         )
     ) {
         val applicationJson = it.arguments?.getString("application")
-        val application = test(applicationJson)
+        val application = Gson().fromJson(applicationJson, Application::class.java)
         CreateReviewScreen(
             onBackClick = onBackClick,
             application = application
