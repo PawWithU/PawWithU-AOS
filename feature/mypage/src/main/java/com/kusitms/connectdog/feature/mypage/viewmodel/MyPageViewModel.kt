@@ -35,36 +35,30 @@ class MyPageViewModel @Inject constructor(
     private val _badgeItem = MutableLiveData<BadgeItem>()
     val badgeItem: LiveData<BadgeItem> = _badgeItem
 
-    fun fetchUserInfo() {
-        viewModelScope.launch {
-            try {
-                val myInfoResponse = myPageRepository.getMyInfo()
-                _myInfo.postValue(myInfoResponse)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message.toString())
-            }
+    fun fetchUserInfo() = viewModelScope.launch {
+        try {
+            val myInfoResponse = myPageRepository.getMyInfo()
+            _myInfo.postValue(myInfoResponse)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
         }
     }
 
-    fun fetchBookmark() {
-        viewModelScope.launch {
-            try {
-                val response = myPageRepository.getBadge()
-                _badge.postValue(response)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message.toString())
-            }
+    fun fetchBookmark() = viewModelScope.launch {
+        try {
+            val response = myPageRepository.getBadge()
+            _badge.postValue(response)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
         }
     }
 
-    fun fetchBadge() {
-        viewModelScope.launch {
-            try {
-                val response = myPageRepository.getBookmarkData()
-                _bookmark.postValue(response)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message.toString())
-            }
+    fun fetchBadge() = viewModelScope.launch {
+        try {
+            val response = myPageRepository.getBookmarkData()
+            _bookmark.postValue(response)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
         }
     }
 
