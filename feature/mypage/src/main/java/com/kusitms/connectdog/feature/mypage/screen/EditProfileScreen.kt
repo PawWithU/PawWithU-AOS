@@ -45,7 +45,7 @@ import com.kusitms.connectdog.feature.mypage.viewmodel.EditProfileViewModel
 fun EditProfileScreen(
     onBackClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,
-    viewModel: EditProfileViewModel
+    viewModel: EditProfileViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
