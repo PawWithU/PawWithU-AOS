@@ -209,7 +209,10 @@ private fun InProgress(
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
-            LazyColumn(verticalArrangement = Arrangement.Top) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxSize().padding(bottom = 80.dp)
+            ) {
                 items(uiState.applications) {
                     InProgressContent(application = it)
                 }
@@ -284,15 +287,29 @@ private fun PendingContent(application: Application, onClick: (Application) -> U
 
 @Composable
 private fun InProgressContent(application: Application) {
-//    ListForUserItem(
-//        modifier = Modifier.padding(20.dp),
-//        imageUrl = application.imageUrl,
-//        location = application.location,
-//        date = application.date,
-//        organization = application.organization,
-//        hasKennel = application.hasKennel
-//    )
-    Divider(thickness = 8.dp, color = Gray7)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Column(
+            modifier = Modifier.padding(20.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Top
+        ) {
+            AnnouncementItem(
+                imageUrl = application.imageUrl,
+                dogName = application.dogName!!,
+                location = application.location,
+                isKennel = application.hasKennel,
+                dogSize = application.dogSize!!,
+                date = application.date,
+                pickUpTime = application.pickUpTime!!
+            )
+            OutlinedButton(modifier = Modifier.padding(top = 20.dp)) {
+            }
+        }
+        Divider(thickness = 8.dp, color = Gray7)
+    }
 }
 
 @Composable
