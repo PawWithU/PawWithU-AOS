@@ -146,7 +146,7 @@ private fun VolunteerInfo(
     ) {
         ListForUserItem(
             imageUrl = application.imageUrl,
-            announcementHome = AnnouncementHome(application.imageUrl, application.location, application.date, -1, application.dogName ?: "", application.pickUpTime ?: ""),
+            application = application,
             isValid = true
         )
     }
