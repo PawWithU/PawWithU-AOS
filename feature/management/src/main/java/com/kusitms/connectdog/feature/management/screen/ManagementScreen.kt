@@ -391,7 +391,7 @@ private fun ReviewButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(id = if(hasReview) R.string.check_review else R.string.create_review),
+            text = stringResource(id = if (hasReview) R.string.check_review else R.string.create_review),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,

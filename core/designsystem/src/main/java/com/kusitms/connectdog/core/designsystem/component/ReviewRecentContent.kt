@@ -52,7 +52,7 @@ fun ConnectDogReview(
             )
         },
         informationContent = {
-            if(type == ReviewType.HOME) {
+            if (type == ReviewType.HOME) {
                 ReviewContent(
                     date = review.date,
                     location = review.location,

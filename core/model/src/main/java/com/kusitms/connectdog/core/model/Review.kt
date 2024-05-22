@@ -10,5 +10,5 @@ data class Review(
     val organization: String,
     val content: String,
     val contentImages: List<String>?,
-    val intermediaryId: Long? = null,
+    val intermediaryId: Long? = null
 )
