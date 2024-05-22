@@ -67,14 +67,14 @@ import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.feature.management.R
 import com.kusitms.connectdog.feature.management.dialog.CreateReviewDialog
-import com.kusitms.connectdog.feature.management.viewmodel.CreateReviewViewModel
+import com.kusitms.connectdog.feature.management.viewmodel.ReviewViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateReviewScreen(
     application: Application,
     onBackClick: () -> Unit,
-    viewModel: CreateReviewViewModel = hiltViewModel()
+    viewModel: ReviewViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -97,7 +97,7 @@ fun CreateReviewScreen(
 private fun Content(
     onBackClick: () -> Unit,
     application: Application,
-    viewModel: CreateReviewViewModel
+    viewModel: ReviewViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -154,7 +154,7 @@ private fun VolunteerInfo(
 
 @Composable
 private fun ReviewContent(
-    viewModel: CreateReviewViewModel
+    viewModel: ReviewViewModel
 ) {
     Column(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 24.dp)
@@ -191,7 +191,7 @@ private fun ReviewContent(
 
 @Composable
 private fun UploadPhoto(
-    viewModel: CreateReviewViewModel
+    viewModel: ReviewViewModel
 ) {
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
