@@ -37,6 +37,7 @@ import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
 import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
 import com.kusitms.connectdog.feature.login.navigateToLoginRoute
+import com.kusitms.connectdog.feature.management.navigation.navigateCheckReview
 import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBadge
@@ -131,7 +132,8 @@ internal class MainNavigator(
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
-    fun navigateCreateReview() = navController.navigateCreateReview()
+    fun navigateCreateReview(application: String) = navController.navigateCreateReview(application)
+    fun navigateCheckReview(reviewId: Long) = navController.navigateCheckReview(reviewId)
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateInterHome()
