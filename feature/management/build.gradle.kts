@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:data"))
     implementation(project(":core:designsystem"))
+    implementation(project(mapOf("path" to ":core:util")))
 
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
