@@ -29,7 +29,6 @@ import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProf
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateAnnouncementScreen
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateDog
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToInterProfileEdit
-import com.kusitms.connectdog.feature.intermediator.navigation.navigateToReview
 import com.kusitms.connectdog.feature.login.LoginRoute
 import com.kusitms.connectdog.feature.login.navigateEmailSearch
 import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete

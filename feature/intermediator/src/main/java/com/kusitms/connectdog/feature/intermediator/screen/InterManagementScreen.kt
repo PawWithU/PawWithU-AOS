@@ -111,7 +111,7 @@ internal fun InterManagementRoute(
             fourthContent = {
                 Completed(
                     uiState = completedUiState,
-                    onNavigateToCheckReview = { reviewId, userType ->  onNavigateToReview(reviewId, userType) },
+                    onNavigateToCheckReview = { reviewId, userType -> onNavigateToReview(reviewId, userType) }
                 )
             }
         )
@@ -230,7 +230,7 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: InterApplicationUiState,
-    onNavigateToCheckReview: (Long, UserType) -> Unit,
+    onNavigateToCheckReview: (Long, UserType) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
@@ -238,7 +238,7 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = { onNavigateToCheckReview(it.reviewId!!, UserType.INTERMEDIATOR) },
+                        onClickReview = { onNavigateToCheckReview(it.reviewId!!, UserType.INTERMEDIATOR) }
                     )
                 }
             }

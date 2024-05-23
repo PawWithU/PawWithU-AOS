@@ -153,7 +153,7 @@ internal fun InProgressContent(
 @Composable
 internal fun CompletedContent(
     application: InterApplication,
-    onClickReview: () -> Unit,
+    onClickReview: () -> Unit
 ) {
     Column(
         modifier = Modifier
