@@ -2,6 +2,7 @@ package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.InterApiService
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import com.kusitms.connectdog.core.data.mapper.intermediator.toData
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.model.ConnectDogResult
@@ -46,5 +47,9 @@ internal class InterManagementRepositoryImpl @Inject constructor(
 
     override suspend fun completeApplication(applicationId: Long): ConnectDogResult {
         return api.patchApplicationCompleted(applicationId).toData()
+    }
+
+    override suspend fun getReviewDetail(reviewId: Long): ReviewDetailResponse {
+        return api.getReviewDetail(reviewId)
     }
 }

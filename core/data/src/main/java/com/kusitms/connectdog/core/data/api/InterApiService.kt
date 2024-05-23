@@ -13,6 +13,7 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFind
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorSignUpBody
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -85,6 +86,11 @@ internal interface InterApiService {
     suspend fun patchApplicationCompleted(
         @Path("applicationId") applicationId: Long
     ): Response
+
+    @GET("/intermediaries/reviews/{reviewId}")
+    suspend fun getReviewDetail(
+        @Path("reviewId") reviewId: Long
+    ): ReviewDetailResponse
 
     /**
      * 이동봉사 모집자 프로필
