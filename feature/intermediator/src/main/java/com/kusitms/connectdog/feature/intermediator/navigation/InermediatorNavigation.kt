@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationDogScreen
 import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationInfoScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterHomeScreen
@@ -55,7 +56,7 @@ fun NavGraphBuilder.intermediatorNavGraph(
     onManagementClick: (Int) -> Unit,
     onNavigateToCreateAnnouncement: () -> Unit,
     onNavigateToInterProfileEdit: () -> Unit,
-    onNavigateToReview: (Long) -> Unit,
+    onNavigateToReview: (Long, UserType) -> Unit,
     onNavigateToCreateDog: () -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
@@ -74,7 +75,8 @@ fun NavGraphBuilder.intermediatorNavGraph(
     ) {
         InterManagementRoute(
             onBackClick = onBackClick,
-            tabIndex = it.arguments?.getInt("tabIndex") ?: 0
+            tabIndex = it.arguments?.getInt("tabIndex") ?: 0,
+            onNavigateToReview = onNavigateToReview
         )
     }
 
