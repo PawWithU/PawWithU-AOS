@@ -113,6 +113,7 @@ internal fun PendingContent(application: InterApplication, onClick: () -> Unit) 
 @Composable
 internal fun InProgressContent(
     application: InterApplication,
+    onCheckVolunteerClick: () -> Unit,
     onCompleteClick: () -> Unit
 ) {
     Column(
@@ -133,15 +134,17 @@ internal fun InProgressContent(
         ) {
             ConnectDogSecondaryButton(
                 modifier = Modifier.padding(start = 20.dp, bottom = 20.dp).weight(1f),
-                contentRes = R.string.check_volunteer
-            ) { onCompleteClick() }
+                contentRes = R.string.check_volunteer,
+                onClick = onCheckVolunteerClick
+            )
             Spacer(modifier = Modifier.width(8.dp))
             ConnectDogSecondaryButton(
                 color = PetOrange,
                 textColor = Color.White,
                 modifier = Modifier.padding(end = 20.dp, bottom = 20.dp).weight(1f),
-                contentRes = R.string.make_complete
-            ) { onCompleteClick() }
+                contentRes = R.string.make_complete,
+                onClick = onCompleteClick
+            )
         }
     }
     Divider(thickness = 8.dp, color = Gray7)
@@ -151,7 +154,6 @@ internal fun InProgressContent(
 internal fun CompletedContent(
     application: InterApplication,
     onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -171,7 +173,7 @@ internal fun CompletedContent(
             )
             ConnectDogBottomButton(
                 height = 40,
-                onClick = { /*TODO*/ },
+                onClick = onClickReview,
                 content = "받은 후기 확인",
                 enabled = application.reviewId != null,
                 enabledColor = Color.White,

@@ -53,6 +53,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.Application
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.management.R
 import com.kusitms.connectdog.feature.management.component.MyApplicationBottomSheet
 import com.kusitms.connectdog.feature.management.state.ApplicationUiState
@@ -66,7 +67,7 @@ private const val TAG = "ManagementScreen"
 internal fun ManagementRoute(
     onBackClick: () -> Unit,
     onNavigateToCreateReview: (Application) -> Unit,
-    onNavigateToCheckReview: (Long) -> Unit,
+    onNavigateToCheckReview: (Long, UserType) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: ManagementViewModel = hiltViewModel()
 ) {
@@ -238,7 +239,7 @@ private fun InProgress(
 private fun Completed(
     uiState: ApplicationUiState,
     onCreateReviewClick: (Application) -> Unit,
-    onCheckReviewClick: (Long) -> Unit
+    onCheckReviewClick: (Long, UserType) -> Unit
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
@@ -250,7 +251,7 @@ private fun Completed(
                     CompletedContent(
                         application = it,
                         onCreateReviewClick = { onCreateReviewClick(it) },
-                        onCheckReviewClick = { onCheckReviewClick(it.reviewId!!) }
+                        onCheckReviewClick = { onCheckReviewClick(it.reviewId!!, UserType.NORMAL_VOLUNTEER) }
                     )
                 }
             }

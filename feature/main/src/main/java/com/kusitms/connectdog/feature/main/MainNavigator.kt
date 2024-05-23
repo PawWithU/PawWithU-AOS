@@ -133,7 +133,7 @@ internal class MainNavigator(
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
     fun navigateCreateReview(application: String) = navController.navigateCreateReview(application)
-    fun navigateCheckReview(reviewId: Long) = navController.navigateCheckReview(reviewId)
+    fun navigateCheckReview(reviewId: Long, userType: UserType) = navController.navigateCheckReview(reviewId, userType)
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateInterHome()
@@ -141,7 +141,6 @@ internal class MainNavigator(
     fun navigateInterProfile() = navController.navigateInterProfile()
     fun navigateCreateAnnouncement() = navController.navigateToCreateAnnouncementScreen()
     fun navigateToInterProfileEdit() = navController.navigateToInterProfileEdit()
-    fun navigateToReview(id: Long) = navController.navigateToReview(id)
     fun navigateToCreateDog() = navController.navigateToCreateDog()
 
     fun popBackStackIfNotHome() {
