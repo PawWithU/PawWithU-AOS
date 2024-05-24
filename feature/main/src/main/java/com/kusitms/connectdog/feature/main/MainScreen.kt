@@ -155,7 +155,8 @@ internal fun MainScreen(
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
                         onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
                         onNavigateToReview = navigator::navigateCheckReview,
-                        onNavigateToCreateDog = { navigator.navigateToCreateDog() }
+                        onNavigateToCreateDog = { navigator.navigateToCreateDog() },
+                        onNavigateToAnnouncementManagement = navigator::navigateToAnnouncementManagement
                     )
                 }
             }
