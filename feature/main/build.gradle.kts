@@ -66,6 +66,7 @@ dependencies {
 
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
+    implementation(libs.google.gson)
 
     implementation(libs.androidx.compose.navigation)
     implementation(libs.hilt.navigation.compose)

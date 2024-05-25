@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ReviewItemContent
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.management.R
 import com.kusitms.connectdog.feature.management.state.ReviewUiState
 import com.kusitms.connectdog.feature.management.viewmodel.ReviewViewModel
@@ -25,6 +26,7 @@ fun CheckReviewScreen(
     onBackClick: () -> Unit,
     onInterProfileClick: (Long) -> Unit,
     reviewId: Long,
+    userType: UserType,
     viewModel: ReviewViewModel = hiltViewModel()
 ) {
     Scaffold(

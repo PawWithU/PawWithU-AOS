@@ -41,6 +41,7 @@ import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationTyp
 import com.kusitms.connectdog.core.designsystem.component.UiState
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.model.InterApplication
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.component.CompletedContent
@@ -54,6 +55,7 @@ import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementVie
 @Composable
 internal fun InterManagementRoute(
     onBackClick: () -> Unit,
+    onNavigateToReview: (Long, UserType) -> Unit,
     tabIndex: Int = 0,
     viewModel: InterManagementViewModel = hiltViewModel()
 ) {
@@ -96,6 +98,10 @@ internal fun InterManagementRoute(
             thirdContent = {
                 InProgress(
                     uiState = inProgressUiState,
+                    onCheckVolunteerClick = { application ->
+                        viewModel.updateSelectedApplication(application)
+                        isSheetOpen = true
+                    },
                     onCompleteClick = {
                         viewModel.completeApplication(it.applicationId!!)
                         isCompletedDialogVisible = true
@@ -105,8 +111,7 @@ internal fun InterManagementRoute(
             fourthContent = {
                 Completed(
                     uiState = completedUiState,
-                    onClickReview = { /*TODO*/ },
-                    onClickRecent = {}
+                    onNavigateToCheckReview = { reviewId, userType -> onNavigateToReview(reviewId, userType) }
                 )
             }
         )
@@ -176,13 +181,13 @@ private fun Recruiting(
 @Composable
 private fun PendingApproval(
     uiState: InterApplicationUiState,
-    onClick: (InterApplication) -> Unit
+    onCheckVolunteerClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    PendingContent(application = it) { onClick(it) }
+                    PendingContent(application = it) { onCheckVolunteerClick(it) }
                 }
             }
         }
@@ -198,13 +203,18 @@ private fun PendingApproval(
 @Composable
 private fun InProgress(
     uiState: InterApplicationUiState,
+    onCheckVolunteerClick: (InterApplication) -> Unit,
     onCompleteClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    InProgressContent(application = it) { onCompleteClick(it) }
+                    InProgressContent(
+                        application = it,
+                        onCheckVolunteerClick = { onCheckVolunteerClick(it) },
+                        onCompleteClick = { onCompleteClick(it) }
+                    )
                 }
             }
         }
@@ -220,8 +230,7 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: InterApplicationUiState,
-    onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
+    onNavigateToCheckReview: (Long, UserType) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
@@ -229,8 +238,7 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = onClickReview,
-                        onClickRecent = onClickRecent
+                        onClickReview = { onNavigateToCheckReview(it.reviewId!!, UserType.INTERMEDIATOR) }
                     )
                 }
             }

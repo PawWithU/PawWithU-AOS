@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.data.repository.ManagementRepository
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.management.state.ReviewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,8 +38,7 @@ class ReviewViewModel @Inject constructor(
         get() = _review.value
 
     private val _reviewId = MutableStateFlow<Long?>(null)
-    val reviewId: StateFlow<Long?>
-        get() = _reviewId
+    private val _userType = MutableStateFlow<UserType?>(null)
 
     fun updateReview(review: String) {
         _review.value = review
