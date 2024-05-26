@@ -1,7 +1,6 @@
-package com.kusitms.connectdog.signup.screen.volunteer
+package com.kusitms.connectdog.signup.screen.common
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -93,7 +92,6 @@ private fun Content(
     val context = LocalContext.current
     val isSendNumber by remember { viewModel.isSendNumber }.collectAsState()
     val isCertified by remember { viewModel.isCertified }.collectAsState()
-//    val isDuplicatePhoneNumber = signUpViewModel.isDuplicatePhoneNumber.collectAsState()
 
     LaunchedEffect(key1 = signUpViewModel) {
         signUpViewModel.isDuplicatePhoneNumber.collect {
@@ -139,13 +137,15 @@ private fun Content(
             buttonLabel = "인증 요청",
             keyboardType = KeyboardType.Number,
             padding = 5,
-            onTextChanged = { viewModel.updatePhoneNumber(it) },
+            onTextChanged = { if (it.length <= 11) viewModel.updatePhoneNumber(it) },
             onClick = {
                 if (viewModel.phoneNumber.isEmpty()) {
                     Toast.makeText(context, "휴대폰 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                } else {
+                } else if (viewModel.phoneNumber.length == 11) {
                     signUpViewModel.checkIsDuplicatePhoneNumber(userType, viewModel.phoneNumber)
                     viewModel.updateIsSendNumber(true)
+                } else {
+                    Toast.makeText(context, "올바른 휴대폰 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -159,22 +159,19 @@ private fun Content(
             buttonLabel = "인증 확인",
             keyboardType = KeyboardType.Number,
             padding = 5,
-            onTextChanged = { viewModel.updateCertificationNumber(it) },
+            onTextChanged = { if (it.length <= 6) viewModel.updateCertificationNumber(it) },
             onClick = {
-                Log.d("send", isSendNumber.toString())
-                viewModel.updateIsCertified(true)
-//                if (!isSendNumber) {
-//                    Toast.makeText(context, "먼저 인증번호를 전송해주세요", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    if (viewModel.certificationNumber.isEmpty()) {
-//                        Toast.makeText(context, "인증 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        onVerifyCodeClick(it) {
-//                            viewModel.updateIsCertified(it)
-//                            Log.d("casz", isCertified.toString())
-//                        }
-//                    }
-//                }
+                if (!isSendNumber) {
+                    Toast.makeText(context, "먼저 인증번호를 전송해주세요", Toast.LENGTH_SHORT).show()
+                } else {
+                    if (viewModel.certificationNumber.isEmpty()) {
+                        Toast.makeText(context, "인증 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                    } else if (viewModel.certificationNumber.length == 6) {
+                        onVerifyCodeClick(it) { viewModel.updateIsCertified(it) }
+                    } else {
+                        Toast.makeText(context, "인증 번호는 6자리로 입력해주세요", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         )
         Spacer(modifier = Modifier.weight(1f))
