@@ -7,13 +7,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.kusitms.connectdog.core.util.UserType
+import com.kusitms.connectdog.signup.screen.common.CertificationScreen
 import com.kusitms.connectdog.signup.screen.common.CompleteSignUpScreen
 import com.kusitms.connectdog.signup.screen.common.RegisterEmailScreen
 import com.kusitms.connectdog.signup.screen.common.RegisterPasswordScreen
 import com.kusitms.connectdog.signup.screen.common.SignUpRoute
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorInformationScreen
 import com.kusitms.connectdog.signup.screen.intermediator.IntermediatorProfileScreen
-import com.kusitms.connectdog.signup.screen.volunteer.CertificationScreen
 import com.kusitms.connectdog.signup.screen.volunteer.SelectProfileImageScreen
 import com.kusitms.connectdog.signup.screen.volunteer.VolunteerProfileScreen
 import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
@@ -141,7 +141,8 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorProfileScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            navigateToIntermediatorInfo = navigateToIntermediatorInformation
+            navigateToIntermediatorInfo = navigateToIntermediatorInformation,
+            signUpViewModel = signUpViewModel
         )
     }
 
@@ -149,7 +150,8 @@ fun NavGraphBuilder.signUpGraph(
         IntermediatorInformationScreen(
             onBackClick = onBackClick,
             imeHeight = imeHeight,
-            onNavigateToCompleteSignUp = navigateToCompleteSignUp
+            onNavigateToCompleteSignUp = navigateToCompleteSignUp,
+            signUpViewModel = signUpViewModel
         )
     }
 
@@ -183,7 +185,8 @@ fun NavGraphBuilder.signUpGraph(
             onSendMessageClick = onSendMessage,
             onVerifyCodeClick = onVerifyCode,
             imeHeight = imeHeight,
-            userType = it.arguments!!.getSerializable("type") as UserType
+            userType = it.arguments!!.getSerializable("type") as UserType,
+            signUpViewModel = signUpViewModel
         )
     }
 }

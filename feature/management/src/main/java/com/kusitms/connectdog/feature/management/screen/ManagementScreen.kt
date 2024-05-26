@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,12 +48,12 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.component.UiState
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.Application
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.management.R
 import com.kusitms.connectdog.feature.management.component.MyApplicationBottomSheet
 import com.kusitms.connectdog.feature.management.state.ApplicationUiState
@@ -67,7 +66,8 @@ private const val TAG = "ManagementScreen"
 @Composable
 internal fun ManagementRoute(
     onBackClick: () -> Unit,
-    onNavigateToCreateReview: () -> Unit,
+    onNavigateToCreateReview: (Application) -> Unit,
+    onNavigateToCheckReview: (Long, UserType) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     viewModel: ManagementViewModel = hiltViewModel()
 ) {
@@ -102,7 +102,13 @@ internal fun ManagementRoute(
                 }
             },
             secondContent = { InProgress(inProgressUiState) },
-            thirdContent = { Completed(completedUiState, onClickReview = onNavigateToCreateReview) }
+            thirdContent = {
+                Completed(
+                    uiState = completedUiState,
+                    onCreateReviewClick = onNavigateToCreateReview,
+                    onCheckReviewClick = onNavigateToCheckReview
+                )
+            }
         )
     }
 
@@ -209,7 +215,12 @@ private fun InProgress(
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
-            LazyColumn(verticalArrangement = Arrangement.Top) {
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp)
+            ) {
                 items(uiState.applications) {
                     InProgressContent(application = it)
                 }
@@ -227,7 +238,8 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: ApplicationUiState,
-    onClickReview: () -> Unit
+    onCreateReviewClick: (Application) -> Unit,
+    onCheckReviewClick: (Long, UserType) -> Unit
 ) {
     when (uiState) {
         is ApplicationUiState.Applications -> {
@@ -238,7 +250,8 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = onClickReview
+                        onCreateReviewClick = { onCreateReviewClick(it) },
+                        onCheckReviewClick = { onCheckReviewClick(it.reviewId!!, UserType.NORMAL_VOLUNTEER) }
                     )
                 }
             }
@@ -284,21 +297,38 @@ private fun PendingContent(application: Application, onClick: (Application) -> U
 
 @Composable
 private fun InProgressContent(application: Application) {
-//    ListForUserItem(
-//        modifier = Modifier.padding(20.dp),
-//        imageUrl = application.imageUrl,
-//        location = application.location,
-//        date = application.date,
-//        organization = application.organization,
-//        hasKennel = application.hasKennel
-//    )
-    Divider(thickness = 8.dp, color = Gray7)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.Top
+        ) {
+            AnnouncementItem(
+                imageUrl = application.imageUrl,
+                dogName = application.dogName!!,
+                location = application.location,
+                isKennel = application.hasKennel,
+                dogSize = application.dogSize!!,
+                date = application.date,
+                pickUpTime = application.pickUpTime!!
+            )
+            OutlinedButton(modifier = Modifier.padding(top = 20.dp)) {
+            }
+        }
+        Divider(thickness = 8.dp, color = Gray7)
+    }
 }
 
 @Composable
 private fun CompletedContent(
     application: Application,
-    onClickReview: () -> Unit
+    onCreateReviewClick: () -> Unit,
+    onCheckReviewClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -324,7 +354,8 @@ private fun CompletedContent(
             ReviewButton(
                 modifier = Modifier.height(40.dp),
                 hasReview = application.reviewId != null,
-                onClickReview = onClickReview
+                onCreateReviewClick = onCreateReviewClick,
+                onCheckReviewClick = onCheckReviewClick
             )
         }
         Divider(thickness = 8.dp, color = Gray7)
@@ -346,7 +377,8 @@ private fun OutlinedButton(
 private fun ReviewButton(
     modifier: Modifier = Modifier,
     hasReview: Boolean,
-    onClickReview: () -> Unit
+    onCreateReviewClick: () -> Unit,
+    onCheckReviewClick: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -356,11 +388,11 @@ private fun ReviewButton(
                 color = MaterialTheme.colorScheme.outline,
                 width = 1.dp
             )
-            .clickable(enabled = hasReview) { onClickReview() },
+            .clickable { if (hasReview) onCheckReviewClick() else onCreateReviewClick() },
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = stringResource(id = R.string.create_review),
+            text = stringResource(id = if (hasReview) R.string.check_review else R.string.create_review),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 12.sp,
             textAlign = TextAlign.Center,
@@ -373,14 +405,5 @@ private fun ReviewButton(
 private fun Loading() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator()
-    }
-}
-
-@Preview
-@Composable
-private fun CompletedContentPreview() {
-    val application = Application("", "이동봉사 위치", "YY.mm.dd(요일)", "단체이름", false, 0, 0)
-    ConnectDogTheme {
-        CompletedContent(application = application, onClickReview = { })
     }
 }

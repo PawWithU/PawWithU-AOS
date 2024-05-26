@@ -2,8 +2,11 @@ package com.kusitms.connectdog.feature.intermediator.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.kusitms.connectdog.core.util.UserType
+import com.kusitms.connectdog.feature.intermediator.screen.AnnouncementManageScreen
 import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationDogScreen
 import com.kusitms.connectdog.feature.intermediator.screen.CreateApplicationInfoScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterHomeScreen
@@ -46,6 +49,10 @@ fun NavController.navigateToCreateDog() {
     navigate(IntermediatorRoute.create_application_dog)
 }
 
+fun NavController.navigateToAnnouncementManagement(postId: Long) {
+    navigate("${IntermediatorRoute.announce_management}/$postId")
+}
+
 fun NavGraphBuilder.intermediatorNavGraph(
     imeHeight: Int,
     onBackClick: () -> Unit,
@@ -55,7 +62,8 @@ fun NavGraphBuilder.intermediatorNavGraph(
     onManagementClick: (Int) -> Unit,
     onNavigateToCreateAnnouncement: () -> Unit,
     onNavigateToInterProfileEdit: () -> Unit,
-    onNavigateToReview: (Long) -> Unit,
+    onNavigateToReview: (Long, UserType) -> Unit,
+    onNavigateToAnnouncementManagement: (Long) -> Unit,
     onNavigateToCreateDog: () -> Unit
 ) {
     composable(route = IntermediatorRoute.route) {
@@ -74,7 +82,9 @@ fun NavGraphBuilder.intermediatorNavGraph(
     ) {
         InterManagementRoute(
             onBackClick = onBackClick,
-            tabIndex = it.arguments?.getInt("tabIndex") ?: 0
+            tabIndex = it.arguments?.getInt("tabIndex") ?: 0,
+            onNavigateToReview = onNavigateToReview,
+            onNavigateToAnnouncementManagement = onNavigateToAnnouncementManagement
         )
     }
 
@@ -109,6 +119,17 @@ fun NavGraphBuilder.intermediatorNavGraph(
             onBackClick = onBackClick
         )
     }
+
+    composable(
+        route = "${IntermediatorRoute.announce_management}/{postId}",
+        arguments = listOf(navArgument("postId") { type = NavType.LongType })
+    ) {
+        AnnouncementManageScreen(
+            postId = it.arguments!!.getLong("postId"),
+            onBackClick = onBackClick,
+            onIntermediatorProfileClick = {}
+        )
+    }
 }
 
 object IntermediatorRoute {
@@ -119,4 +140,5 @@ object IntermediatorRoute {
     const val inter_profile_edit = "inter_profile_edit"
     const val inter_review = "inter_review"
     const val create_application_dog = "create_application_dog"
+    const val announce_management = "announcement_management"
 }

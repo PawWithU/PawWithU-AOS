@@ -19,9 +19,11 @@ class SettingViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
+    // TODO AccessToken을 빈 문자열로 초기화하지 않고 삭제
     fun initLogout() = viewModelScope.launch {
         try {
             dataStoreRepository.saveAppMode(AppMode.LOGIN)
+            dataStoreRepository.saveAccessToken("")
             loginRepository.logout()
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
@@ -32,6 +34,7 @@ class SettingViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 myPageRepository.deleteAccount()
+                dataStoreRepository.saveAccessToken("")
             } catch (e: Exception) {
                 Log.d("tesaq", e.message.toString())
             }

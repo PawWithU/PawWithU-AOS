@@ -26,6 +26,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
 import com.kusitms.connectdog.core.data.repository.DataStoreRepository
@@ -98,16 +99,13 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun sendVerificationCode(phoneNumber: String) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-            phoneNumber,
-            60,
-            TimeUnit.SECONDS,
-            this,
-            object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+        val options = PhoneAuthOptions.newBuilder(auth)
+            .setPhoneNumber(phoneNumber)
+            .setTimeout(60L, TimeUnit.SECONDS)
+            .setActivity(this@MainActivity)
+            .setCallbacks(object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                 override fun onVerificationCompleted(credential: PhoneAuthCredential) {}
-                override fun onVerificationFailed(e: FirebaseException) {
-                    Log.d("testtt", e.toString())
-                }
+                override fun onVerificationFailed(e: FirebaseException) {}
 
                 override fun onCodeSent(
                     verificationId: String,
@@ -116,8 +114,9 @@ class MainActivity : ComponentActivity() {
                     Toast.makeText(this@MainActivity, "인증번호를 전송했습니다", Toast.LENGTH_SHORT).show()
                     this@MainActivity.verificationId = verificationId
                 }
-            }
-        )
+            })
+            .build()
+        PhoneAuthProvider.verifyPhoneNumber(options)
     }
 
     private fun imeListener() {
@@ -173,8 +172,16 @@ class MainActivity : ComponentActivity() {
 
     private fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    )
+                ) {
                     // 이미 권한을 거절한 경우 권한 설정 화면으로 이동
                 } else {
                     // 처음 권한 요청을 할 경우

@@ -3,17 +3,24 @@ package com.kusitms.connectdog.feature.intermediator.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
+import com.kusitms.connectdog.core.data.repository.DataStoreRepository
 import com.kusitms.connectdog.core.data.repository.InterManagementRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class InterHomeViewModel @Inject constructor(
-    private val managementRepository: InterManagementRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val repository: InterManagementRepository
 ) : ViewModel() {
+    init {
+        postFcmToken()
+    }
     private val _profileImage = MutableStateFlow<String>("")
     val profileImage: StateFlow<String>
         get() = _profileImage
@@ -45,7 +52,7 @@ class InterHomeViewModel @Inject constructor(
     fun fetchIntermediatorInfo() {
         viewModelScope.launch {
             try {
-                val response = managementRepository.getIntermediatorProfileInfo()
+                val response = repository.getIntermediatorProfileInfo()
                 _profileImage.value = response.profileImage
                 _intermediaryName.value = response.intermediaryName
                 _completedCount.value = response.completedCount.toInt()
@@ -56,6 +63,15 @@ class InterHomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.d("asdf", e.message.toString())
             }
+        }
+    }
+
+    private fun postFcmToken() = viewModelScope.launch {
+        val token = dataStoreRepository.fcmTokenFlow.first()
+        try {
+            token?.let { repository.postFcmToken(FcmTokenRequestBody(it)) }
+        } catch (e: Exception) {
+            Log.d("fcm post", e.message.toString())
         }
     }
 }

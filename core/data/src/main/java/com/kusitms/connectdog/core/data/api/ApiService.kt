@@ -4,6 +4,8 @@ import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
 import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
 import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
@@ -26,6 +28,7 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationRe
 import com.kusitms.connectdog.core.data.api.model.volunteer.IsDuplicateNicknameBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.UserInfoResponse
 import retrofit2.http.Body
@@ -89,6 +92,11 @@ internal interface ApiService {
         @Body socialVolunteerSignUpBody: SocialVolunteerSignUpBody
     )
 
+    @POST("/volunteers/phone/isDuplicated")
+    suspend fun getIsDuplicatePhoneNumber(
+        @Body isDuplicatePhoneNumberBody: IsDuplicatePhoneNumberBody
+    ): IsDuplicatePhoneNumberResponse
+
     /**
      * 봉사관리
      */
@@ -119,6 +127,11 @@ internal interface ApiService {
     suspend fun deleteMyApplication(
         @Path("applicationId") applicationId: Long
     ): Response
+
+    @GET("/volunteers/reviews/{reviewId}")
+    suspend fun getReviewDetail(
+        @Path("reviewId") reviewId: Long
+    ): ReviewDetailResponse
 
     /**
      * 로그인

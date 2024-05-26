@@ -17,8 +17,8 @@ import javax.inject.Inject
 class RegisterEmailViewModel @Inject constructor(
     private val signUpRepository: SignUpRepository
 ) : ViewModel() {
-    private val _isEmailVerified: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isEmailVerified: StateFlow<Boolean>
+    private val _isEmailVerified: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val isEmailVerified: StateFlow<Boolean?>
         get() = _isEmailVerified
 
     private val _isEmailDuplicated: MutableStateFlow<Boolean?> = MutableStateFlow(null)
