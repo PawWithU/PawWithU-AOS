@@ -30,6 +30,7 @@ fun ReviewDetailResponse.toData(): Review {
         location = "$departureLoc → $arrivalLoc",
         organization = intermediaryName,
         content = content,
-        intermediaryId = intermediaryId
+        intermediaryId = intermediaryId,
+        postMainImage = postMainImage
     )
 }
