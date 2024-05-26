@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
+import com.kusitms.connectdog.core.designsystem.component.text.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
@@ -321,7 +322,7 @@ private fun IntermediatorInfo(
             .padding(horizontal = 20.dp)
     ) {
         NetworkImage(
-            imageUrl = "",
+            imageUrl = review.postMainImage,
             modifier = Modifier.size(50.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -364,9 +365,18 @@ private fun IntermediatorInfo(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(painter = painterResource(id = R.drawable.ic_clock), contentDescription = null, tint = Gray2)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_clock),
+                    contentDescription = null,
+                    tint = Gray2
+                )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(text = "text", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Gray2)
+                Text(
+                    text = review.date,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Gray2
+                )
             }
         }
     }

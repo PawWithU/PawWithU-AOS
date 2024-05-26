@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":feature:intermediator"))
 
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.google.playintegrity)
 
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)

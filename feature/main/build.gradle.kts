@@ -62,7 +62,8 @@ dependencies {
     implementation(project(":core:data"))
 
     implementation(libs.androidx.core.splashscreen)
-    implementation("com.google.firebase:firebase-auth:22.3.0")
+    implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation(libs.google.playintegrity)
 
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)

@@ -1,10 +1,12 @@
 package com.kusitms.connectdog.core.data.api
 
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.Response
 import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterAnnouncementDetailResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationCompletedResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationInProgressResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationRecruitingResponseItem
@@ -92,6 +94,11 @@ internal interface InterApiService {
         @Path("reviewId") reviewId: Long
     ): ReviewDetailResponse
 
+    @GET("/intermediaries/posts/{postId}")
+    suspend fun getAnnouncementDetail(
+        @Path("postId") postId: Long
+    ): InterAnnouncementDetailResponse
+
     /**
      * 이동봉사 모집자 프로필
      * */
@@ -109,4 +116,14 @@ internal interface InterApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<InterProfileFindingResponseItem>
+
+    @DELETE("/intermediaries/posts/{postId}")
+    suspend fun deleteAnnouncement(
+        @Path("postId") postId: Long
+    )
+
+    @POST("/intermediaries/fcm")
+    suspend fun postFcmToken(
+        @Body fcmToken: FcmTokenRequestBody
+    )
 }

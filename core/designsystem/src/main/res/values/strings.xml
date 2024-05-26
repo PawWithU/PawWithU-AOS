@@ -44,4 +44,15 @@
     <string name="filter_big_dog">대형견</string>
     <string name="filter_middle_dog">중형견</string>
     <string name="filter_small_dog">소형견</string>
+
+    <string name="profile_button">프로필 바로가기</string>
+
+    <string name="delete">삭제</string>
+    <string name="back">뒤로 가기</string>
+    <string name="delete_dialog_title">봉사 공고를 정말 삭제하시겠습니까?</string>
+    <string name="delete_dialog_description">봉사 공고를 삭제하실 경우\n해당 공고 건은 복구가 어렵습니다.</string>
+
+    <string name="complete_check_dialog_title">봉사 건을 완료 처리 하시겠습니까?</string>
+    <string name="complete_check_dialog_description">봉사가 모두 종료되었나요?\n완료 처리 시 봉사자에게도\n완료 푸시 알림이 전송됩니다.</string>
+    <string name="complete">완료</string>
 </resources>

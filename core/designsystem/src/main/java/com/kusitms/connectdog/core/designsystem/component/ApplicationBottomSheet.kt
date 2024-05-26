@@ -96,7 +96,7 @@ private fun Content(
         Column(
             modifier = Modifier.wrapContentSize()
         ) {
-            TopAppBar(titleRes = titleRes) { onDismissRequest() }
+            BottomSheetTopAppBar(titleRes = titleRes) { onDismissRequest() }
             Column(
                 modifier = Modifier.padding(20.dp)
             ) {
@@ -114,7 +114,7 @@ private fun Content(
 }
 
 @Composable
-private fun TopAppBar(
+private fun BottomSheetTopAppBar(
     @StringRes titleRes: Int,
     onBackClick: () -> Unit
 ) {
