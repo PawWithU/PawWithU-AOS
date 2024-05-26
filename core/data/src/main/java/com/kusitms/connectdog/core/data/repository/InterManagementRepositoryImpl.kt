@@ -1,7 +1,9 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.InterApiService
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import com.kusitms.connectdog.core.data.mapper.intermediator.toData
 import com.kusitms.connectdog.core.data.mapper.toData
@@ -51,5 +53,17 @@ internal class InterManagementRepositoryImpl @Inject constructor(
 
     override suspend fun getReviewDetail(reviewId: Long): ReviewDetailResponse {
         return api.getReviewDetail(reviewId)
+    }
+
+    override suspend fun getAnnouncementDetail(postId: Long): NoticeDetailResponseItem {
+        return api.getAnnouncementDetail(postId).toData()
+    }
+
+    override suspend fun postFcmToken(fcmToken: FcmTokenRequestBody) {
+        api.postFcmToken(fcmToken)
+    }
+
+    override suspend fun deleteAnnouncement(postId: Long) {
+        api.deleteAnnouncement(postId)
     }
 }
