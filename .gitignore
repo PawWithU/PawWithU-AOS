@@ -30,3 +30,4 @@ core/designsystem/build/kotlin/compileDebugKotlin/cacheable/
 core/designsystem/build/outputs/aar/
 core/model/build/outputs/aar/
 core/designsystem/build/tmp/kotlin-classes/debug/META-INF
+core/designsystem/build/tmp
