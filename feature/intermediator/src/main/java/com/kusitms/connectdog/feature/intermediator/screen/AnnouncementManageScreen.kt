@@ -1,4 +1,4 @@
-package com.kusitms.connectdog.feature.home.screen
+package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -25,9 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,83 +38,96 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
+import com.kusitms.connectdog.core.designsystem.R
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogAlertDialog
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogDetailTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationCard
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTag
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTagWithIcon
+import com.kusitms.connectdog.core.designsystem.component.Loading
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
-import com.kusitms.connectdog.core.designsystem.component.button.BookmarkButton
 import com.kusitms.connectdog.core.designsystem.component.button.ProfileButton
 import com.kusitms.connectdog.core.designsystem.component.text.DetailInfo
 import com.kusitms.connectdog.core.designsystem.component.text.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
-import com.kusitms.connectdog.feature.home.DetailViewModel
-import com.kusitms.connectdog.feature.home.R
-
-private const val TAG = "DetailScreen"
+import com.kusitms.connectdog.feature.intermediator.state.AnnouncementManagementUiState
+import com.kusitms.connectdog.feature.intermediator.viewmodel.AnnouncementManagementViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun DetailScreen(
-    onBackClick: () -> Unit,
-    onApplyClick: (Long) -> Unit,
-    onIntermediatorProfileClick: (Long) -> Unit,
+fun AnnouncementManageScreen(
     postId: Long,
-    viewModel: DetailViewModel = hiltViewModel()
+    onBackClick: () -> Unit,
+    onIntermediatorProfileClick: (Long) -> Unit,
+    viewModel: AnnouncementManagementViewModel = hiltViewModel()
 ) {
-    val detail by viewModel.detail.observeAsState(null)
-
-    LaunchedEffect(postId) {
-        viewModel.initNoticeDetail(postId)
+    LaunchedEffect(Unit) {
+        viewModel.initializePostId(postId)
     }
+
+    val scrollState = rememberScrollState()
+    val data by viewModel.announcementDetailState.collectAsStateWithLifecycle()
+
+    var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             ConnectDogDetailTopAppBar(
                 onBackClick = onBackClick,
-                onShareClick = {}
+                onShareClick = {},
+                onDeleteClick = { isDeleteDialogOpen = true },
+                onEditClick = {}
             )
         },
         bottomBar = {
-            detail?.isBookmark
-                ?.let {
-                    BottomBar(
-                        isBookmark = it,
-                        onSaveClick = { viewModel.postBookmark(postId) },
-                        onDeleteClick = { viewModel.deleteBookmark(postId) },
-                        onClick = { onApplyClick(postId) }
-                    )
-                }
+            BottomBar("모집중")
         }
     ) {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-        ) {
-            if (detail != null) {
-                Spacer(modifier = Modifier.height(48.dp))
-                NetworkImage(
-                    imageUrl = detail!!.mainImage,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp)
-                )
-                Content(
-                    detail = detail!!,
-                    onIntermediatorProfileClick = onIntermediatorProfileClick
-                )
+        when (data) {
+            is AnnouncementManagementUiState.Loading -> Loading()
+            is AnnouncementManagementUiState.AnnouncementDetail -> {
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState)
+                ) {
+                    Spacer(modifier = Modifier.height(48.dp))
+                    NetworkImage(
+                        imageUrl = (data as AnnouncementManagementUiState.AnnouncementDetail).announcement.mainImage,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                    )
+                    Content(
+                        detail = (data as AnnouncementManagementUiState.AnnouncementDetail).announcement,
+                        onIntermediatorProfileClick = onIntermediatorProfileClick
+                    )
+                }
             }
         }
+    }
+    if (isDeleteDialogOpen) {
+        ConnectDogAlertDialog(
+            onDismissRequest = { isDeleteDialogOpen = false },
+            titleRes = R.string.delete_dialog_title,
+            descriptionRes = R.string.delete_dialog_description,
+            okText = R.string.delete,
+            cancelText = R.string.back,
+            onClickOk = {
+                viewModel.deleteAnnouncement()
+                isDeleteDialogOpen = false
+                onBackClick()
+            }
+        )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Content(
+private fun Content(
     detail: NoticeDetailResponseItem,
     onIntermediatorProfileClick: (Long) -> Unit
 ) {
@@ -129,6 +143,7 @@ fun Content(
     val pagerState = rememberPagerState {
         tabItems.size
     }
+
     LaunchedEffect(selectedTabIndex) {
         pagerState.animateScrollToPage(selectedTabIndex)
     }
@@ -222,9 +237,9 @@ private fun BasicInfo(
                 backgroundColor = Gray7,
                 contentColor = Gray3,
                 text = if (detail.isKennel) {
-                    stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_kennel)
+                    stringResource(id = R.string.has_kennel)
                 } else {
-                    stringResource(id = com.kusitms.connectdog.core.designsystem.R.string.has_not_kennel)
+                    stringResource(id = R.string.has_not_kennel)
                 }
             )
         }
@@ -338,24 +353,14 @@ fun IntermediatorInfo(
 
 @Composable
 private fun BottomBar(
-    isBookmark: Boolean,
-    onSaveClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onClick: () -> Unit
+    postStatus: String
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(112.dp)
-            .padding(horizontal = 20.dp)
             .background(Color.White)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
     ) {
-        Row(
-            modifier = Modifier.align(Alignment.Center)
-        ) {
-            BookmarkButton(isBookmark, onSaveClick, onDeleteClick)
-            Spacer(modifier = Modifier.width(10.dp))
-            ConnectDogNormalButton(content = "신청하기", onClick = onClick)
-        }
+        ConnectDogBottomButton(content = "${postStatus}인 공고입니다", onClick = {}, enabled = false)
     }
 }
