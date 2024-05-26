@@ -44,6 +44,7 @@ import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
 import com.kusitms.connectdog.feature.intermediator.R
+import com.kusitms.connectdog.feature.intermediator.component.CompletedCheckDialog
 import com.kusitms.connectdog.feature.intermediator.component.CompletedContent
 import com.kusitms.connectdog.feature.intermediator.component.CompletedDialog
 import com.kusitms.connectdog.feature.intermediator.component.InProgressContent
@@ -56,6 +57,7 @@ import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementVie
 internal fun InterManagementRoute(
     onBackClick: () -> Unit,
     onNavigateToReview: (Long, UserType) -> Unit,
+    onNavigateToAnnouncementManagement: (Long) -> Unit,
     tabIndex: Int = 0,
     viewModel: InterManagementViewModel = hiltViewModel()
 ) {
@@ -69,6 +71,10 @@ internal fun InterManagementRoute(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.refreshRecruitingUiState()
+    }
+
     val pendingDataState by viewModel.pendingDataState.collectAsState()
     UiState(dataUiState = pendingDataState) {
         viewModel.refreshWaitingUiState()
@@ -81,13 +87,17 @@ internal fun InterManagementRoute(
     }
 
     var isCompletedDialogVisible by remember { mutableStateOf(false) }
+    var isCompleteCheckDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     Column {
         TopAppBar(titleRes = R.string.manage_application) { onBackClick() }
         ManagementScreen(
             tabIndex = tabIndex,
             firstContent = {
-                Recruiting(uiState = recruitingUiState, onClick = {})
+                Recruiting(
+                    uiState = recruitingUiState,
+                    onClick = onNavigateToAnnouncementManagement
+                )
             },
             secondContent = {
                 PendingApproval(uiState = waitingUiState) { application ->
@@ -102,9 +112,9 @@ internal fun InterManagementRoute(
                         viewModel.updateSelectedApplication(application)
                         isSheetOpen = true
                     },
-                    onCompleteClick = {
-                        viewModel.completeApplication(it.applicationId!!)
-                        isCompletedDialogVisible = true
+                    onCompleteClick = { application ->
+                        viewModel.updateSelectedApplication(application)
+                        isCompleteCheckDialogVisible = true
                     }
                 )
             },
@@ -123,6 +133,19 @@ internal fun InterManagementRoute(
             sheetState = sheetState,
             onDismissRequest = { isSheetOpen = false },
             viewModel = viewModel
+        )
+    }
+
+    if (isCompleteCheckDialogVisible && selectedApplication != null) {
+        CompletedCheckDialog(
+            onCompleteClick = {
+                viewModel.completeApplication(viewModel.selectedApplication.value!!.applicationId!!)
+                isCompleteCheckDialogVisible = false
+                isCompletedDialogVisible = true
+            },
+            onDismissRequest = {
+                isCompleteCheckDialogVisible = false
+            }
         )
     }
 
