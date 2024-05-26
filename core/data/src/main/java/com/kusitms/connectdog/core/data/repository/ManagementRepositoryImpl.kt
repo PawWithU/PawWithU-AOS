@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.ApiService
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import com.kusitms.connectdog.core.data.mapper.toData
 import com.kusitms.connectdog.core.data.mapper.volunteer.toData
 import com.kusitms.connectdog.core.model.Application
@@ -29,5 +30,9 @@ internal class ManagementRepositoryImpl @Inject constructor(
 
     override suspend fun deleteMyApplication(applicationId: Long): ConnectDogResult {
         return api.deleteMyApplication(applicationId).toData()
+    }
+
+    override suspend fun getReview(reviewId: Long): ReviewDetailResponse {
+        return api.getReviewDetail(reviewId)
     }
 }

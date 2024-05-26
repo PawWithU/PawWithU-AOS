@@ -33,8 +33,9 @@ class InterManagementViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<Throwable>()
     val errorFlow: SharedFlow<Throwable> get() = _errorFlow
 
-    val recruitingUiState: StateFlow<InterApplicationUiState> =
-        createUiStateFlow { managementRepository.getApplicationRecruiting() }
+    private val _recruitingUiState =
+        MutableStateFlow<InterApplicationUiState>(InterApplicationUiState.Loading)
+    val recruitingUiState: StateFlow<InterApplicationUiState> = _recruitingUiState
 
     private val _waitingUiState =
         MutableStateFlow<InterApplicationUiState>(InterApplicationUiState.Loading)
@@ -61,6 +62,7 @@ class InterManagementViewModel @Inject constructor(
     val progressDataState = _progressDataState.asStateFlow()
 
     init {
+        refreshRecruitingUiState()
         refreshWaitingUiState()
         refreshInProgressUiState()
         refreshCompletedUiState()
@@ -106,6 +108,16 @@ class InterManagementViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "completeApplication ${e.message}")
             }
+        }
+    }
+
+    fun refreshRecruitingUiState() {
+        viewModelScope.launch {
+            refreshUiState(
+                getApplications = { managementRepository.getApplicationRecruiting() },
+                uiState = _recruitingUiState,
+                tag = "recruitingWaitingUiState"
+            )
         }
     }
 

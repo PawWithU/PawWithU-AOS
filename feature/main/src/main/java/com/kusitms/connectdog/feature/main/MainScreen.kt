@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.main
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.google.gson.Gson
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.util.AppMode
 import com.kusitms.connectdog.feature.home.navigation.homeNavGraph
@@ -117,7 +119,12 @@ internal fun MainScreen(
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackbar = {},
-                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
+                        onNavigateToCheckReview = navigator::navigateCheckReview,
+                        onNavigateToInterProfile = navigator::navigateIntermediatorProfile,
+                        onNavigateToCreateReview = {
+                            val jsonData = Uri.encode(Gson().toJson(it))
+                            navigator.navigateCreateReview(jsonData)
+                        }
                     )
                     mypageNavGraph(
                         padding = it,
@@ -147,8 +154,9 @@ internal fun MainScreen(
                         onProfileClick = { navigator.navigateInterProfile() },
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
                         onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
-                        onNavigateToReview = { navigator.navigateToReview(it) },
-                        onNavigateToCreateDog = { navigator.navigateToCreateDog() }
+                        onNavigateToReview = navigator::navigateCheckReview,
+                        onNavigateToCreateDog = { navigator.navigateToCreateDog() },
+                        onNavigateToAnnouncementManagement = navigator::navigateToAnnouncementManagement
                     )
                 }
             }

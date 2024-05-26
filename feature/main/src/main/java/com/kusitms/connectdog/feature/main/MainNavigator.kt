@@ -26,10 +26,10 @@ import com.kusitms.connectdog.feature.intermediator.navigation.IntermediatorRout
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterHome
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterManagement
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateToAnnouncementManagement
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateAnnouncementScreen
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateDog
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToInterProfileEdit
-import com.kusitms.connectdog.feature.intermediator.navigation.navigateToReview
 import com.kusitms.connectdog.feature.login.LoginRoute
 import com.kusitms.connectdog.feature.login.navigateEmailSearch
 import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete
@@ -37,6 +37,7 @@ import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
 import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
 import com.kusitms.connectdog.feature.login.navigateToLoginRoute
+import com.kusitms.connectdog.feature.management.navigation.navigateCheckReview
 import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
 import com.kusitms.connectdog.feature.management.navigation.navigateManagement
 import com.kusitms.connectdog.feature.mypage.navigation.navigateBadge
@@ -131,7 +132,8 @@ internal class MainNavigator(
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
-    fun navigateCreateReview() = navController.navigateCreateReview()
+    fun navigateCreateReview(application: String) = navController.navigateCreateReview(application)
+    fun navigateCheckReview(reviewId: Long, userType: UserType) = navController.navigateCheckReview(reviewId, userType)
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateInterHome()
@@ -139,8 +141,8 @@ internal class MainNavigator(
     fun navigateInterProfile() = navController.navigateInterProfile()
     fun navigateCreateAnnouncement() = navController.navigateToCreateAnnouncementScreen()
     fun navigateToInterProfileEdit() = navController.navigateToInterProfileEdit()
-    fun navigateToReview(id: Long) = navController.navigateToReview(id)
     fun navigateToCreateDog() = navController.navigateToCreateDog()
+    fun navigateToAnnouncementManagement(postId: Long) = navController.navigateToAnnouncementManagement(postId)
 
     fun popBackStackIfNotHome() {
         if (!isSameCurrentDestination(HomeRoute.route)) {

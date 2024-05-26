@@ -41,8 +41,10 @@ import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationTyp
 import com.kusitms.connectdog.core.designsystem.component.UiState
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.model.InterApplication
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.InterApplicationUiState
 import com.kusitms.connectdog.feature.intermediator.R
+import com.kusitms.connectdog.feature.intermediator.component.CompletedCheckDialog
 import com.kusitms.connectdog.feature.intermediator.component.CompletedContent
 import com.kusitms.connectdog.feature.intermediator.component.CompletedDialog
 import com.kusitms.connectdog.feature.intermediator.component.InProgressContent
@@ -54,6 +56,8 @@ import com.kusitms.connectdog.feature.intermediator.viewmodel.InterManagementVie
 @Composable
 internal fun InterManagementRoute(
     onBackClick: () -> Unit,
+    onNavigateToReview: (Long, UserType) -> Unit,
+    onNavigateToAnnouncementManagement: (Long) -> Unit,
     tabIndex: Int = 0,
     viewModel: InterManagementViewModel = hiltViewModel()
 ) {
@@ -67,6 +71,10 @@ internal fun InterManagementRoute(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var isSheetOpen by rememberSaveable { mutableStateOf(false) }
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.refreshRecruitingUiState()
+    }
+
     val pendingDataState by viewModel.pendingDataState.collectAsState()
     UiState(dataUiState = pendingDataState) {
         viewModel.refreshWaitingUiState()
@@ -79,13 +87,17 @@ internal fun InterManagementRoute(
     }
 
     var isCompletedDialogVisible by remember { mutableStateOf(false) }
+    var isCompleteCheckDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     Column {
         TopAppBar(titleRes = R.string.manage_application) { onBackClick() }
         ManagementScreen(
             tabIndex = tabIndex,
             firstContent = {
-                Recruiting(uiState = recruitingUiState, onClick = {})
+                Recruiting(
+                    uiState = recruitingUiState,
+                    onClick = onNavigateToAnnouncementManagement
+                )
             },
             secondContent = {
                 PendingApproval(uiState = waitingUiState) { application ->
@@ -96,17 +108,20 @@ internal fun InterManagementRoute(
             thirdContent = {
                 InProgress(
                     uiState = inProgressUiState,
-                    onCompleteClick = {
-                        viewModel.completeApplication(it.applicationId!!)
-                        isCompletedDialogVisible = true
+                    onCheckVolunteerClick = { application ->
+                        viewModel.updateSelectedApplication(application)
+                        isSheetOpen = true
+                    },
+                    onCompleteClick = { application ->
+                        viewModel.updateSelectedApplication(application)
+                        isCompleteCheckDialogVisible = true
                     }
                 )
             },
             fourthContent = {
                 Completed(
                     uiState = completedUiState,
-                    onClickReview = { /*TODO*/ },
-                    onClickRecent = {}
+                    onNavigateToCheckReview = { reviewId, userType -> onNavigateToReview(reviewId, userType) }
                 )
             }
         )
@@ -118,6 +133,19 @@ internal fun InterManagementRoute(
             sheetState = sheetState,
             onDismissRequest = { isSheetOpen = false },
             viewModel = viewModel
+        )
+    }
+
+    if (isCompleteCheckDialogVisible && selectedApplication != null) {
+        CompletedCheckDialog(
+            onCompleteClick = {
+                viewModel.completeApplication(viewModel.selectedApplication.value!!.applicationId!!)
+                isCompleteCheckDialogVisible = false
+                isCompletedDialogVisible = true
+            },
+            onDismissRequest = {
+                isCompleteCheckDialogVisible = false
+            }
         )
     }
 
@@ -176,13 +204,13 @@ private fun Recruiting(
 @Composable
 private fun PendingApproval(
     uiState: InterApplicationUiState,
-    onClick: (InterApplication) -> Unit
+    onCheckVolunteerClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    PendingContent(application = it) { onClick(it) }
+                    PendingContent(application = it) { onCheckVolunteerClick(it) }
                 }
             }
         }
@@ -198,13 +226,18 @@ private fun PendingApproval(
 @Composable
 private fun InProgress(
     uiState: InterApplicationUiState,
+    onCheckVolunteerClick: (InterApplication) -> Unit,
     onCompleteClick: (InterApplication) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
             LazyColumn(verticalArrangement = Arrangement.Top) {
                 items(uiState.applications) {
-                    InProgressContent(application = it) { onCompleteClick(it) }
+                    InProgressContent(
+                        application = it,
+                        onCheckVolunteerClick = { onCheckVolunteerClick(it) },
+                        onCompleteClick = { onCompleteClick(it) }
+                    )
                 }
             }
         }
@@ -220,8 +253,7 @@ private fun InProgress(
 @Composable
 private fun Completed(
     uiState: InterApplicationUiState,
-    onClickReview: () -> Unit,
-    onClickRecent: () -> Unit
+    onNavigateToCheckReview: (Long, UserType) -> Unit
 ) {
     when (uiState) {
         is InterApplicationUiState.InterApplications -> {
@@ -229,8 +261,7 @@ private fun Completed(
                 items(uiState.applications) {
                     CompletedContent(
                         application = it,
-                        onClickReview = onClickReview,
-                        onClickRecent = onClickRecent
+                        onClickReview = { onNavigateToCheckReview(it.reviewId!!, UserType.INTERMEDIATOR) }
                     )
                 }
             }
