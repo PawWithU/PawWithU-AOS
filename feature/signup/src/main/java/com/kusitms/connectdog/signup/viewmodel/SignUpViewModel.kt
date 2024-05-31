@@ -1,10 +1,13 @@
 package com.kusitms.connectdog.signup.viewmodel
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
 import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
+import com.kusitms.connectdog.core.data.api.model.SocialLoginBody
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
@@ -12,10 +15,12 @@ import com.kusitms.connectdog.core.data.repository.DataStoreRepository
 import com.kusitms.connectdog.core.data.repository.LoginRepository
 import com.kusitms.connectdog.core.data.repository.SignUpRepository
 import com.kusitms.connectdog.core.util.AppMode
+import com.kusitms.connectdog.core.util.ImageConverter
 import com.kusitms.connectdog.core.util.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +41,7 @@ class SignUpViewModel @Inject constructor(
     private val _intro = MutableStateFlow<String>("")
     private val _url = MutableStateFlow<String>("")
     private val _name = MutableStateFlow<String>("")
+    private val _interProfileImage = MutableStateFlow<Uri?>(null)
 
     val isDuplicatePhoneNumber = MutableSharedFlow<Boolean>()
 
@@ -75,21 +81,23 @@ class SignUpViewModel @Inject constructor(
         _phoneNumber.value = phone
     }
 
-    fun postNormalVolunteerSignUp() {
-        viewModelScope.launch {
-            val body = NormalVolunteerSignUpBody(
-                name = _name.value,
-                phone = _phoneNumber.value,
-                email = _email.value,
-                nickname = _nickname.value,
-                password = _password.value,
-                profileImageNum = _profileImageId.value!!
-            )
-            try {
-                signupRepository.postNormalVolunteerSignUp(body)
-            } catch (e: Exception) {
-                Log.d(TAG, e.message.toString())
-            }
+    fun updateInterProfileImage(uri: Uri) {
+        _interProfileImage.value = uri
+    }
+
+    fun postNormalVolunteerSignUp() = viewModelScope.launch {
+        val body = NormalVolunteerSignUpBody(
+            name = _name.value,
+            phone = _phoneNumber.value,
+            email = _email.value,
+            nickname = _nickname.value,
+            password = _password.value,
+            profileImageNum = _profileImageId.value!!
+        )
+        try {
+            signupRepository.postNormalVolunteerSignUp(body)
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
         }
     }
 
@@ -98,9 +106,21 @@ class SignUpViewModel @Inject constructor(
             email = _email.value,
             password = _password.value
         )
+        val socialBody = SocialLoginBody(
+            accessToken = dataStoreRepository.socialTokenFlow.first()!!,
+            provider = dataStoreRepository.socialProviderFlow.first()!!
+        )
         try {
             when (userType) {
-                UserType.SOCIAL_VOLUNTEER -> {}
+                UserType.SOCIAL_VOLUNTEER -> {
+                    val response = loginRepository.postSocialLoginData(socialBody)
+                    dataStoreRepository.apply {
+                        saveAppMode(appMode)
+                        saveAccessToken(response.accessToken)
+                        saveRefreshToken(response.refreshToken)
+                    }
+                }
+
                 UserType.NORMAL_VOLUNTEER -> {
                     val response = loginRepository.postLoginData(body)
                     dataStoreRepository.apply {
@@ -109,6 +129,7 @@ class SignUpViewModel @Inject constructor(
                         saveRefreshToken(response.refreshToken)
                     }
                 }
+
                 UserType.INTERMEDIATOR -> {
                     val response = loginRepository.postIntermediatorLoginData(body)
                     dataStoreRepository.apply {
@@ -125,9 +146,12 @@ class SignUpViewModel @Inject constructor(
 
     fun postSocialVolunteerSignUp() {
         val body = SocialVolunteerSignUpBody(
-            nickname = _nickname.value!!,
-            profileImageNum = _profileImageId.value!!
+            nickname = _nickname.value,
+            profileImageNum = _profileImageId.value!!,
+            name = _name.value,
+            phone = _phoneNumber.value
         )
+
         viewModelScope.launch {
             try {
                 signupRepository.postSocialVolunteerSignUp(body)
@@ -137,7 +161,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun postIntermediatorSignUp() {
+    fun postIntermediatorSignUp(context: Context) {
         val body = IntermediatorSignUpBody(
             email = _email.value,
             password = _password.value,
@@ -149,26 +173,31 @@ class SignUpViewModel @Inject constructor(
             phone = _phoneNumber.value,
             name = _nickname.value
         )
+
+        val file = ImageConverter.uriToFile(context, _interProfileImage.value!!, 80)
+
         viewModelScope.launch {
             try {
-                signupRepository.postIntermediatorSignUp(body)
+                signupRepository.postIntermediatorSignUp(body, file!!)
             } catch (e: Exception) {
                 Log.d("SignUpViewModel", e.message.toString())
             }
         }
     }
 
-    fun checkIsDuplicatePhoneNumber(userType: UserType, phoneNumber: String) = viewModelScope.launch {
-        val body = IsDuplicatePhoneNumberBody(phone = phoneNumber)
-        when (userType) {
-            UserType.INTERMEDIATOR -> {
-                val response = signupRepository.getInterMediatorPhoneNumberDuplicated(body)
-                isDuplicatePhoneNumber.emit(response.isDuplicated)
-            }
-            else -> {
-                val response = signupRepository.getVolunteerPhoneNumberDuplicated(body)
-                isDuplicatePhoneNumber.emit(response.isDuplicated)
+    fun checkIsDuplicatePhoneNumber(userType: UserType, phoneNumber: String) =
+        viewModelScope.launch {
+            val body = IsDuplicatePhoneNumberBody(phone = phoneNumber)
+            when (userType) {
+                UserType.INTERMEDIATOR -> {
+                    val response = signupRepository.getInterMediatorPhoneNumberDuplicated(body)
+                    isDuplicatePhoneNumber.emit(response.isDuplicated)
+                }
+
+                else -> {
+                    val response = signupRepository.getVolunteerPhoneNumberDuplicated(body)
+                    isDuplicatePhoneNumber.emit(response.isDuplicated)
+                }
             }
         }
-    }
 }

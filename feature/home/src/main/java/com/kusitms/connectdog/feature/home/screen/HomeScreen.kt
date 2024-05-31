@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.home.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -76,10 +77,13 @@ internal fun HomeRoute(
     onNavigateToDetail: (Long) -> Unit,
     onNavigateToNotification: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    finish: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val announcementUiState by viewModel.announcementUiState.collectAsStateWithLifecycle()
     val reviewUiState by viewModel.reviewUiState.collectAsStateWithLifecycle()
+
+    BackHandler { finish() }
 
     // 에러 발생할 때마다 에러 스낵바 표시
     LaunchedEffect(true) {
@@ -113,7 +117,9 @@ private fun HomeScreen(
 ) {
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier.verticalScroll(scrollState).fillMaxSize()
+        modifier = Modifier
+            .verticalScroll(scrollState)
+            .fillMaxSize()
     ) {
         BannerGuideline(onNavigateToSearch)
         MoveContent(onClick = { onNavigateToSearch() }, titleRes = R.string.home_navigate_search)

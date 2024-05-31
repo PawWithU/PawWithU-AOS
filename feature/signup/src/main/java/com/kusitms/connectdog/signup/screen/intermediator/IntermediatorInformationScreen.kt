@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,7 @@ fun IntermediatorInformationScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -85,7 +87,7 @@ fun IntermediatorInformationScreen(
                     onNavigateToCompleteSignUp(UserType.INTERMEDIATOR)
                     signUpViewModel.updateUrl(viewModel.url)
                     signUpViewModel.updateContact(viewModel.contact)
-                    signUpViewModel.postIntermediatorSignUp()
+                    signUpViewModel.postIntermediatorSignUp(context)
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp)
             )

@@ -26,7 +26,7 @@ fun ReviewDetailResponse.toData(): Review {
         userName = volunteerNickname,
         mainImage = mainImage,
         contentImages = images,
-        date = dateRangeFormat(startDate, endDate),
+        date = if (startDate == endDate) startDate else dateRangeFormat(startDate, endDate),
         location = "$departureLoc → $arrivalLoc",
         organization = intermediaryName,
         content = content,

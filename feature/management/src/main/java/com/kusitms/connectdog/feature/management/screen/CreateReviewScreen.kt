@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -45,7 +46,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -101,6 +104,11 @@ private fun Content(
     val interactionSource = remember { MutableInteractionSource() }
 
     var isConfirmDialogVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.updatePostId(application.postId)
+    }
 
     Column(
         modifier = Modifier
@@ -120,14 +128,17 @@ private fun Content(
         ConnectDogBottomButton(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 32.dp),
             onClick = { isConfirmDialogVisible = true },
-            content = "후기 등록",
+            content = stringResource(id = R.string.create_review),
             enabled = viewModel.review.length >= 10
         )
     }
 
     if (isConfirmDialogVisible) {
         CreateReviewDialog(
-            onConfirmClick = onBackClick,
+            onConfirmClick = {
+                viewModel.createReview(context)
+                onBackClick()
+            },
             onDismiss = { isConfirmDialogVisible = false }
         )
     }
@@ -144,7 +155,14 @@ private fun VolunteerInfo(
     ) {
         ListForUserItem(
             imageUrl = application.imageUrl,
-            announcementHome = AnnouncementHome(application.imageUrl, application.location, application.date, -1, application.dogName ?: "", application.pickUpTime ?: ""),
+            announcementHome = AnnouncementHome(
+                application.imageUrl,
+                application.location,
+                application.date,
+                -1,
+                application.dogName ?: "",
+                application.pickUpTime ?: ""
+            ),
             isValid = true
         )
     }
@@ -158,7 +176,7 @@ private fun ReviewContent(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 24.dp)
     ) {
         Text(
-            text = "이동봉사 후기를 입력해주세요",
+            text = stringResource(id = R.string.review_title),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp
         )
@@ -191,12 +209,11 @@ private fun ReviewContent(
 private fun UploadPhoto(
     viewModel: ReviewViewModel
 ) {
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
-            it.forEach { uri ->
-                viewModel.updateUriList(uri)
-            }
-        }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(5)
+    ) {
+        it.forEach { uri -> viewModel.updateUriList(uri) }
+    }
     val uriList by viewModel.uriList.collectAsStateWithLifecycle()
 
     Column(
@@ -308,13 +325,3 @@ private fun AddPhotoButton(onClick: () -> Unit) {
         )
     }
 }
-
-// @Preview
-// @Composable
-// private fun CreateReviewScreenPreview() {
-//    ConnectDogTheme {
-//        CreateReviewScreen(
-//            onBackClick = {}
-//        )
-//    }
-// }

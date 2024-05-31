@@ -87,6 +87,7 @@ fun NavGraphBuilder.homeNavGraph(
     onSendMessage: (String) -> Unit,
     onVerifyCode: (String, (Boolean) -> Unit) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    finish: () -> Unit,
     imeHeight: Int
 ) {
     composable(route = HomeRoute.route) {
@@ -96,7 +97,8 @@ fun NavGraphBuilder.homeNavGraph(
             onNavigateToReview,
             onNavigateToDetail,
             onNavigateToNotification,
-            onShowErrorSnackBar
+            onShowErrorSnackBar,
+            finish
         )
     }
 
@@ -152,7 +154,8 @@ fun NavGraphBuilder.homeNavGraph(
 
     composable(route = HomeRoute.review) {
         ReviewScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            onInterProfileClick = onNavigateToIntermediatorProfile
         )
     }
     composable(

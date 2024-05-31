@@ -106,7 +106,10 @@ fun CompleteSignUpScreen(
                         viewModel.setAutoLogin(AppMode.VOLUNTEER, UserType.NORMAL_VOLUNTEER)
                         navigateToVolunteer()
                     }
-                    UserType.SOCIAL_VOLUNTEER -> {}
+                    UserType.SOCIAL_VOLUNTEER -> {
+                        viewModel.setAutoLogin(AppMode.VOLUNTEER, UserType.SOCIAL_VOLUNTEER)
+                        navigateToVolunteer()
+                    }
                 }
             }
         )

@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.mypage.screen
 
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,8 +55,13 @@ internal fun MypageRoute(
     onSettingClick: () -> Unit,
     onBadgeClick: () -> Unit,
     onBookmarkClick: () -> Unit,
+    onNavigateToHome: (String) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
+    BackHandler {
+        onNavigateToHome(com.kusitms.connectdog.feature.mypage.navigation.MypageRoute.route)
+    }
+
     MypageScreen(
         onEditProfileClick = onEditProfileClick,
         onSettingClick = onSettingClick,

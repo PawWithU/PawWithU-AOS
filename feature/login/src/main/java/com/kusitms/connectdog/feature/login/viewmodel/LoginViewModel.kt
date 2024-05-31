@@ -113,6 +113,8 @@ class LoginViewModel @Inject constructor(
                     val response = loginRepository.postSocialLoginData(body)
                     dataStoreRepository.saveAccessToken(response.accessToken)
                     dataStoreRepository.saveRefreshToken(response.refreshToken)
+                    dataStoreRepository.saveSocialToken(it)
+                    dataStoreRepository.saveSocialProvider(provider.toString())
                     when (response.roleName) {
                         "GUEST" -> _socialType.emit(SocialType.GUEST)
                         "VOLUNTEER" -> {

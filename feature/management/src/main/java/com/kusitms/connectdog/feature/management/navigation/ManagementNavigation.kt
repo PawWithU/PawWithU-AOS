@@ -30,6 +30,7 @@ fun NavGraphBuilder.managementNavGraph(
     onNavigateToCreateReview: (Application) -> Unit,
     onNavigateToCheckReview: (Long, UserType) -> Unit,
     onNavigateToInterProfile: (Long) -> Unit,
+    onNavigateToHome: (String) -> Unit,
     onShowErrorSnackbar: (throwable: Throwable?) -> Unit
 ) {
     composable(route = ManagementRoute.route) {
@@ -37,6 +38,7 @@ fun NavGraphBuilder.managementNavGraph(
             onBackClick,
             onNavigateToCreateReview,
             onNavigateToCheckReview,
+            onNavigateToHome,
             onShowErrorSnackbar
         )
     }

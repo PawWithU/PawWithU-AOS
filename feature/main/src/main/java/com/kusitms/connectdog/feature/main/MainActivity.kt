@@ -70,7 +70,8 @@ class MainActivity : ComponentActivity() {
                         mode = appMode,
                         imeHeight = imeHeight,
                         sendVerificationCode = { sendVerificationCode("+82${it.substring(1)}") },
-                        verifyCode = { code, callback -> verifyCode(code) { callback(it) } }
+                        verifyCode = { code, callback -> verifyCode(code) { callback(it) } },
+                        finish = { finishActivity() }
                     )
                 }
             }
@@ -190,5 +191,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun finishActivity() {
+        this.finish()
     }
 }

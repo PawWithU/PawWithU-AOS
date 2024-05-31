@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -25,16 +24,19 @@ import com.kusitms.connectdog.feature.home.state.ReviewUiState
 @Composable
 fun ReviewScreen(
     onBackClick: () -> Unit,
+    onInterProfileClick: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val scrollState = rememberScrollState()
     val reviewUiState by viewModel.reviewUiState.collectAsStateWithLifecycle()
 
     Column {
         TopAppBar {
             onBackClick()
         }
-        ReviewContent(uiState = reviewUiState)
+        ReviewContent(
+            uiState = reviewUiState,
+            onInterProfileClick = onInterProfileClick
+        )
     }
 }
 
@@ -51,13 +53,17 @@ private fun TopAppBar(
 }
 
 @Composable
-private fun ReviewContent(uiState: ReviewUiState) {
+private fun ReviewContent(
+    onInterProfileClick: (Long) -> Unit,
+    uiState: ReviewUiState
+) {
     val modifier = Modifier.padding(horizontal = 0.dp)
     when (uiState) {
         is ReviewUiState.Reviews -> {
             ReviewListContent(
                 list = uiState.reviews,
-                modifier = modifier
+                modifier = modifier,
+                onInterProfileClick = onInterProfileClick
             )
         }
 
@@ -68,11 +74,15 @@ private fun ReviewContent(uiState: ReviewUiState) {
 @Composable
 fun ReviewListContent(
     list: List<Review>,
+    onInterProfileClick: (Long) -> Unit = {},
     modifier: Modifier
 ) {
     LazyColumn(modifier = modifier) {
         items(list.take(30)) {
-            ReviewItemContent(review = it)
+            ReviewItemContent(
+                review = it,
+                onInterProfileClick = onInterProfileClick
+            )
         }
     }
 }
@@ -106,6 +116,6 @@ fun ReviewLoading(modifier: Modifier) {
 @Composable
 private fun ReviewScreenPreview() {
     ConnectDogTheme {
-        ReviewContent(uiState = ReviewUiState.Empty)
+        ReviewContent(uiState = ReviewUiState.Empty, onInterProfileClick = {})
     }
 }

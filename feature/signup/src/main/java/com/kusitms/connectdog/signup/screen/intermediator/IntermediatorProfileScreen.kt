@@ -122,6 +122,7 @@ fun IntermediatorProfileScreen(
                             .clip(CircleShape),
                         contentDescription = ""
                     )
+                    viewModel.updateUri(it)
                 } ?: run {
                     Image(
                         painter = painterResource(id = com.kusitms.connectdog.core.util.R.drawable.ic_profile_1),
@@ -174,11 +175,12 @@ fun IntermediatorProfileScreen(
             ConnectDogBottomButton(
                 content = "다음",
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                enabled = viewModel.name != "" && viewModel.introduce != "",
+                enabled = viewModel.name != "" && viewModel.introduce != "" && viewModel.uri != null,
                 onClick = {
                     navigateToIntermediatorInfo()
                     signUpViewModel.updateIntro(viewModel.introduce)
                     signUpViewModel.updateNickname(viewModel.name)
+                    signUpViewModel.updateInterProfileImage(viewModel.uri!!)
                 }
             )
             Spacer(modifier = Modifier.height((imeHeight + 32).dp))

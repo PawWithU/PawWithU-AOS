@@ -42,6 +42,7 @@ fun NavController.navigatePasswordSearchComplete() {
 
 fun NavGraphBuilder.loginNavGraph(
     imeHeight: Int,
+    finish: () -> Unit,
     onBackClick: () -> Unit,
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToVolunteer: () -> Unit,
@@ -54,6 +55,7 @@ fun NavGraphBuilder.loginNavGraph(
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
+            finish,
             onNavigateToNormalLogin,
             onNavigateToSignup,
             onNavigateToVolunteer,

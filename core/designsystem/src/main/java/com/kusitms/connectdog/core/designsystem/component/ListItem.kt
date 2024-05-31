@@ -148,6 +148,50 @@ fun AnnouncementItem(
 }
 
 @Composable
+fun ReviewAnnouncement(
+    imageUrl: String,
+    dogName: String,
+    location: String,
+    date: String,
+    isValid: Boolean = true
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().wrapContentHeight()
+    ) {
+        NetworkImage(
+            imageUrl = imageUrl,
+            modifier = Modifier
+                .size(50.dp)
+                .clip(shape = RoundedCornerShape(12.dp))
+                .alpha(if (!isValid) 0.4F else 1.0F),
+            placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(
+            modifier = Modifier.wrapContentHeight().align(Alignment.CenterVertically)
+        ) {
+            Row {
+                Text(
+                    text = dogName,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Gray1
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = location,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Gray3
+                )
+            }
+            Spacer(modifier = Modifier.width(6.dp))
+            TextWithIcon(text = date, iconId = R.drawable.ic_clock)
+        }
+    }
+}
+
+@Composable
 fun ListForUserItem(
     modifier: Modifier = Modifier,
     imageUrl: String,

@@ -187,7 +187,6 @@ private fun Content(
                 .height(56.dp),
             onClick = {
                 if (viewModel.name.isNotEmpty() && isCertified) {
-                    viewModel.postAdditionalAuth()
                     signUpViewModel.updatePhoneNumber(viewModel.phoneNumber)
                     signUpViewModel.updateName(viewModel.name)
                     when (userType) {

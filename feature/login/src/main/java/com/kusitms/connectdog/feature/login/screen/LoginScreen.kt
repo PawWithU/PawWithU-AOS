@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.feature.login.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -64,11 +65,13 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun LoginRoute(
+    finish: () -> Unit,
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
     onNavigateToIntermediatorHome: () -> Unit
 ) {
+    BackHandler { finish() }
     LoginScreen(
         onNavigateToNormalLogin = onNavigateToNormalLogin,
         onNavigateToSignup = onNavigateToSignup,

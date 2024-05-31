@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.core.data.repository
 
+import com.google.gson.Gson
 import com.kusitms.connectdog.core.data.api.ApiService
 import com.kusitms.connectdog.core.data.api.InterApiService
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
@@ -11,6 +12,10 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationRe
 import com.kusitms.connectdog.core.data.api.model.volunteer.IsDuplicateNicknameBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.File
 import javax.inject.Inject
 
 internal class SignUpRepositoryImpl @Inject constructor(
@@ -33,8 +38,17 @@ internal class SignUpRepositoryImpl @Inject constructor(
         return volunteerApi.postSocialVolunteerSignUp(signUp)
     }
 
-    override suspend fun postIntermediatorSignUp(signUp: IntermediatorSignUpBody) {
-        return intermediatorApi.intermediatorSignUp(signUp)
+    override suspend fun postIntermediatorSignUp(signUp: IntermediatorSignUpBody, image: File) {
+        val jsonBody = RequestBody.create(
+            "application/json; charset=utf-8".toMediaTypeOrNull(),
+            Gson().toJson(signUp)
+        )
+
+        val fileBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), image)
+
+        val file = MultipartBody.Part.createFormData("file", image.name, fileBody)
+
+        return intermediatorApi.intermediatorSignUp(jsonBody, file)
     }
 
     override suspend fun getVolunteerPhoneNumberDuplicated(body: IsDuplicatePhoneNumberBody): IsDuplicatePhoneNumberResponse {
