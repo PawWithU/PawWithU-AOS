@@ -1,6 +1,9 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,11 +33,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogDialogButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
@@ -59,14 +62,32 @@ import java.time.LocalDate
 fun CreateApplicationInfoScreen(
     onBackClick: () -> Unit,
     navigateToCreateDog: () -> Unit,
+    viewModel: CreateApplicationViewModel,
     imeHeight: Int
 ) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
+    BackHandler {
+        onBackClick()
+        viewModel.clear()
+    }
+
     Scaffold(
+        modifier = Modifier
+            .clickable(
+                onClick = { focusManager.clearFocus() },
+                indication = null,
+                interactionSource = interactionSource
+            ),
         topBar = {
             ConnectDogTopAppBar(
                 titleRes = R.string.create_announcement,
                 navigationType = TopAppBarNavigationType.BACK,
-                onNavigationClick = onBackClick
+                onNavigationClick = {
+                    viewModel.clear()
+                    onBackClick()
+                }
             )
         },
         bottomBar = {
@@ -77,7 +98,8 @@ fun CreateApplicationInfoScreen(
         }
     ) {
         Content(
-            imeHeight = imeHeight
+            imeHeight = imeHeight,
+            viewModel = viewModel
         )
     }
 }
@@ -86,7 +108,7 @@ fun CreateApplicationInfoScreen(
 @Composable
 private fun Content(
     imeHeight: Int,
-    viewModel: CreateApplicationViewModel = hiltViewModel()
+    viewModel: CreateApplicationViewModel
 ) {
     var isScheduleSheetOpen by rememberSaveable { mutableStateOf(false) }
     var isTimeSheetOpen by rememberSaveable { mutableStateOf(false) }
@@ -188,7 +210,7 @@ private fun Content(
                     .padding(horizontal = 20.dp)
                     .padding(bottom = imeHeight.dp),
                 height = 244,
-                text = viewModel.significant,
+                text = viewModel.content,
                 onTextChanged = viewModel::updateSignificant,
                 label = "느꼈던 감정, 후기를 작성해주세요",
                 placeholder = "[이동봉사 목적, 이동 동물의 사연, 이동봉사 시간 및 장소 상세, 이동봉사 추가 안내사항 등]을 작성해주세요."
@@ -397,8 +419,8 @@ private fun BottomBar(
 ) {
     ConnectDogNormalButton(
         modifier = Modifier.padding(
-            top = 32.dp,
-            bottom = (32 + imeHeight).dp,
+            top = 24.dp,
+            bottom = (24 + imeHeight).dp,
             start = 20.dp,
             end = 20.dp
         ),

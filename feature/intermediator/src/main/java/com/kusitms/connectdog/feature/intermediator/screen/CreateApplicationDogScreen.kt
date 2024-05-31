@@ -6,9 +6,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,8 +35,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,6 +48,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Detail
@@ -67,26 +74,50 @@ import com.kusitms.connectdog.feature.intermediator.viewmodel.CreateApplicationV
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateApplicationDogScreen(
+    imeHeight: Int,
+    viewModel: CreateApplicationViewModel,
     onBackClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+
     Scaffold(
+        modifier = Modifier
+            .clickable(
+                onClick = { focusManager.clearFocus() },
+                indication = null,
+                interactionSource = interactionSource
+            ),
         topBar = {
             ConnectDogTopAppBar(
                 titleRes = R.string.create_announcement,
                 navigationType = TopAppBarNavigationType.BACK,
                 onNavigationClick = onBackClick
             )
+        },
+        bottomBar = {
+            ConnectDogBottomButton(
+                modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp, vertical = 24.dp),
+                onClick = { },
+                content = "등록 완료"
+            )
         }
     ) {
-        Content()
+        Content(
+            viewModel = viewModel,
+            imeHeight = imeHeight
+        )
     }
 }
 
 @Composable
 private fun Content(
-    viewModel: CreateApplicationViewModel = hiltViewModel()
+    viewModel: CreateApplicationViewModel,
+    imeHeight: Int
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .padding(top = 32.dp)
@@ -114,7 +145,7 @@ private fun Content(
         Spacer(modifier = Modifier.height(32.dp))
         Divider(thickness = 8.dp, color = Gray7)
         Spacer(modifier = Modifier.height(32.dp))
-        Significant()
+        Significant(viewModel = viewModel, imeHeight = imeHeight, scrollState = scrollState)
     }
 }
 
@@ -303,7 +334,15 @@ private fun AddPhotoButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun Significant() {
+private fun Significant(
+    scrollState: ScrollState,
+    imeHeight: Int,
+    viewModel: CreateApplicationViewModel
+) {
+    LaunchedEffect(imeHeight) {
+        if (imeHeight != 0) scrollState.animateScrollTo(scrollState.maxValue)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -316,6 +355,13 @@ private fun Significant() {
             color = Gray1
         )
         Spacer(modifier = Modifier.height(12.dp))
-        ConnectDogTextField(text = "", onTextChanged = {}, label = "", placeholder = "", height = 244)
+        ConnectDogTextField(
+            text = viewModel.specifics,
+            onTextChanged = viewModel::updateSpecifics,
+            label = "",
+            placeholder = "",
+            height = 244
+        )
+        Spacer(modifier = Modifier.height((imeHeight).dp))
     }
 }

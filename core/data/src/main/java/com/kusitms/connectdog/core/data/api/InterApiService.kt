@@ -14,13 +14,16 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
-import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -29,9 +32,11 @@ internal interface InterApiService {
     /**
      * 회원가입
      */
+    @Multipart
     @POST("/intermediaries/sign-up")
     suspend fun intermediatorSignUp(
-        @Body body: IntermediatorSignUpBody
+        @Part("request") json: RequestBody,
+        @Part file: MultipartBody.Part
     )
 
     @POST("/intermediaries/phone/isDuplicated")
@@ -125,5 +130,12 @@ internal interface InterApiService {
     @POST("/intermediaries/fcm")
     suspend fun postFcmToken(
         @Body fcmToken: FcmTokenRequestBody
+    )
+
+    @Multipart
+    @POST("/intermediaries/posts")
+    suspend fun postApplication(
+        @Part("request") json: RequestBody,
+        @Part files: List<MultipartBody.Part>
     )
 }
