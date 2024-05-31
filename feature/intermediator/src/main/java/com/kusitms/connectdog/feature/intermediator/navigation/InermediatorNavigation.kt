@@ -14,6 +14,7 @@ import com.kusitms.connectdog.feature.intermediator.screen.InterManagementRoute
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileEditScreen
 import com.kusitms.connectdog.feature.intermediator.screen.InterProfileScreen
 import com.kusitms.connectdog.feature.intermediator.screen.ReviewScreen
+import com.kusitms.connectdog.feature.intermediator.viewmodel.CreateApplicationViewModel
 
 fun NavController.navigateInterHome() {
     navigate(IntermediatorRoute.route) {
@@ -55,6 +56,7 @@ fun NavController.navigateToAnnouncementManagement(postId: Long) {
 
 fun NavGraphBuilder.intermediatorNavGraph(
     imeHeight: Int,
+    createApplicationViewModel: CreateApplicationViewModel,
     onBackClick: () -> Unit,
     onSettingClick: () -> Unit,
     onNotificationClick: () -> Unit,
@@ -99,7 +101,8 @@ fun NavGraphBuilder.intermediatorNavGraph(
         CreateApplicationInfoScreen(
             onBackClick = onBackClick,
             navigateToCreateDog = onNavigateToCreateDog,
-            imeHeight = imeHeight
+            imeHeight = imeHeight,
+            viewModel = createApplicationViewModel
         )
     }
 
@@ -116,7 +119,9 @@ fun NavGraphBuilder.intermediatorNavGraph(
 
     composable(route = IntermediatorRoute.create_application_dog) {
         CreateApplicationDogScreen(
-            onBackClick = onBackClick
+            imeHeight = imeHeight,
+            onBackClick = onBackClick,
+            viewModel = createApplicationViewModel
         )
     }
 
