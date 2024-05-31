@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ReviewItemContent
+import com.kusitms.connectdog.core.designsystem.component.ReviewType
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.model.Review
@@ -103,7 +104,10 @@ fun ReviewLoading(modifier: Modifier) {
     }
     LazyColumn(modifier = modifier) {
         items(list) {
-            ReviewItemContent(review = it)
+            ReviewItemContent(
+                review = it,
+                reviewType = ReviewType.REVIEW
+            )
         }
     }
 }

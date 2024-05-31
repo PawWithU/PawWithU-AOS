@@ -124,18 +124,15 @@ fun RegisterEmailScreen(
                         Toast.makeText(context, "인증번호를 입력해주세요", Toast.LENGTH_SHORT).show()
                     }
                 },
-                padding = 5
+                padding = 5,
+                isError = isEmailVerified == false
             )
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogNormalButton(
                 content = "다음",
-                color = if (isEmailVerified) {
-                    PetOrange
-                } else {
-                    Orange_40
-                },
+                color = if (isEmailVerified == true) { PetOrange } else { Orange_40 },
                 onClick = {
-                    if (isEmailVerified) {
+                    if (isEmailVerified == true) {
                         signUpViewModel.updateEmail(viewModel.email)
                         onNavigateToRegisterPassword(userType)
                     }

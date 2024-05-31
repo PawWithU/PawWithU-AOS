@@ -55,7 +55,7 @@ import com.kusitms.connectdog.core.designsystem.component.BannerGuideline
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogReview
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.component.ReviewType
-import com.kusitms.connectdog.core.designsystem.component.TextWithIcon
+import com.kusitms.connectdog.core.designsystem.component.text.TextWithIcon
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2

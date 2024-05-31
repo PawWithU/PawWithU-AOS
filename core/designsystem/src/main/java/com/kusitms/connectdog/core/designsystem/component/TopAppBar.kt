@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.designsystem.theme.Red1
 
 @Composable
 fun ConnectDogTopAppBar(
@@ -149,6 +150,63 @@ fun ConnectDogIntermediatorTopAppBar(
             )
         }
     }
+}
+
+@Composable
+fun ConnectDogDetailTopAppBar(
+    onBackClick: () -> Unit,
+    onShareClick: () -> Unit
+) {
+    ConnectDogTopAppBar(
+        titleRes = null,
+        navigationType = TopAppBarNavigationType.BACK,
+        navigationIconContentDescription = "Navigation icon home",
+        onNavigationClick = onBackClick,
+        actionButtons = {
+            IconButton(onClick = onShareClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_share),
+                    contentDescription = "Navigate to Search"
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun ConnectDogDetailTopAppBar(
+    onBackClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit
+) {
+    ConnectDogTopAppBar(
+        titleRes = null,
+        navigationType = TopAppBarNavigationType.BACK,
+        navigationIconContentDescription = "Navigation icon home",
+        onNavigationClick = onBackClick,
+        actionButtons = {
+            IconButton(onClick = onShareClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_share),
+                    contentDescription = "Navigate to Search"
+                )
+            }
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_edit),
+                    contentDescription = "Navigate to Search"
+                )
+            }
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = "Navigate to Search",
+                    tint = Red1
+                )
+            }
+        }
+    )
 }
 
 @Composable

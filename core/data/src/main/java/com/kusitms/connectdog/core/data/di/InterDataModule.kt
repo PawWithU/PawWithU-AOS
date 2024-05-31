@@ -1,6 +1,8 @@
 package com.kusitms.connectdog.core.data.di
 
 import com.kusitms.connectdog.core.data.api.InterApiService
+import com.kusitms.connectdog.core.data.repository.InterHomeRepository
+import com.kusitms.connectdog.core.data.repository.InterHomeRepositoryImpl
 import com.kusitms.connectdog.core.data.repository.InterManagementRepository
 import com.kusitms.connectdog.core.data.repository.InterManagementRepositoryImpl
 import com.kusitms.connectdog.core.data.repository.InterProfileRepository
@@ -14,6 +16,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 internal class InterDataModule {
+
+    @Provides
+    @Singleton
+    fun provideInterHomeRepository(apiService: InterApiService): InterHomeRepository {
+        return InterHomeRepositoryImpl(apiService)
+    }
 
     @Provides
     @Singleton

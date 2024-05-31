@@ -1,8 +1,12 @@
 package com.kusitms.connectdog.core.data.api
 
+import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
+import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.Response
 import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
+import com.kusitms.connectdog.core.data.api.model.intermediator.InterAnnouncementDetailResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationCompletedResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationInProgressResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationRecruitingResponseItem
@@ -10,13 +14,36 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 internal interface InterApiService {
+
+    /**
+     * 회원가입
+     */
+    @Multipart
+    @POST("/intermediaries/sign-up")
+    suspend fun intermediatorSignUp(
+        @Part("request") json: RequestBody,
+        @Part file: MultipartBody.Part
+    )
+
+    @POST("/intermediaries/phone/isDuplicated")
+    suspend fun getIsDuplicatePhoneNumber(
+        @Body body: IsDuplicatePhoneNumberBody
+    ): IsDuplicatePhoneNumberResponse
+
     /**
      * 봉사관리
      */
@@ -67,6 +94,16 @@ internal interface InterApiService {
         @Path("applicationId") applicationId: Long
     ): Response
 
+    @GET("/intermediaries/reviews/{reviewId}")
+    suspend fun getReviewDetail(
+        @Path("reviewId") reviewId: Long
+    ): ReviewDetailResponse
+
+    @GET("/intermediaries/posts/{postId}")
+    suspend fun getAnnouncementDetail(
+        @Path("postId") postId: Long
+    ): InterAnnouncementDetailResponse
+
     /**
      * 이동봉사 모집자 프로필
      * */
@@ -84,4 +121,21 @@ internal interface InterApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<InterProfileFindingResponseItem>
+
+    @DELETE("/intermediaries/posts/{postId}")
+    suspend fun deleteAnnouncement(
+        @Path("postId") postId: Long
+    )
+
+    @POST("/intermediaries/fcm")
+    suspend fun postFcmToken(
+        @Body fcmToken: FcmTokenRequestBody
+    )
+
+    @Multipart
+    @POST("/intermediaries/posts")
+    suspend fun postApplication(
+        @Part("request") json: RequestBody,
+        @Part files: List<MultipartBody.Part>
+    )
 }

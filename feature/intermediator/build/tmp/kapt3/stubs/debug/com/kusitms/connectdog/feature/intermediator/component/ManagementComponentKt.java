@@ -8,7 +8,7 @@ import androidx.compose.ui.text.style.TextAlign;
 import com.kusitms.connectdog.core.model.InterApplication;
 import com.kusitms.connectdog.feature.intermediator.R;
 
-@kotlin.Metadata(mv = {1, 8, 0}, k = 2, d1 = {"\u0000$\n\u0000\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\t\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000b\n\u0002\b\u0002\u001a,\u0010\u0000\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00010\u00052\f\u0010\u0006\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u0016\u0010\u0007\u001a\u00020\u00012\f\u0010\b\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u001e\u0010\t\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\n\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u001e\u0010\u000b\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\n\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u0010\u0010\f\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0001\u001a>\u0010\r\u001a\u00020\u00012\b\b\u0002\u0010\u000e\u001a\u00020\u000f2\u0006\u0010\u0010\u001a\u00020\u00112\u0006\u0010\u0012\u001a\u00020\u00112\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00010\u00052\f\u0010\u0006\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0003\u00a8\u0006\u0013"}, d2 = {"CompletedContent", "", "application", "Lcom/kusitms/connectdog/core/model/InterApplication;", "onClickReview", "Lkotlin/Function0;", "onClickRecent", "CompletedDialog", "onDismissRequest", "InProgressContent", "onClick", "PendingContent", "RecruitingContent", "ReviewRecentButton", "modifier", "Landroidx/compose/ui/Modifier;", "hasReview", "", "hasRecent", "intermediator_debug"})
+@kotlin.Metadata(mv = {1, 8, 0}, k = 2, d1 = {"\u0000$\n\u0000\n\u0002\u0010\u0002\n\u0000\n\u0002\u0018\u0002\n\u0000\n\u0002\u0018\u0002\n\u0002\b\n\n\u0002\u0018\u0002\n\u0000\n\u0002\u0010\u000b\n\u0002\b\u0003\u001a\u001e\u0010\u0000\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u0016\u0010\u0006\u001a\u00020\u00012\f\u0010\u0007\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a,\u0010\b\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\t\u001a\b\u0012\u0004\u0012\u00020\u00010\u00052\f\u0010\n\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u001e\u0010\u000b\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u00032\f\u0010\f\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0001\u001a\u0010\u0010\r\u001a\u00020\u00012\u0006\u0010\u0002\u001a\u00020\u0003H\u0001\u001a>\u0010\u000e\u001a\u00020\u00012\b\b\u0002\u0010\u000f\u001a\u00020\u00102\u0006\u0010\u0011\u001a\u00020\u00122\u0006\u0010\u0013\u001a\u00020\u00122\f\u0010\u0004\u001a\b\u0012\u0004\u0012\u00020\u00010\u00052\f\u0010\u0014\u001a\b\u0012\u0004\u0012\u00020\u00010\u0005H\u0003\u00a8\u0006\u0015"}, d2 = {"CompletedContent", "", "application", "Lcom/kusitms/connectdog/core/model/InterApplication;", "onClickReview", "Lkotlin/Function0;", "CompletedDialog", "onDismissRequest", "InProgressContent", "onCheckVolunteerClick", "onCompleteClick", "PendingContent", "onClick", "RecruitingContent", "ReviewRecentButton", "modifier", "Landroidx/compose/ui/Modifier;", "hasReview", "", "hasRecent", "onClickRecent", "intermediator_debug"})
 public final class ManagementComponentKt {
     
     @androidx.compose.runtime.Composable
@@ -25,14 +25,14 @@ public final class ManagementComponentKt {
     @androidx.compose.runtime.Composable
     public static final void InProgressContent(@org.jetbrains.annotations.NotNull
     com.kusitms.connectdog.core.model.InterApplication application, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onClick) {
+    kotlin.jvm.functions.Function0<kotlin.Unit> onCheckVolunteerClick, @org.jetbrains.annotations.NotNull
+    kotlin.jvm.functions.Function0<kotlin.Unit> onCompleteClick) {
     }
     
     @androidx.compose.runtime.Composable
     public static final void CompletedContent(@org.jetbrains.annotations.NotNull
     com.kusitms.connectdog.core.model.InterApplication application, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onClickReview, @org.jetbrains.annotations.NotNull
-    kotlin.jvm.functions.Function0<kotlin.Unit> onClickRecent) {
+    kotlin.jvm.functions.Function0<kotlin.Unit> onClickReview) {
     }
     
     @androidx.compose.runtime.Composable

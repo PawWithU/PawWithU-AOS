@@ -30,4 +30,29 @@
     <string name="home_banner_1">이동봉사가 처음이라면?\n</string>
     <string name="home_banner_2">한눈에 보는 이동봉사 가이드!</string>
     <string name="home_banner_button_guideline">가이드 확인하기</string>
+
+    <string name="filter_select_departure">출발지 선택</string>
+    <string name="filter_departure">출발</string>
+    <string name="filter_select_destination">도착지 선택</string>
+    <string name="filter_destination">도착</string>
+    <string name="filter_select_departure_region">출발 지역 선택</string>
+    <string name="filter_select_destination_region">도착 지역 선택</string>
+
+    <string name="filter_kennel_no_need">O (준비 불필요)</string>
+    <string name="filter_kennel_need">X (준비 필요)</string>
+
+    <string name="filter_big_dog">대형견</string>
+    <string name="filter_middle_dog">중형견</string>
+    <string name="filter_small_dog">소형견</string>
+
+    <string name="profile_button">프로필 바로가기</string>
+
+    <string name="delete">삭제</string>
+    <string name="back">뒤로 가기</string>
+    <string name="delete_dialog_title">봉사 공고를 정말 삭제하시겠습니까?</string>
+    <string name="delete_dialog_description">봉사 공고를 삭제하실 경우\n해당 공고 건은 복구가 어렵습니다.</string>
+
+    <string name="complete_check_dialog_title">봉사 건을 완료 처리 하시겠습니까?</string>
+    <string name="complete_check_dialog_description">봉사가 모두 종료되었나요?\n완료 처리 시 봉사자에게도\n완료 푸시 알림이 전송됩니다.</string>
+    <string name="complete">완료</string>
 </resources>

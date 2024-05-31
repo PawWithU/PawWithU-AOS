@@ -26,6 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
+import com.kusitms.connectdog.core.designsystem.theme.Gray4
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
+import com.kusitms.connectdog.core.designsystem.theme.Orange10
 import com.kusitms.connectdog.core.designsystem.theme.Orange_40
 import com.kusitms.connectdog.core.designsystem.theme.Typography
 
@@ -191,8 +194,8 @@ fun ConnectDogOutlinedButton(
         onClick = onClick,
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
-        colors = ButtonDefaults.buttonColors(containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
+        border = BorderStroke(width = 1.dp, color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
+        colors = ButtonDefaults.buttonColors(containerColor = if (isSelected) Orange10 else MaterialTheme.colorScheme.surface)
     ) {
         content()
     }
@@ -223,6 +226,48 @@ fun ConnectDogSecondaryButton(
             color = textColor,
             fontSize = 12.sp
         )
+    }
+}
+
+@Composable
+fun ConnectDogDialogButton(
+    onClick: () -> Unit,
+    text: String,
+    borderColor: Color = Gray5,
+    modifier: Modifier = Modifier,
+    textColor: Color = Gray4,
+    color: Color = Color.White
+) {
+    Button(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, borderColor),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = textColor)
+    ) {
+        Spacer(modifier = Modifier.width(3.dp))
+        Text(
+            text = text,
+            style = Typography.titleSmall,
+            color = textColor,
+            fontSize = 16.sp
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        Icon(
+            painter = painterResource(id = R.drawable.ic_down_triangle),
+            contentDescription = ""
+        )
+        Spacer(modifier = Modifier.width(7.dp))
+    }
+}
+
+@Preview
+@Composable
+private fun DialogButtonPreview() {
+    ConnectDogTheme {
+        ConnectDogDialogButton(onClick = { /*TODO*/ }, text = "날짜/기간 선택 ")
     }
 }
 

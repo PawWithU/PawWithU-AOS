@@ -17,4 +17,12 @@
     <string name="no_progressing">진행 중인 이동봉사가 없어요</string>
     <string name="no_completed">완료된 이동봉사가 없어요</string>
     <string name="no_description">홈에서 원하는 공고를 신청해보세요!</string>
+
+    <!--후기 등록 다이어로그-->
+    <string name="dialog_title">후기를 등록하시겠습니까?</string>
+    <string name="dialog_description">후기를 등록하실 경우 모집자에게\n알림이 발송되며, 서비스 이용자들이 후기를 조회할 수 있습니다.</string>
+    <string name="dialog_confirm">네, 등록할게요</string>
+
+    <!-- 후기 등록 화면 -->
+    <string name="review_title">이동봉사 후기를 입력해주세요</string>
 </resources>
