@@ -66,7 +66,8 @@ fun NavGraphBuilder.mypageNavGraph(
     editProfileViewModel: EditProfileViewModel,
     onNavigateToIntermediatorProfile: (Long) -> Unit,
     onNavigateToDetail: (Long) -> Unit,
-    onNavigateToApply: (Long) -> Unit
+    onNavigateToApply: (Long) -> Unit,
+    onNavigateToHome: (String) -> Unit
 ) {
     composable(route = MypageRoute.route) {
         MypageRoute(
@@ -75,6 +76,7 @@ fun NavGraphBuilder.mypageNavGraph(
             onSettingClick,
             onBadgeClick,
             onBookmarkClick,
+            onNavigateToHome,
             onShowErrorSnackbar
         )
     }

@@ -23,13 +23,16 @@ class ApplyViewModel @Inject constructor(
         getBasicInformation()
     }
 
+    private val _basicName: MutableState<String> = mutableStateOf("")
+    private val _basicPhoneNumber: MutableState<String> = mutableStateOf("")
+
     private val _name: MutableState<String> = mutableStateOf("")
     val name: String
-        get() = if (_isChecked.value) { _name.value } else { "" }
+        get() = _name.value
 
     private val _phoneNumber: MutableState<String> = mutableStateOf("")
     val phoneNumber: String
-        get() = if (_isChecked.value) { _phoneNumber.value } else { "" }
+        get() = _phoneNumber.value
 
     private val _isChecked = MutableStateFlow(true)
     val isChecked: StateFlow<Boolean> = _isChecked
@@ -60,7 +63,13 @@ class ApplyViewModel @Inject constructor(
 
     fun updateIsChecked() {
         _isChecked.value = !_isChecked.value
-        if (_isChecked.value) getBasicInformation()
+        if (_isChecked.value) {
+            _name.value = _basicName.value
+            _phoneNumber.value = _basicPhoneNumber.value
+        } else {
+            _name.value = ""
+            _phoneNumber.value = ""
+        }
     }
 
     fun updateName(name: String) {
@@ -87,9 +96,6 @@ class ApplyViewModel @Inject constructor(
         }
     }
 
-    fun updateIsAvailablePhoneNumber() {
-    }
-
     private fun updateIsAvailableName() {
         val koreanRegex = Regex("[가-힣]+")
         _isAvailableName.value = koreanRegex.matches(_name.value)
@@ -98,6 +104,8 @@ class ApplyViewModel @Inject constructor(
     private fun getBasicInformation() = viewModelScope.launch {
         try {
             val response = applyRepository.getBasicInformation()
+            _basicName.value = response.name
+            _basicPhoneNumber.value = response.phone
             _name.value = response.name
             _phoneNumber.value = response.phone
         } catch (e: Exception) {

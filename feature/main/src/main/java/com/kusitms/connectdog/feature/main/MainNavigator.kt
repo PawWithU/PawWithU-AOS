@@ -146,6 +146,12 @@ internal class MainNavigator(
         }
     }
 
+    fun navigateToHomeClearBackStack(current: String) {
+        navController.navigate(HomeRoute.route) {
+            popUpTo(current) { inclusive = true }
+        }
+    }
+
     private fun isSameCurrentDestination(route: String) =
         navController.currentDestination?.route == route
 

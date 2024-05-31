@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.R
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
@@ -128,7 +128,7 @@ private fun Content(
             label = "휴대폰 번호",
             placeholder = "\'-\' 빼고 입력",
             keyboardType = KeyboardType.Number,
-            onTextChanged = { viewModel.updatePhoneNumber(it) }
+            onTextChanged = { if (it.length <= 11) viewModel.updatePhoneNumber(it) }
         )
         Spacer(modifier = Modifier.height(20.dp))
         NoticeCard()
@@ -155,7 +155,8 @@ private fun Content(
             onTextChanged = { viewModel.updateContent(it) }
         )
         Spacer(modifier = Modifier.height(20.dp))
-        ConnectDogNormalButton(
+        ConnectDogBottomButton(
+            enabled = viewModel.name.isNotEmpty() && viewModel.phoneNumber.isNotEmpty(),
             content = "신청하기",
             onClick = {
                 viewModel.postApplyVolunteer(postId)

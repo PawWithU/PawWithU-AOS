@@ -1,7 +1,6 @@
 package com.kusitms.connectdog.signup.screen.volunteer
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -9,11 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -36,6 +35,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Orange40
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.signup.viewmodel.CertificationViewModel
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -47,6 +47,7 @@ fun CertificationScreen(
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
     imeHeight: Int,
     userType: UserType,
+    signUpViewModel: SignUpViewModel,
     viewModel: CertificationViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -67,9 +68,10 @@ fun CertificationScreen(
             onNavigateToVolunteerProfile = { onNavigateToVolunteerProfile(userType) },
             onSendMessageClick = onSendMessageClick,
             onVerifyCodeClick = onVerifyCodeClick,
-            viewModel = viewModel,
             imeHeight = imeHeight,
-            userType = userType
+            userType = userType,
+            viewModel = viewModel,
+            signUpViewModel = signUpViewModel
         )
     }
 }
@@ -82,6 +84,7 @@ private fun Content(
     onNavigateToVolunteerProfile: (UserType) -> Unit,
     onSendMessageClick: (String) -> Unit,
     onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit,
+    signUpViewModel: SignUpViewModel,
     viewModel: CertificationViewModel
 ) {
     val focusManager = LocalFocusManager.current
@@ -89,6 +92,17 @@ private fun Content(
     val context = LocalContext.current
     val isSendNumber by remember { viewModel.isSendNumber }.collectAsState()
     val isCertified by remember { viewModel.isCertified }.collectAsState()
+
+    LaunchedEffect(key1 = signUpViewModel) {
+        signUpViewModel.isDuplicatePhoneNumber.collect {
+            if (it) {
+                Toast.makeText(context, "중복된 휴대폰 번호입니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "인증번호를 전송하였습니다.", Toast.LENGTH_SHORT).show()
+                onSendMessageClick(viewModel.phoneNumber)
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -98,7 +112,6 @@ private fun Content(
                 indication = null,
                 interactionSource = interactionSource
             )
-            .imePadding()
     ) {
         Spacer(modifier = Modifier.height(48.dp))
         Text(
@@ -124,13 +137,15 @@ private fun Content(
             buttonLabel = "인증 요청",
             keyboardType = KeyboardType.Number,
             padding = 5,
-            onTextChanged = { viewModel.updatePhoneNumber(it) },
+            onTextChanged = { if (it.length <= 11) viewModel.updatePhoneNumber(it) },
             onClick = {
                 if (viewModel.phoneNumber.isEmpty()) {
                     Toast.makeText(context, "휴대폰 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                } else {
-                    onSendMessageClick(it)
+                } else if (viewModel.phoneNumber.length == 11) {
+                    signUpViewModel.checkIsDuplicatePhoneNumber(userType, viewModel.phoneNumber)
                     viewModel.updateIsSendNumber(true)
+                } else {
+                    Toast.makeText(context, "올바른 휴대폰 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -144,22 +159,19 @@ private fun Content(
             buttonLabel = "인증 확인",
             keyboardType = KeyboardType.Number,
             padding = 5,
-            onTextChanged = { viewModel.updateCertificationNumber(it) },
+            onTextChanged = { if (it.length <= 6) viewModel.updateCertificationNumber(it) },
             onClick = {
-                Log.d("send", isSendNumber.toString())
-                viewModel.updateIsCertified(true)
-//                if (!isSendNumber) {
-//                    Toast.makeText(context, "먼저 인증번호를 전송해주세요", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    if (viewModel.certificationNumber.isEmpty()) {
-//                        Toast.makeText(context, "인증 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        onVerifyCodeClick(it) {
-//                            viewModel.updateIsCertified(it)
-//                            Log.d("casz", isCertified.toString())
-//                        }
-//                    }
-//                }
+                if (!isSendNumber) {
+                    Toast.makeText(context, "먼저 인증번호를 전송해주세요", Toast.LENGTH_SHORT).show()
+                } else {
+                    if (viewModel.certificationNumber.isEmpty()) {
+                        Toast.makeText(context, "인증 번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+                    } else if (viewModel.certificationNumber.length == 6) {
+                        onVerifyCodeClick(it) { viewModel.updateIsCertified(it) }
+                    } else {
+                        Toast.makeText(context, "인증 번호는 6자리로 입력해주세요", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -175,7 +187,8 @@ private fun Content(
                 .height(56.dp),
             onClick = {
                 if (viewModel.name.isNotEmpty() && isCertified) {
-                    viewModel.postAdditionalAuth()
+                    signUpViewModel.updatePhoneNumber(viewModel.phoneNumber)
+                    signUpViewModel.updateName(viewModel.name)
                     when (userType) {
                         UserType.SOCIAL_VOLUNTEER -> onNavigateToVolunteerProfile(userType)
                         else -> onNavigateToRegisterEmail(userType)

@@ -1,5 +1,6 @@
 package com.kusitms.connectdog.feature.main
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,10 +28,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
+import com.google.gson.Gson
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.util.AppMode
 import com.kusitms.connectdog.feature.home.navigation.homeNavGraph
 import com.kusitms.connectdog.feature.intermediator.navigation.intermediatorNavGraph
+import com.kusitms.connectdog.feature.intermediator.viewmodel.CreateApplicationViewModel
 import com.kusitms.connectdog.feature.login.loginNavGraph
 import com.kusitms.connectdog.feature.management.navigation.managementNavGraph
 import com.kusitms.connectdog.feature.mypage.navigation.mypageNavGraph
@@ -46,11 +49,13 @@ internal fun MainScreen(
     navigator: MainNavigator = rememberMainNavigator(mode = mode),
     sendVerificationCode: (String) -> Unit,
     verifyCode: (String, (Boolean) -> Unit) -> Unit,
+    finish: () -> Unit,
     imeHeight: Int
 ) {
     val profileViewModel: VolunteerProfileViewModel = hiltViewModel()
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     val editProfileViewModel: EditProfileViewModel = hiltViewModel()
+    val createApplicationViewModel: CreateApplicationViewModel = hiltViewModel()
 
     Scaffold(
         content = {
@@ -66,6 +71,7 @@ internal fun MainScreen(
                 ) {
                     loginNavGraph(
                         imeHeight = imeHeight,
+                        finish = finish,
                         onBackClick = { navigator.popBackStackIfNotHome() },
                         onNavigateToNormalLogin = { navigator.navigateNormalLogin(it) },
                         onNavigateToVolunteer = { navigator.navigateHome() },
@@ -86,7 +92,7 @@ internal fun MainScreen(
                         navigateToSelectProfileImage = { navigator.navigateSelectProfileImage() },
                         navigateToCompleteSignUp = { navigator.navigateCompleteSignUp(it) },
                         navigateToVolunteer = { navigator.navigateHome() },
-                        navigateToIntermediator = { navigator.navigateManageAccount() },
+                        navigateToIntermediator = { navigator.navigateIntermediatorHome() },
                         imeHeight = imeHeight,
                         signUpViewModel = signUpViewModel,
                         profileViewModel = profileViewModel,
@@ -112,12 +118,19 @@ internal fun MainScreen(
                         onShowErrorSnackBar = {},
                         onSendMessage = { sendVerificationCode(it) },
                         onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } },
-                        imeHeight = imeHeight
+                        imeHeight = imeHeight,
+                        finish = finish
                     )
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
                         onShowErrorSnackbar = {},
-                        onNavigateToCreateReview = { navigator.navigateCreateReview() }
+                        onNavigateToCheckReview = navigator::navigateCheckReview,
+                        onNavigateToInterProfile = navigator::navigateIntermediatorProfile,
+                        onNavigateToHome = navigator::navigateToHomeClearBackStack,
+                        onNavigateToCreateReview = {
+                            val jsonData = Uri.encode(Gson().toJson(it))
+                            navigator.navigateCreateReview(jsonData)
+                        }
                     )
                     mypageNavGraph(
                         padding = it,
@@ -136,10 +149,12 @@ internal fun MainScreen(
                         onNavigateToIntermediatorProfile = {
                             navigator.navigateIntermediatorProfile(it)
                         },
-                        onShowErrorSnackbar = {}
+                        onShowErrorSnackbar = {},
+                        onNavigateToHome = navigator::navigateToHomeClearBackStack
                     )
                     intermediatorNavGraph(
                         imeHeight = imeHeight,
+                        createApplicationViewModel = createApplicationViewModel,
                         onBackClick = navigator::popBackStackIfNotHome,
                         onSettingClick = { navigator.navigateSetting() },
                         onNotificationClick = { navigator.navigateNotification() },
@@ -147,7 +162,9 @@ internal fun MainScreen(
                         onProfileClick = { navigator.navigateInterProfile() },
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
                         onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
-                        onNavigateToReview = { navigator.navigateToReview(it) }
+                        onNavigateToReview = navigator::navigateCheckReview,
+                        onNavigateToCreateDog = { navigator.navigateToCreateDog() },
+                        onNavigateToAnnouncementManagement = navigator::navigateToAnnouncementManagement
                     )
                 }
             }

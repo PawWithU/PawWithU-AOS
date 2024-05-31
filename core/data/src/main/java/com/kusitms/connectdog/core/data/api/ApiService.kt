@@ -28,12 +28,16 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignU
 import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.UserInfoResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -64,7 +68,7 @@ internal interface ApiService {
     suspend fun getReviewsHome(
         @Query("page") page: Int,
         @Query("size") size: Int
-    ): List<ReviewResponseItem>
+    ): List<ReviewDetailResponse>
 
     /**
      * 회원가입
@@ -223,6 +227,14 @@ internal interface ApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?
     ): List<ReviewResponseItem>
+
+    @Multipart
+    @POST("/volunteers/posts/{postId}/reviews")
+    suspend fun postReview(
+        @Path("postId") postId: Long,
+        @Part("request") json: RequestBody,
+        @Part files: List<MultipartBody.Part>
+    )
 
     /**
      * fcm

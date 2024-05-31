@@ -20,9 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Close
@@ -33,10 +31,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +46,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,15 +65,17 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.AnnouncementHome
+import com.kusitms.connectdog.core.model.Application
 import com.kusitms.connectdog.feature.management.R
-import com.kusitms.connectdog.feature.management.viewmodel.CreateReviewViewModel
+import com.kusitms.connectdog.feature.management.dialog.CreateReviewDialog
+import com.kusitms.connectdog.feature.management.viewmodel.ReviewViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun CreateReviewScreen(
+    application: Application,
     onBackClick: () -> Unit,
-//    application: Application,
-    viewModel: CreateReviewViewModel = hiltViewModel()
+    viewModel: ReviewViewModel = hiltViewModel()
 ) {
     Scaffold(
         topBar = {
@@ -83,18 +87,28 @@ fun CreateReviewScreen(
         }
     ) {
         Content(
-            viewModel = viewModel
+            viewModel = viewModel,
+            onBackClick = onBackClick,
+            application = application
         )
     }
 }
 
 @Composable
 private fun Content(
-    viewModel: CreateReviewViewModel
+    onBackClick: () -> Unit,
+    application: Application,
+    viewModel: ReviewViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
-    val scrollState = rememberScrollState()
+
+    var isConfirmDialogVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.updatePostId(application.postId)
+    }
 
     Column(
         modifier = Modifier
@@ -105,31 +119,50 @@ private fun Content(
                 indication = null,
                 interactionSource = interactionSource
             )
-            .verticalScroll(scrollState)
     ) {
-        VolunteerInfo()
+        VolunteerInfo(application)
         ReviewContent(viewModel)
         Divider(thickness = 8.dp, color = Gray7)
         UploadPhoto(viewModel)
         Spacer(modifier = Modifier.weight(1f))
         ConnectDogBottomButton(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 32.dp),
-            onClick = {},
-            content = "후기 등록"
+            onClick = { isConfirmDialogVisible = true },
+            content = stringResource(id = R.string.create_review),
+            enabled = viewModel.review.length >= 10
+        )
+    }
+
+    if (isConfirmDialogVisible) {
+        CreateReviewDialog(
+            onConfirmClick = {
+                viewModel.createReview(context)
+                onBackClick()
+            },
+            onDismiss = { isConfirmDialogVisible = false }
         )
     }
 }
 
 @Composable
-private fun VolunteerInfo() {
+private fun VolunteerInfo(
+    application: Application
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
         ListForUserItem(
-            imageUrl = "",
-            announcementHome = AnnouncementHome("", "이동봉사 위치", "YY.mm.dd(요일)", -1, "강아지 이름", ""),
+            imageUrl = application.imageUrl,
+            announcementHome = AnnouncementHome(
+                application.imageUrl,
+                application.location,
+                application.date,
+                -1,
+                application.dogName ?: "",
+                application.pickUpTime ?: ""
+            ),
             isValid = true
         )
     }
@@ -137,28 +170,27 @@ private fun VolunteerInfo() {
 
 @Composable
 private fun ReviewContent(
-    viewModel: CreateReviewViewModel
+    viewModel: ReviewViewModel
 ) {
     Column(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 24.dp)
     ) {
         Text(
-            text = "이동봉사 후기를 입력해주세요",
+            text = stringResource(id = R.string.review_title),
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp
         )
         ConnectDogTextField(
-            height = 273,
+            height = 244,
             text = viewModel.review,
-            onTextChanged = { if (it.length <= 300) viewModel.updateReview(it) },
+            onTextChanged = { viewModel.updateReview(it) },
             label = "느꼈던 감정, 후기를 작성해주세요",
             placeholder = ""
         )
-        Spacer(modifier = Modifier.height(4.dp))
         Row {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "최소 글자수 20자",
+                text = "최소 글자수 10",
                 fontSize = 10.sp,
                 color = Gray4
             )
@@ -175,16 +207,13 @@ private fun ReviewContent(
 
 @Composable
 private fun UploadPhoto(
-    viewModel: CreateReviewViewModel
+    viewModel: ReviewViewModel
 ) {
-    val test = remember { mutableIntStateOf(0) }
-    val launcher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
-            it.forEach { uri ->
-                viewModel.updateUriList(uri)
-            }
-            test.intValue = viewModel.uriList.value.size
-        }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickMultipleVisualMedia(5)
+    ) {
+        it.forEach { uri -> viewModel.updateUriList(uri) }
+    }
     val uriList by viewModel.uriList.collectAsStateWithLifecycle()
 
     Column(
@@ -212,10 +241,7 @@ private fun UploadPhoto(
                     if (index < uriList.size) {
                         Photo(
                             uri = uriList[index],
-                            onRemoveClick = {
-                                viewModel.removeUriList(uriList[index])
-                                test.intValue--
-                            }
+                            onRemoveClick = { viewModel.removeUriList(uriList[index]) }
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                     } else {

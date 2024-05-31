@@ -17,6 +17,10 @@ class IntermediatorProfileViewModel @Inject constructor() : ViewModel() {
     val introduce: String
         get() = _introduce.value
 
+    private val _uri: MutableState<Uri?> = mutableStateOf(null)
+    val uri: Uri?
+        get() = _uri.value
+
     fun updateName(name: String) {
         _name.value = name
     }
@@ -25,7 +29,7 @@ class IntermediatorProfileViewModel @Inject constructor() : ViewModel() {
         _introduce.value = introduce
     }
 
-    private val _uri: MutableState<Uri?> = mutableStateOf(null)
-    val uri: Uri?
-        get() = _uri.value
+    fun updateUri(uri: Uri) {
+        _uri.value = uri
+    }
 }

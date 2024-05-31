@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationTyp
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.signup.R
 import com.kusitms.connectdog.signup.viewmodel.IntermediatorInformationViewModel
+import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -32,10 +34,12 @@ fun IntermediatorInformationScreen(
     onBackClick: () -> Unit,
     onNavigateToCompleteSignUp: (UserType) -> Unit,
     imeHeight: Int,
-    viewModel: IntermediatorInformationViewModel = hiltViewModel()
+    viewModel: IntermediatorInformationViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -64,7 +68,7 @@ fun IntermediatorInformationScreen(
             Spacer(modifier = Modifier.height(40.dp))
             ConnectDogTextField(
                 text = viewModel.url,
-                onTextChanged = { viewModel.updateUrl(it) },
+                onTextChanged = viewModel::updateUrl,
                 label = "링크",
                 placeholder = "모집자 정보를 보여줄 수 있는 URL 입력"
             )
@@ -79,11 +83,13 @@ fun IntermediatorInformationScreen(
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogNormalButton(
                 content = "다음",
-                onClick = { onNavigateToCompleteSignUp(UserType.INTERMEDIATOR) },
-                modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
+                onClick = {
+                    onNavigateToCompleteSignUp(UserType.INTERMEDIATOR)
+                    signUpViewModel.updateUrl(viewModel.url)
+                    signUpViewModel.updateContact(viewModel.contact)
+                    signUpViewModel.postIntermediatorSignUp(context)
+                },
+                modifier = Modifier.fillMaxWidth().height(56.dp)
             )
             Spacer(modifier = Modifier.height((imeHeight + 32).dp))
         }

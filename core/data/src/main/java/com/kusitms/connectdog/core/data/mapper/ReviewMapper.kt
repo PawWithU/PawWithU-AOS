@@ -17,3 +17,19 @@ internal fun ReviewResponseItem.toData(): Review {
         content = content
     )
 }
+
+fun ReviewDetailResponse.toData(): Review {
+    return Review(
+        profileNum = profileImageNum,
+        dogName = dogName,
+        userName = volunteerNickname,
+        mainImage = mainImage,
+        contentImages = images,
+        date = if (startDate == endDate) startDate else dateRangeFormat(startDate, endDate),
+        location = "$departureLoc → $arrivalLoc",
+        organization = intermediaryName,
+        content = content,
+        intermediaryId = intermediaryId,
+        postMainImage = postMainImage
+    )
+}
