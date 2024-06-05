@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -72,6 +74,7 @@ fun AnnouncementManageScreen(
 
     val scrollState = rememberScrollState()
     val data by viewModel.announcementDetailState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
 
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
 
@@ -79,9 +82,13 @@ fun AnnouncementManageScreen(
         topBar = {
             ConnectDogDetailTopAppBar(
                 onBackClick = onBackClick,
-                onShareClick = {},
+                onShareClick = {
+                    Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show()
+                },
                 onDeleteClick = { isDeleteDialogOpen = true },
-                onEditClick = {}
+                onEditClick = {
+                    Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show()
+                }
             )
         },
         bottomBar = {
