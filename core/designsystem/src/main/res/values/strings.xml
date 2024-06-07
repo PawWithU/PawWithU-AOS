@@ -4,11 +4,11 @@
     
     <string name="home">홈</string>
     <string name="date">일정</string>
-    <string name="organization">중개자명</string>
+    <string name="organization">모집자명</string>
     <string name="volunteer">봉사자명</string>
     <string name="need_kennel">켄넬 여부</string>
     <string name="has_kennel">켄넬 제공 O</string>
-    <string name="has_not_kennel">켄넬 제공 X (봉사자가 준비)</string>
+    <string name="has_not_kennel">켄넬 제공 X</string>
     <string name="who_connected">를 연결해 준</string>
     <string name="who_review">의 후기</string>
     <string name="dog_recent">의 근황</string>

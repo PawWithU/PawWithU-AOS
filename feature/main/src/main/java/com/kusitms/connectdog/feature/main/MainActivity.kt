@@ -1,7 +1,9 @@
 package com.kusitms.connectdog.feature.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -71,6 +73,7 @@ class MainActivity : ComponentActivity() {
                         imeHeight = imeHeight,
                         sendVerificationCode = { sendVerificationCode("+82${it.substring(1)}") },
                         verifyCode = { code, callback -> verifyCode(code) { callback(it) } },
+                        openWebBrowser = { url -> openWebBrowser(url) },
                         finish = { finishActivity() }
                     )
                 }
@@ -191,6 +194,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun openWebBrowser(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        this@MainActivity.startActivity(intent)
     }
 
     private fun finishActivity() {

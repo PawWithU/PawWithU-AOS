@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="pending_approval">승인 대기중</string>
+    <string name="pending_approval_empty">홈에서 원하는 공고를 신청해보세요!</string>
     <string name="inProgress">진행중</string>
     <string name="completed">봉사완료</string>
     <string name="check_my_appliance">내 신청 내역 확인</string>
