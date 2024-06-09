@@ -5,4 +5,9 @@
 
     <!--휴대폰 인증-->
     <string name="certification_title">이름과 휴대폰 번호를\n입력해주세요</string>
+
+    <string name="introduce">한 줄 소개</string>
+    <string name="introduce_placeholder">한 줄 소개 입력</string>
+    <string name="intermediator_name">모집자명</string>
+    <string name="intermediator_name_input">모집자명 입력</string>
 </resources>

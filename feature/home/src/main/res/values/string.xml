@@ -3,8 +3,8 @@
     <!-- search -->
     <string name="search_app_bar_title">이동봉사 공고</string>
     <string name="search_where_to_move">어디로 이동하시나요?</string>
-    <string name="search_sort_end">마감순</string>
-    <string name="search_sort_recent">최신순</string>
+    <string name="search_sort_end">마감 임박순</string>
+    <string name="search_sort_recent">최근 등록순</string>
     <string name="search_detail">상세</string>
     <string name="search_location">지역</string>
     <string name="search_date">일정</string>
@@ -19,16 +19,16 @@
     <string name="filter_select_destination">도착지 선택</string>
     <string name="filter_destination">도착</string>
     <string name="filter_skip">건너뛰기</string>
-    <string name="filter_next">다음</string>
-    <string name="filter_dog_size">강아지 사이즈</string>
-    <string name="filter_kennel">켄넬 여부</string>
-    <string name="filter_organization">이동봉사 중개명</string>
-    <string name="filter_organization_placeholder">중개명을 검색해주세요</string>
-    <string name="filter_big_dog">대형견</string>
-    <string name="filter_middle_dog">중형견</string>
-    <string name="filter_small_dog">소형견</string>
-    <string name="filter_kennel_no_need">O (준비 불필요)</string>
-    <string name="filter_kennel_need">X (준비 필요)</string>
+    <string name="filter_apply">적용</string>
+    <string name="filter_dog_size">동물 크기</string>
+    <string name="filter_kennel">켄넬 제공  여부</string>
+    <string name="filter_organization">이동봉사 모집자명</string>
+    <string name="filter_organization_placeholder">모집자명을 검색해주세요</string>
+    <string name="filter_big_dog">대형</string>
+    <string name="filter_middle_dog">중형</string>
+    <string name="filter_small_dog">소형</string>
+    <string name="filter_kennel_no_need">켄넬 제공 O</string>
+    <string name="filter_kennel_need">켄넬 제공 X</string>
     <string name="filter_select_departure_region">출발 지역 선택</string>
     <string name="filter_select_destination_region">도착 지역 선택</string>
     <string name="filter_button_refresh">초기화</string>
@@ -49,4 +49,21 @@
     <string name="review_top_app_bar_title">이동봉사 후기</string>
     <!--apply-->
     <string name="apply_volunteer">이동봉사 신청하기</string>
+
+    <!-- guide -->
+    <string name="guide_main_title">한눈에 보는\n이동봉사 가이드</string>
+    <string name="guide_title_1">유기동물을 돕는 가장 쉽고 효과적인 방법,\n이동봉사!</string>
+    <string name="guide_description_1">이동봉사가 처음이신 분들을 위해,\n코넥독에서 이동봉사 가이드를 준비했어요.</string>
+    <string name="guide_title_2">1. 이동봉사가 무엇인가요?</string>
+    <string name="guide_description_2">유기동물은 구조, 입양, 치료 등을 위해 지역 간 장거리\n이동이 필요한 경우가 많아요!</string>
+    <string name="guide_description_3">이동봉사란 이렇게 지역 간 이동이 필요한 유기동물을\n자동차, 기차, 비행기 등으로 데려다주는 봉사입니다.</string>
+    <string name="guide_description_4">봉사자님이 여행을 가실 때, 업무로 다른 지역에 가셔야 할 때 등 지역 간 이동이 필요한 상황에서, 일정과 지역 등의 조건이 적합한 이동봉사 건이 있을 때 진행하실 수 있습니다 :)</string>
+    <string name="guide_title_3">2. 어떻게 하나요?</string>
+    <string name="guide_sub_title_1">(1) 이동봉사 공고 검색하기</string>
+    <string name="guide_description_5">· 코넥독 메인 페이지 상단의 검색창에서 조건에 맞는 이동봉사를 검색할 수 있어요.</string>
+    <string name="guide_description_6">· 검색 필터를 사용해 봉사자님의 이동 지역, 일정에 맞는 이동봉사 건을 찾아보세요.</string>
+    <string name="card_title_1">꼭 확인해주세요!</string>>
+    <string name="card_description_1">· 동물의 크기 : 이동하시는 수단 (버스, 기차, 자가용 등)에 함께 탈 수 있는 크기인지 확인해주세요.</string>
+    <string name="card_description_2">· 켄넬 제공 여부 : 모집자가 켄넬을 제공하는지, 봉사자가 직접 켄넬을 준비해야 하는지 확인해주세요.</string>
+
 </resources>

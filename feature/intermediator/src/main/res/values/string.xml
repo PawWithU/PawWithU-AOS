@@ -45,7 +45,7 @@
     <string name="create_announcement_subtitle_1">이동봉사가 필요한 지역은 어디인가요?</string>
     <string name="create_announcement_subtitle_2">이동봉사가 필요한 날짜는 언제인가요?</string>
     <string name="create_announcement_subtitle_3">봉사자가 출발지에 도착해야하는 시간은 언제인가요?</string>
-    <string name="create_announcement_subtitle_4">봉사자가 켄넬을 준비해야하나요?</string>
+    <string name="create_announcement_subtitle_4">켄넬이 준비되어 있나요?</string>
     <string name="create_announcement_subtitle_5">이동봉사에 대한 자세한 설명을 입력해주세요</string>
     <string name="calendar_title">일정 선택</string>
 
