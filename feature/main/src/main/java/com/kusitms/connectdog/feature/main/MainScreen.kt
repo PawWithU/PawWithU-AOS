@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -31,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import com.google.gson.Gson
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.util.AppMode
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.home.navigation.homeNavGraph
 import com.kusitms.connectdog.feature.intermediator.navigation.intermediatorNavGraph
 import com.kusitms.connectdog.feature.intermediator.viewmodel.CreateApplicationViewModel
@@ -50,6 +52,7 @@ internal fun MainScreen(
     sendVerificationCode: (String) -> Unit,
     verifyCode: (String, (Boolean) -> Unit) -> Unit,
     finish: () -> Unit,
+    openWebBrowser: (String) -> Unit,
     imeHeight: Int
 ) {
     val profileViewModel: VolunteerProfileViewModel = hiltViewModel()
@@ -77,10 +80,13 @@ internal fun MainScreen(
                         onNavigateToVolunteer = { navigator.navigateHome() },
                         onNavigateToIntermediatorHome = { navigator.navigateIntermediatorHome() },
                         onNavigateToSignup = { navigator.navigateSignup(it) },
-                        onNavigateToEmailSearch = { navigator.navigateEmailSearch() },
-                        onNavigateToPasswordSearch = { navigator.navigatePasswordSearch() },
-                        onNavigateToEmailSearchComplete = { navigator.navigateEmailSearchComplete() },
-                        onNavigateToPasswordSearchComplete = { navigator.navigatePasswordSearchComplete() }
+                        onNavigateToEmailSearch = navigator::navigateEmailSearch,
+                        onNavigateToPasswordSearch = navigator::navigatePasswordSearch,
+                        onNavigateToEmailSearchComplete = navigator::navigateEmailSearchComplete,
+                        onNavigateToPasswordSearchAuth = navigator::navigatePasswordSearchAuth,
+                        onSendMessage = { sendVerificationCode(it) },
+                        onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } },
+                        onNavigateToLoginRoute = navigator::onLogoutClick
                     )
                     signUpGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -99,7 +105,8 @@ internal fun MainScreen(
                         navigateToCertification = { navigator.navigateCertification(it) },
                         onSendMessage = { sendVerificationCode(it) },
                         onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } },
-                        navigateToLogin = { navigator.onLogoutClick() }
+                        navigateToLogin = { navigator.onLogoutClick() },
+                        openWebBrowser = openWebBrowser
                     )
                     homeNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -119,7 +126,9 @@ internal fun MainScreen(
                         onSendMessage = { sendVerificationCode(it) },
                         onVerifyCode = { code, callback -> verifyCode(code) { callback(it) } },
                         imeHeight = imeHeight,
-                        finish = finish
+                        finish = finish,
+                        onNavigateToGuideScreen = navigator::navigateToGuide,
+                        onNavigateToReviewDetail = { navigator.navigateCheckReview(it, UserType.NORMAL_VOLUNTEER) }
                     )
                     managementNavGraph(
                         onBackClick = navigator::popBackStackIfNotHome,
@@ -136,10 +145,10 @@ internal fun MainScreen(
                         padding = it,
                         onLogoutClick = { navigator.onLogoutClick() },
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onEditProfileClick = { navigator.navigateEditProfile() },
-                        onManageAccountClick = { navigator.navigateManageAccount() },
+                        onEditProfileClick = navigator::navigateEditProfile,
+                        onManageAccountClick = { navigator.navigateManageAccount(it) },
                         onNotificationClick = { navigator.navigateNotification() },
-                        onSettingClick = { navigator.navigateSetting() },
+                        onSettingClick = { navigator.navigateSetting(it) },
                         onBadgeClick = { navigator.navigateBadge() },
                         onBookmarkClick = { navigator.navigateBookmark() },
                         onEditProfileImageClick = { navigator.navigateEditProfileImage() },
@@ -150,21 +159,24 @@ internal fun MainScreen(
                             navigator.navigateIntermediatorProfile(it)
                         },
                         onShowErrorSnackbar = {},
-                        onNavigateToHome = navigator::navigateToHomeClearBackStack
+                        onNavigateToHome = navigator::navigateToHomeClearBackStack,
+                        onNavigateToPasswordChange = navigator::navigatePasswordChange
                     )
                     intermediatorNavGraph(
                         imeHeight = imeHeight,
                         createApplicationViewModel = createApplicationViewModel,
                         onBackClick = navigator::popBackStackIfNotHome,
-                        onSettingClick = { navigator.navigateSetting() },
+                        onSettingClick = { navigator.navigateSetting(it) },
                         onNotificationClick = { navigator.navigateNotification() },
                         onManagementClick = { navigator.navigateInterManagement(it) },
                         onProfileClick = { navigator.navigateInterProfile() },
                         onNavigateToCreateAnnouncement = { navigator.navigateCreateAnnouncement() },
-                        onNavigateToInterProfileEdit = { navigator.navigateToInterProfileEdit() },
+                        onNavigateToInterProfileEdit = navigator::navigateToInterProfileEdit,
                         onNavigateToReview = navigator::navigateCheckReview,
                         onNavigateToCreateDog = { navigator.navigateToCreateDog() },
-                        onNavigateToAnnouncementManagement = navigator::navigateToAnnouncementManagement
+                        onNavigateToAnnouncementManagement = navigator::navigateToAnnouncementManagement,
+                        onNavigateToInterHome = navigator::navigateIntermediatorHome,
+                        onNavigateToCreateComplete = navigator::navigateToCompleteCreate
                     )
                 }
             }
@@ -175,7 +187,9 @@ internal fun MainScreen(
                 enter = fadeIn() + slideIn { IntOffset(0, it.height) },
                 exit = fadeOut() + slideOut { IntOffset(0, it.height) }
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.height(68.dp)
+                ) {
                     Divider(thickness = 1.dp, color = MaterialTheme.colorScheme.outline)
                     NavigationBar(
                         containerColor = Color.Transparent,

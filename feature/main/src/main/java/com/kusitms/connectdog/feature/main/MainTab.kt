@@ -16,7 +16,7 @@ internal enum class MainTab(
     ),
     MANAGEMENT(
         iconResId = R.drawable.ic_list,
-        contentDescription = "신청 관리",
+        contentDescription = "봉사 관리",
         route = ManagementRoute.route
     ),
     MYPAGE(

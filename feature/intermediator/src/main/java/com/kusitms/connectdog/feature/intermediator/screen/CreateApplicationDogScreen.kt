@@ -35,7 +35,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
@@ -54,7 +53,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
@@ -76,7 +74,8 @@ import com.kusitms.connectdog.feature.intermediator.viewmodel.CreateApplicationV
 fun CreateApplicationDogScreen(
     imeHeight: Int,
     viewModel: CreateApplicationViewModel,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateToCreateComplete: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -94,18 +93,12 @@ fun CreateApplicationDogScreen(
                 navigationType = TopAppBarNavigationType.BACK,
                 onNavigationClick = onBackClick
             )
-        },
-        bottomBar = {
-            ConnectDogBottomButton(
-                modifier = Modifier.background(color = Color.White).padding(horizontal = 20.dp, vertical = 24.dp),
-                onClick = { },
-                content = "등록 완료"
-            )
         }
     ) {
         Content(
             viewModel = viewModel,
-            imeHeight = imeHeight
+            imeHeight = imeHeight,
+            onNavigateToCreateComplete = onNavigateToCreateComplete
         )
     }
 }
@@ -113,7 +106,8 @@ fun CreateApplicationDogScreen(
 @Composable
 private fun Content(
     viewModel: CreateApplicationViewModel,
-    imeHeight: Int
+    imeHeight: Int,
+    onNavigateToCreateComplete: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -137,15 +131,34 @@ private fun Content(
             updateName = viewModel::updateName
         )
         Spacer(modifier = Modifier.height(40.dp))
-        Size()
+        Size(
+            dogSize = viewModel.dogSize.value,
+            updateDogSize = viewModel::updateDogSize
+        )
         Spacer(modifier = Modifier.height(32.dp))
         Divider(thickness = 8.dp, color = Gray7)
         Spacer(modifier = Modifier.height(32.dp))
-        Image()
+        Image(viewModel = viewModel)
         Spacer(modifier = Modifier.height(32.dp))
         Divider(thickness = 8.dp, color = Gray7)
         Spacer(modifier = Modifier.height(32.dp))
         Significant(viewModel = viewModel, imeHeight = imeHeight, scrollState = scrollState)
+        ConnectDogBottomButton(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            onClick = {
+                viewModel.createApplication(context)
+                viewModel.clear()
+                onNavigateToCreateComplete()
+            },
+            content = "등록 완료",
+            enabled = viewModel.name != "" &&
+                viewModel.dogSize.value != null &&
+                viewModel.specifics != "" &&
+                viewModel.uriList.value.size in 1..5
+        )
+        Spacer(modifier = Modifier.height(imeHeight.dp))
     }
 }
 
@@ -189,9 +202,11 @@ private fun Name(
 }
 
 @Composable
-private fun Size() {
-    val detail = Detail()
-    var dogSize = detail.dogSize
+private fun Size(
+    dogSize: Detail.DogSize?,
+    updateDogSize: (Detail.DogSize) -> Unit
+) {
+    var dogSize = dogSize
 
     Column(
         modifier = Modifier
@@ -207,13 +222,14 @@ private fun Size() {
         Spacer(modifier = Modifier.height(12.dp))
         SelectDogSize(dogSize) {
             dogSize = it
+            updateDogSize(it)
         }
     }
 }
 
 @Composable
 private fun Image(
-    viewModel: CreateApplicationViewModel = hiltViewModel()
+    viewModel: CreateApplicationViewModel
 ) {
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(5)) {
@@ -339,10 +355,6 @@ private fun Significant(
     imeHeight: Int,
     viewModel: CreateApplicationViewModel
 ) {
-    LaunchedEffect(imeHeight) {
-        if (imeHeight != 0) scrollState.animateScrollTo(scrollState.maxValue)
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -362,6 +374,5 @@ private fun Significant(
             placeholder = "",
             height = 244
         )
-        Spacer(modifier = Modifier.height((imeHeight).dp))
     }
 }

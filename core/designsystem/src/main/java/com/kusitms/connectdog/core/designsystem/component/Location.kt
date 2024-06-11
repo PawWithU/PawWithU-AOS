@@ -30,13 +30,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.R
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationContent(
-    departureLocation: String? = "",
-    destinationLocation: String? = "",
+    departureLocation: String?,
+    destinationLocation: String?,
     onSelectedRegion: (String?, String?) -> Unit
 ) {
     val departureSheetState = rememberModalBottomSheetState()
@@ -121,7 +122,7 @@ private fun SelectLocation(
         Text(
             text = if (place.isNullOrEmpty()) stringResource(id = placeholderRes) else place,
             style = MaterialTheme.typography.bodyLarge,
-            color = Gray4,
+            color = if (place.isNullOrEmpty()) Gray4 else Gray1,
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Divider(modifier = Modifier.fillMaxWidth())

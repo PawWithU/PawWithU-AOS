@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.kusitms.connectdog.core.data.api.model.intermediator.CreateApplicationDto
 import com.kusitms.connectdog.core.data.repository.InterHomeRepository
 import com.kusitms.connectdog.core.designsystem.component.DayTime
+import com.kusitms.connectdog.core.designsystem.component.Detail
 import com.kusitms.connectdog.core.util.ImageConverter.uriToFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,12 +27,12 @@ class CreateApplicationViewModel @Inject constructor(
     val uriList: StateFlow<List<Uri>>
         get() = _uriList
 
-    private val _departure = MutableStateFlow("출발 지역 선택")
-    val departure: StateFlow<String>
+    private val _departure = MutableStateFlow<String?>(null)
+    val departure: StateFlow<String?>
         get() = _departure
 
-    private val _destination = MutableStateFlow("도착 지역 선택")
-    val destination: StateFlow<String>
+    private val _destination = MutableStateFlow<String?>(null)
+    val destination: StateFlow<String?>
         get() = _destination
 
     private val _startDate = MutableStateFlow<LocalDate?>(null)
@@ -58,7 +59,7 @@ class CreateApplicationViewModel @Inject constructor(
     val isKennel: StateFlow<Boolean?>
         get() = _isKennel
 
-    private val _isAdjustableTime = MutableStateFlow(false)
+    private val _isAdjustableTime = MutableStateFlow<Boolean>(false)
     val isAdjustableTime: StateFlow<Boolean>
         get() = _isAdjustableTime
 
@@ -74,12 +75,13 @@ class CreateApplicationViewModel @Inject constructor(
     val specifics: String
         get() = _specifics.value
 
-//    val nextAvailable: Boolean
-//        get() = (((_startDate.value != null && _endDate.value != null) || _isAdjustableTime.value) && (_departure.value != "출발 지역 선택" && _destination.value != "도착 지역 선택" )) &&
-
     private val _name: MutableState<String> = mutableStateOf("")
     val name: String
         get() = _name.value
+
+    private val _dogSize = MutableStateFlow<Detail.DogSize?>(null)
+    val dogSize: StateFlow<Detail.DogSize?>
+        get() = _dogSize
 
     fun updateUriList(uri: Uri) {
         _uriList.value = _uriList.value.toMutableList().apply { add(uri) }
@@ -121,8 +123,15 @@ class CreateApplicationViewModel @Inject constructor(
         _isKennel.value = value
     }
 
+    fun updateDogSize(dogSize: Detail.DogSize) {
+        _dogSize.value = dogSize
+    }
+
     fun updateIsAdjustableTime(value: Boolean) {
         _isAdjustableTime.value = value
+        _minute.value = null
+        _hour.value = null
+        _dayTime.value = null
     }
 
     fun updateName(name: String) {
@@ -143,8 +152,8 @@ class CreateApplicationViewModel @Inject constructor(
 
     fun clear() {
         _uriList.value = mutableListOf()
-        _departure.value = "출발 지역 선택"
-        _destination.value = "도착 지역 선택"
+        _departure.value = null
+        _destination.value = null
         _startDate.value = null
         _endDate.value = null
         _hour.value = null
@@ -154,24 +163,29 @@ class CreateApplicationViewModel @Inject constructor(
         _isAdjustableTime.value = false
         _isAdjustableSchedule.value = false
         _content.value = ""
+        _name.value = ""
+        _dogSize.value = null
+        _specifics.value = ""
     }
 
-    fun test(context: Context) = viewModelScope.launch {
+    fun createApplication(context: Context) = viewModelScope.launch {
         val files = _uriList.value.mapNotNull { uri ->
             uriToFile(context, uri, 80)
         }
 
+        val pickUpTime = if (_startDate.value != _endDate.value) "" else if (_isAdjustableTime.value || (_startDate.value != _endDate.value)) "시간 미정" else "${_dayTime.value?.time} ${String.format("%02d", _hour.value)}:${String.format("%02d", _minute.value)}"
+
         val body = CreateApplicationDto(
-            departureLoc = _departure.value,
-            arrivalLoc = _destination.value,
+            departureLoc = _departure.value!!,
+            arrivalLoc = _destination.value!!,
             startDate = _startDate.value.toString(),
             endDate = _endDate.value.toString(),
-            pickUpTime = "13:00",
+            pickUpTime = pickUpTime,
             isKennel = _isKennel.value!!,
             content = _content.value,
             dogName = _name.value,
-            dogSize = "",
-            specifics = "귀여움"
+            dogSize = _dogSize.value!!.toDisplayName(),
+            specifics = _specifics.value
         )
 
         try {

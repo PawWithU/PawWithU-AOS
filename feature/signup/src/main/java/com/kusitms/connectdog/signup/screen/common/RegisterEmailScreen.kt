@@ -1,7 +1,6 @@
 package com.kusitms.connectdog.signup.screen.common
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -25,13 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.R
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
-import com.kusitms.connectdog.core.designsystem.theme.Orange_40
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
+import com.kusitms.connectdog.core.designsystem.theme.Red1
 import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.signup.viewmodel.RegisterEmailViewModel
 import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
@@ -95,16 +95,8 @@ fun RegisterEmailScreen(
                     viewModel.updateEmail(it)
                     viewModel.updateEmailValidity()
                 },
-                onClick = {
-                    if (isValidEmail == true) {
-                        Toast.makeText(context, "유효한 이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
-                    } else if (isEmailDuplicated == true) {
-                        Toast.makeText(context, "이미 가입된 이메일입니다.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        viewModel.postEmail()
-                        Toast.makeText(context, "이메일을 전송했습니다", Toast.LENGTH_SHORT).show()
-                    }
-                },
+                borderColor = if (isValidEmail == false && isEmailDuplicated == false) PetOrange else Gray5,
+                onClick = { viewModel.postEmail(context) },
                 padding = 5
             )
             Spacer(modifier = Modifier.height(12.dp))
@@ -117,25 +109,18 @@ fun RegisterEmailScreen(
                 buttonLabel = "인증 확인",
                 keyboardType = KeyboardType.Text,
                 onTextChanged = { viewModel.updateCertificationNumber(it) },
-                onClick = {
-                    if (it.isNotEmpty()) {
-                        viewModel.checkCertificationNumber()
-                    } else {
-                        Toast.makeText(context, "인증번호를 입력해주세요", Toast.LENGTH_SHORT).show()
-                    }
-                },
+                borderColor = if (viewModel.isEmailVerified.value == true) PetOrange else if (viewModel.isEmailVerified.value == false) Red1 else Gray5,
+                onClick = { viewModel.checkCertificationNumber(context) },
                 padding = 5,
                 isError = isEmailVerified == false
             )
             Spacer(modifier = Modifier.weight(1f))
-            ConnectDogNormalButton(
+            ConnectDogBottomButton(
                 content = "다음",
-                color = if (isEmailVerified == true) { PetOrange } else { Orange_40 },
+                enabled = isEmailVerified == true,
                 onClick = {
-                    if (isEmailVerified == true) {
-                        signUpViewModel.updateEmail(viewModel.email)
-                        onNavigateToRegisterPassword(userType)
-                    }
+                    signUpViewModel.updateEmail(viewModel.email)
+                    onNavigateToRegisterPassword(userType)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

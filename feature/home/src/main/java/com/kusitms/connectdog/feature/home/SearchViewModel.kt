@@ -11,11 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -68,16 +65,9 @@ class SearchViewModel @Inject constructor(
         _isDetailExpanded.value = !_isDetailExpanded.value
     }
 
-    val announcementUiState: StateFlow<SearchAnnouncementUiState> =
-        flow {
-            emit(loadAnnouncementList())
-        }.catch {
-            _errorFlow.emit(it)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = SearchAnnouncementUiState.Loading
-        )
+    private val _announcementUiState = MutableStateFlow<SearchAnnouncementUiState>(SearchAnnouncementUiState.Loading)
+    val announcementUiState: StateFlow<SearchAnnouncementUiState>
+        get() = _announcementUiState.asStateFlow()
 
     fun setFilter(filter: Filter) {
         _filter.value = filter
@@ -112,8 +102,12 @@ class SearchViewModel @Inject constructor(
     /**
      * Network Communication
      */
-    private suspend fun loadAnnouncementList(): SearchAnnouncementUiState {
-        val orderCondition = if (isDeadlineOrder.value) "마감순" else "최신순"
+    init {
+        loadAnnouncementList()
+    }
+
+    private fun loadAnnouncementList() = viewModelScope.launch {
+        val orderCondition = if (isDeadlineOrder.value) "마감 임박순" else "최근 등록순"
 
         val announcementList = homeRepository.getAnnouncementListWithFilter(
             departureLoc = filter.value.departure,
@@ -126,7 +120,7 @@ class SearchViewModel @Inject constructor(
             orderCondition = orderCondition
         )
 
-        return if (announcementList.isNotEmpty()) {
+        _announcementUiState.value = if (announcementList.isNotEmpty()) {
             SearchAnnouncementUiState.SearchAnnouncements(announcementList)
         } else {
             SearchAnnouncementUiState.Empty

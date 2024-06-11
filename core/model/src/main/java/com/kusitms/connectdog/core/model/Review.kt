@@ -11,5 +11,6 @@ data class Review(
     val content: String,
     val contentImages: List<String>?,
     val intermediaryId: Long? = null,
-    val postMainImage: String = ""
+    val postMainImage: String = "",
+    val reviewId: Long? = null
 )

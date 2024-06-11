@@ -40,6 +40,7 @@ import com.kusitms.connectdog.core.designsystem.component.AnnouncementContent
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationCard
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
+import com.kusitms.connectdog.core.designsystem.component.ReviewItemContent
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.component.text.DetailInfo
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
@@ -47,6 +48,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.model.Announcement
 import com.kusitms.connectdog.core.model.Review
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.home.IntermediatorProfileViewModel
 import kotlinx.coroutines.launch
 
@@ -237,14 +239,17 @@ private fun IntermediatorInformation(intermediator: IntermediatorInfoResponseIte
 
 @Composable
 private fun Review(reviewItem: List<Review>) {
-    val modifier = Modifier.padding(horizontal = 0.dp)
-    Column(
-        verticalArrangement = Arrangement.Top
+    LazyColumn(
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxSize()
     ) {
-        ReviewListContent(
-            list = reviewItem,
-            modifier = modifier
-        )
+        items(reviewItem.take(30)) {
+            ReviewItemContent(
+                review = it,
+                onInterProfileClick = {},
+                userType = UserType.INTERMEDIATOR
+            )
+        }
     }
 }
 
@@ -254,7 +259,8 @@ private fun InProgress(
     onDetailClick: (Long) -> Unit
 ) {
     Column(
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn {
             items(list) {

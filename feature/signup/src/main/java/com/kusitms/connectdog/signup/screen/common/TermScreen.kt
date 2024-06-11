@@ -43,6 +43,7 @@ import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
@@ -54,24 +55,24 @@ import com.kusitms.connectdog.signup.viewmodel.TermsViewModel
 @Composable
 internal fun SignUpRoute(
     onBackClick: () -> Unit,
-    navigateToIntermediatorInformation: () -> Unit,
     navigateToCertification: (UserType) -> Unit,
+    openWebBrowser: (String) -> Unit,
     userType: UserType
 ) {
     TermScreen(
         onBackClick = onBackClick,
         userType = userType,
         navigateToCertification = navigateToCertification,
-        navigateToIntermediatorProfile = navigateToIntermediatorInformation
+        openWebBrowser = openWebBrowser
     )
 }
 
 @Composable
-fun TermScreen(
+private fun TermScreen(
     userType: UserType,
     onBackClick: () -> Unit,
     navigateToCertification: (UserType) -> Unit,
-    navigateToIntermediatorProfile: () -> Unit,
+    openWebBrowser: (String) -> Unit,
     viewModel: TermsViewModel = hiltViewModel()
 ) {
     val allChecked by viewModel.allChecked.observeAsState(initial = false)
@@ -122,27 +123,44 @@ fun TermScreen(
             )
             Spacer(modifier = Modifier.height(40.dp))
 
-            CustomCheckbox("모두 동의", allChecked) {
-                viewModel.updateAllChecked()
-                viewModel.updateTermsChecked()
-                viewModel.updatePrivacyChecked()
-                viewModel.updateAdvertisementChecked()
-            }
+            CustomCheckbox(
+                text = "모두 동의",
+                checked = allChecked,
+                hasDetail = false,
+                onCheckedChange = {
+                    viewModel.updateAllChecked()
+                    viewModel.updateTermsChecked()
+                    viewModel.updatePrivacyChecked()
+                    viewModel.updateAdvertisementChecked()
+                }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
             HorizontalLine()
             Spacer(modifier = Modifier.height(16.dp))
-            CustomCheckbox("[필수] 이용약관 동의", termsChecked) {
-                viewModel.updateTermsChecked()
-            }
+            CustomCheckbox(
+                text = "[필수] 이용약관 동의",
+                checked = termsChecked,
+                hasDetail = true,
+                onDetailClick = { openWebBrowser("https://docs.google.com/document/d/1Rr2sqZVGLVIqNyqI_YoaBazTZ2tqapRlX2zdqtM1ICs/edit?usp=sharing") },
+                onCheckedChange = { viewModel.updateTermsChecked() }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomCheckbox("[필수] 개인정보 수집 및 이용 동의", privacyChecked) {
-                viewModel.updatePrivacyChecked()
-            }
+            CustomCheckbox(
+                text = "[필수] 개인정보 수집 및 이용 동의",
+                checked = privacyChecked,
+                onCheckedChange = { viewModel.updatePrivacyChecked() },
+                hasDetail = true,
+                onDetailClick = { openWebBrowser("https://docs.google.com/document/d/14nF3hzCFfTVGSecKDddO4FJYy27v_c8BUkAU2w_m1O4/edit?usp=sharing") }
+            )
             Spacer(modifier = Modifier.height(16.dp))
-            CustomCheckbox("[선택] 광고성 정보 수신 동의", advertisementChecked) {
-                viewModel.updateAdvertisementChecked()
-            }
+            CustomCheckbox(
+                text = "[선택] 광고성 정보 수신 동의",
+                checked = advertisementChecked,
+                onCheckedChange = { viewModel.updateAdvertisementChecked() },
+                hasDetail = true,
+                onDetailClick = { openWebBrowser("https://docs.google.com/document/d/14nF3hzCFfTVGSecKDddO4FJYy27v_c8BUkAU2w_m1O4/edit?usp=sharing") }
+            )
         }
         ConnectDogNormalButton(
             content = "다음",
@@ -188,7 +206,13 @@ fun HorizontalLine() {
 }
 
 @Composable
-fun CustomCheckbox(text: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun CustomCheckbox(
+    text: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    hasDetail: Boolean,
+    onDetailClick: () -> Unit = {}
+) {
     var isChecked by remember { mutableStateOf(checked) }
 
     if (checked != isChecked) {
@@ -196,35 +220,42 @@ fun CustomCheckbox(text: String, checked: Boolean, onCheckedChange: (Boolean) ->
     }
 
     Row(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .clickable {
+        modifier = Modifier.padding(horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier.clickable {
                 isChecked = !isChecked
                 onCheckedChange(isChecked)
-            }
-    ) {
-        Icon(
-            painter = painterResource(
-                id = R.drawable.ic_checked
-            ),
-            contentDescription = "Custom Checkbox",
-            tint = if (isChecked) MaterialTheme.colorScheme.primary else Gray4,
-            modifier = Modifier.size(24.dp)
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = text,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = if (isChecked) Color.Black else Gray2
-        )
+            },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(
+                    id = R.drawable.ic_checked
+                ),
+                contentDescription = "Custom Checkbox",
+                tint = if (isChecked) MaterialTheme.colorScheme.primary else Gray4,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = if (isChecked) Color.Black else Gray2
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "보기",
-            style = TextStyle(textDecoration = TextDecoration.Underline),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            color = if (isChecked) Color.Black else Gray2
-        )
+        if (hasDetail) {
+            Text(
+                text = "보기",
+                style = TextStyle(textDecoration = TextDecoration.Underline),
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium,
+                color = if (isChecked) Gray1 else Gray2,
+                modifier = Modifier.clickable { onDetailClick() }
+            )
+        }
     }
 }

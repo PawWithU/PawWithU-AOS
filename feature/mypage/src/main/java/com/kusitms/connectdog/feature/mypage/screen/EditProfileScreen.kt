@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -23,16 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Red1
@@ -45,8 +43,13 @@ import com.kusitms.connectdog.feature.mypage.viewmodel.EditProfileViewModel
 fun EditProfileScreen(
     onBackClick: () -> Unit,
     onEditProfileImageClick: () -> Unit,
+    nickName: String,
+    profileImageId: Int,
     viewModel: EditProfileViewModel
 ) {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.fetchProfileInformation(profileImageId, nickName)
+    }
     Scaffold(
         topBar = {
             ConnectDogTopAppBar(
@@ -94,7 +97,8 @@ private fun Content(
             width = 110,
             height = 26,
             text = "프로필 이미지 변경",
-            padding = 3,
+            padding = 10,
+            verticalPadding = 6,
             onClick = onEditProfileImageClick
         )
         Spacer(modifier = Modifier.height(40.dp))
@@ -133,20 +137,13 @@ private fun Content(
             Spacer(modifier = Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.weight(1f))
-        ConnectDogNormalButton(
+        ConnectDogBottomButton(
             content = "완료",
             onClick = {
                 viewModel.updateUserInfo()
                 onBackClick()
-            }
+            },
+            enabled = isDuplicate != true
         )
-    }
-}
-
-@Preview
-@Composable
-private fun EditProfileScreenPreview() {
-    ConnectDogTheme {
-        EditProfileScreen(onBackClick = {}, onEditProfileImageClick = {}, hiltViewModel())
     }
 }

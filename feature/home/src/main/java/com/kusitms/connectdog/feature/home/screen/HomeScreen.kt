@@ -26,12 +26,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -77,11 +80,13 @@ internal fun HomeRoute(
     onNavigateToDetail: (Long) -> Unit,
     onNavigateToNotification: () -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    onNavigateToReviewDetail: (Long) -> Unit,
+    onNavigateToGuide: () -> Unit,
     finish: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val announcementUiState by viewModel.announcementUiState.collectAsStateWithLifecycle()
-    val reviewUiState by viewModel.reviewUiState.collectAsStateWithLifecycle()
+    val reviewUiState by viewModel.homeReviewUiState.collectAsStateWithLifecycle()
 
     BackHandler { finish() }
 
@@ -102,7 +107,9 @@ internal fun HomeRoute(
             reviewUiState = reviewUiState,
             onNavigateToSearch = onNavigateToSearch,
             onNavigateToReview = onNavigateToReview,
-            onNavigateToDetail = onNavigateToDetail
+            onNavigateToDetail = onNavigateToDetail,
+            onNavigateToGuide = onNavigateToGuide,
+            onNavigateToReviewDetail = onNavigateToReviewDetail
         )
     }
 }
@@ -113,7 +120,9 @@ private fun HomeScreen(
     reviewUiState: ReviewUiState,
     onNavigateToSearch: () -> Unit,
     onNavigateToReview: () -> Unit,
-    onNavigateToDetail: (Long) -> Unit
+    onNavigateToDetail: (Long) -> Unit,
+    onNavigateToGuide: () -> Unit,
+    onNavigateToReviewDetail: (Long) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -121,15 +130,16 @@ private fun HomeScreen(
             .verticalScroll(scrollState)
             .fillMaxSize()
     ) {
-        BannerGuideline(onNavigateToSearch)
+        BannerGuideline(onNavigateToGuide)
         MoveContent(onClick = { onNavigateToSearch() }, titleRes = R.string.home_navigate_search)
         AnnouncementContent(announcementUiState, onClick = onNavigateToDetail)
         MoveContent(onClick = { onNavigateToReview() }, titleRes = R.string.home_navigate_review)
-        ReviewContent(uiState = reviewUiState)
+        ReviewContent(uiState = reviewUiState, onClick = onNavigateToReviewDetail)
         Spacer(modifier = Modifier.height(90.dp))
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TopAppBar(
     onClickSearch: () -> Unit,
@@ -138,18 +148,24 @@ private fun TopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 16.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         SearchBar(
             onClick = onClickSearch,
             modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(20.dp))
-        IconButton(onClick = onNotificationClick) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Navigate to Search"
-            )
+        CompositionLocalProvider(LocalMinimumInteractiveComponentEnforcement provides false) {
+            IconButton(
+                onClick = onNotificationClick,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
+                    contentDescription = "Navigate to Search"
+                )
+            }
         }
     }
 }
@@ -348,14 +364,18 @@ private fun AnnouncementContent(uiState: AnnouncementUiState, onClick: (Long) ->
 }
 
 @Composable
-private fun ReviewContent(uiState: ReviewUiState) {
+private fun ReviewContent(
+    uiState: ReviewUiState,
+    onClick: (Long) -> Unit
+) {
     val modifier = Modifier.padding(horizontal = 20.dp)
     when (uiState) {
         is ReviewUiState.Reviews -> {
             ReviewListContent(
                 list = uiState.reviews,
                 modifier = modifier,
-                arrangement = Arrangement.spacedBy(12.dp)
+                arrangement = Arrangement.spacedBy(12.dp),
+                onClick = onClick
             )
         }
 
@@ -372,7 +392,10 @@ fun AnnouncementListContent(
 ) {
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list.take(10)) {
-            AnnouncementCardContent(announcementHome = it, onClick = { onClick(it.postId.toLong()) })
+            AnnouncementCardContent(
+                announcementHome = it,
+                onClick = { onClick(it.postId.toLong()) }
+            )
         }
     }
 }
@@ -396,11 +419,15 @@ fun AnnouncementLoading(
 private fun ReviewListContent(
     list: List<Review>,
     modifier: Modifier,
-    arrangement: Arrangement.Horizontal
+    arrangement: Arrangement.Horizontal,
+    onClick: (Long) -> Unit
 ) {
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list.take(10)) {
-            ReviewCardContent(review = it)
+            ReviewCardContent(
+                review = it,
+                onClick = onClick
+            )
         }
     }
 }
@@ -422,7 +449,7 @@ private fun ReviewLoading(modifier: Modifier, arrangement: Arrangement.Horizonta
     }
     LazyRow(horizontalArrangement = arrangement, modifier = modifier) {
         items(list) {
-            ReviewCardContent(review = it)
+            ReviewCardContent(review = it, onClick = { })
         }
     }
 }
@@ -459,7 +486,10 @@ private fun AnnouncementCardContent(
             fontWeight = FontWeight.Normal
         )
         Spacer(modifier = Modifier.height(8.dp))
-        TextWithIcon(text = announcementHome.date.substringBefore(" "), iconId = R.drawable.ic_clock)
+        TextWithIcon(
+            text = announcementHome.date.substringBefore(" "),
+            iconId = R.drawable.ic_clock
+        )
         Spacer(modifier = Modifier.height(5.dp))
         TextWithIcon(text = announcementHome.pickUpTime, iconId = R.drawable.ic_clock)
     }
@@ -467,12 +497,14 @@ private fun AnnouncementCardContent(
 
 @Composable
 private fun ReviewCardContent(
-    review: Review
+    review: Review,
+    onClick: (Long) -> Unit
 ) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline)
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.outline),
+        modifier = Modifier.clickable { review.reviewId?.let { onClick(it) } }
     ) {
         ConnectDogReview(review = review, modifier = Modifier.width(272.dp), type = ReviewType.HOME)
     }
@@ -489,25 +521,10 @@ private fun HomeScreenPreview() {
                 reviewUiState = ReviewUiState.Empty,
                 {},
                 {},
+                {},
+                {},
                 {}
             )
         }
     }
 }
-
-// @Preview
-// @Composable
-// private fun AnnouncementPreview() {
-//    ConnectDogTheme {
-//        AnnouncementCardContent(
-//            announcement = Announcement(
-//                "",
-//                "서울시 강남구 -> 서울시 도봉구",
-//                "23.10.19(수)",
-//                "단체이름이름",
-//                true,
-//                -1
-//            )
-//        )
-//    }
-// }

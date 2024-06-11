@@ -48,21 +48,21 @@ import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
 
 private val volunteerDescriptionList = listOf(
-    R.string.review_first,
-    R.string.review_second,
-    R.string.review_third,
-    R.string.review_fourth,
-    R.string.review_fifth,
-    R.string.review_sixth
-)
-
-private val reviewDescriptionList = listOf(
     R.string.first,
     R.string.second,
     R.string.third,
     R.string.fourth,
     R.string.fifth,
     R.string.sixth
+)
+
+private val reviewDescriptionList = listOf(
+    R.string.review_first,
+    R.string.review_second,
+    R.string.review_third,
+    R.string.review_fourth,
+    R.string.review_fifth,
+    R.string.review_sixth
 )
 
 data class BadgeItem(

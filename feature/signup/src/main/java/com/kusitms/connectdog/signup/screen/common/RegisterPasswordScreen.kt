@@ -110,7 +110,7 @@ fun RegisterPasswordScreen(
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "영문+숫자 10자 이상 또는 영문+숫자+특수기호 8자 이상",
+                text = "영문+숫자 10자 이상",
                 modifier = Modifier.padding(start = 8.dp),
                 fontSize = 11.sp,
                 color = Gray3

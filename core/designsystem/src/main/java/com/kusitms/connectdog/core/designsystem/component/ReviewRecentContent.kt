@@ -79,11 +79,7 @@ fun ConnectDogCommunityContent(
 ) {
     Column(modifier = modifier.padding(20.dp)) {
         profile()
-        Spacer(
-            modifier = Modifier
-                .height(20.dp)
-                .fillMaxWidth()
-        )
+        Spacer(modifier = Modifier.height(20.dp))
         when (type) {
             ReviewType.HOME -> {
                 NetworkImage(
@@ -95,13 +91,16 @@ fun ConnectDogCommunityContent(
                         .height(250.dp)
                 )
             }
+
             ReviewType.REVIEW -> {
+                val image = listOf(contentUrl)
+                val list = if (reviewUrl != null) image + reviewUrl else image
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(reviewUrl?.size ?: 0) {
+                    items(list.size) {
                         NetworkImage(
-                            imageUrl = reviewUrl?.get(it),
+                            imageUrl = list[it],
                             placeholder = ColorPainter(MaterialTheme.colorScheme.primaryContainer),
                             modifier = Modifier
                                 .clip(shape = RoundedCornerShape(12.dp))
@@ -112,20 +111,22 @@ fun ConnectDogCommunityContent(
             }
         }
         Spacer(
-            modifier = Modifier
-                .height(12.dp)
-                .fillMaxWidth()
+            modifier = Modifier.height(
+                when (type) {
+                    ReviewType.HOME -> 12.dp
+                    ReviewType.REVIEW -> 6.dp
+                }
+            )
         )
         informationContent()
-        Spacer(
-            modifier = Modifier
-                .height(20.dp)
-                .fillMaxWidth()
-        )
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = content,
             style = MaterialTheme.typography.bodyMedium,
-            maxLines = 2,
+            maxLines = when (type) {
+                ReviewType.HOME -> 2
+                ReviewType.REVIEW -> 100
+            },
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.fillMaxWidth()
         )

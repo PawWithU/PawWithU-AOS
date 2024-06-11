@@ -26,6 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,7 +39,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.Empty
 import com.kusitms.connectdog.core.designsystem.component.Loading
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
-import com.kusitms.connectdog.core.designsystem.theme.Gray2
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
@@ -87,7 +91,7 @@ internal fun SearchScreen(
                         .padding(top = 20.dp, start = 20.dp, end = 20.dp)
                         .fillMaxWidth(),
                     isByDeadline = isByDeadline,
-                    count = 72
+                    count = it
                 ) { viewModel.changeOrderCondition() }
             },
             onClick = onDetailClick
@@ -212,8 +216,15 @@ private fun SortButton(
     onClick: () -> Unit
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
+        val annotatedString = buildAnnotatedString {
+            withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                append("${count}개")
+            }
+            append("의 공고")
+        }
+
         Text(
-            text = "${count}개의 공고",
+            text = annotatedString,
             color = Gray3,
             fontSize = 14.sp
         )
@@ -230,13 +241,13 @@ private fun SortButton(
                     stringResource(id = R.string.search_sort_recent)
                 },
                 style = MaterialTheme.typography.bodyMedium,
-                color = Gray2
+                color = Gray1
             )
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_sort),
                 contentDescription = "정렬",
-                tint = Gray2
+                tint = Gray1
             )
         }
     }
@@ -245,7 +256,7 @@ private fun SortButton(
 @Composable
 private fun AnnouncementContent(
     uiState: SearchAnnouncementUiState,
-    sortBtn: @Composable () -> Unit,
+    sortBtn: @Composable (Int) -> Unit,
     onClick: (Long) -> Unit
 ) {
     when (uiState) {
@@ -267,12 +278,12 @@ private fun AnnouncementContent(
 @Composable
 private fun AnnouncementList(
     list: List<Announcement>,
-    sortBtn: @Composable () -> Unit,
+    sortBtn: @Composable (Int) -> Unit,
     onClick: (Long) -> Unit
 ) {
     LazyColumn {
         item {
-            sortBtn()
+            sortBtn(list.size)
         }
         items(list) {
             AnnouncementContent(

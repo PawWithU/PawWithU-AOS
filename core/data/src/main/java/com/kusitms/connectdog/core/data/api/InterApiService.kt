@@ -1,11 +1,13 @@
 package com.kusitms.connectdog.core.data.api
 
+import com.kusitms.connectdog.core.data.api.model.EmailDto
 import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
+import com.kusitms.connectdog.core.data.api.model.PhoneDto
 import com.kusitms.connectdog.core.data.api.model.Response
-import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
+import com.kusitms.connectdog.core.data.api.model.intermediator.DuplicateDto
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterAnnouncementDetailResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationCompletedResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationInProgressResponseItem
@@ -13,7 +15,12 @@ import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplication
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterApplicationWaitingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileFindingResponseItem
 import com.kusitms.connectdog.core.data.api.model.intermediator.InterProfileInfoResponse
+import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorAccountInfo
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorProfileInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.NameDto
+import com.kusitms.connectdog.core.data.api.model.volunteer.EmailAuthDto
+import com.kusitms.connectdog.core.data.api.model.volunteer.PasswordCheckResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.PasswordDto
 import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -43,6 +50,21 @@ internal interface InterApiService {
     suspend fun getIsDuplicatePhoneNumber(
         @Body body: IsDuplicatePhoneNumberBody
     ): IsDuplicatePhoneNumberResponse
+
+    @POST("/intermediaries/name/isDuplicated")
+    suspend fun checkIsDuplicateName(
+        @Body body: NameDto
+    ): DuplicateDto
+
+    @POST("/intermediaries/password/check")
+    suspend fun checkInterPassword(
+        @Body body: PasswordDto
+    ): PasswordCheckResponse
+
+    @PATCH("/intermediaries/password")
+    suspend fun changeInterPassword(
+        @Body body: PasswordDto
+    )
 
     /**
      * 봉사관리
@@ -114,7 +136,7 @@ internal interface InterApiService {
     suspend fun getIntermediatorReview(
         @Query("page") page: Int?,
         @Query("size") size: Int?
-    ): List<ReviewResponseItem>
+    ): List<ReviewDetailResponse>
 
     @GET("/intermediaries/posts/recruiting")
     suspend fun getFindingApplication(
@@ -132,10 +154,29 @@ internal interface InterApiService {
         @Body fcmToken: FcmTokenRequestBody
     )
 
+    @PATCH("/intermediaries/notifications/setting")
+    suspend fun patchNotification()
+
+    @POST("/intermediaries/search/send-email")
+    suspend fun interPasswordSearchAuth(
+        @Body body: EmailDto
+    ): EmailAuthDto
+
     @Multipart
     @POST("/intermediaries/posts")
     suspend fun postApplication(
         @Part("request") json: RequestBody,
         @Part files: List<MultipartBody.Part>
     )
+
+    @GET("/intermediaries/setting/my/info")
+    suspend fun getInterAccountInfo(): IntermediatorAccountInfo
+
+    @DELETE("/intermediaries/my")
+    suspend fun interWithdraw()
+
+    @POST("/intermediaries/search/email")
+    suspend fun interEmailSearch(
+        @Body body: PhoneDto
+    ): EmailDto
 }

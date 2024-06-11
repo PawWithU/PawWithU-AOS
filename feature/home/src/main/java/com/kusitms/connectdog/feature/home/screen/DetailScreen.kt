@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.feature.home.screen
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -32,15 +34,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogDetailTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogInformationCard
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTag
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTagWithIcon
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
@@ -66,6 +69,11 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val detail by viewModel.detail.observeAsState(null)
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.initNoticeDetail(postId)
+    }
 
     LaunchedEffect(postId) {
         viewModel.initNoticeDetail(postId)
@@ -75,7 +83,9 @@ fun DetailScreen(
         topBar = {
             ConnectDogDetailTopAppBar(
                 onBackClick = onBackClick,
-                onShareClick = {}
+                onShareClick = {
+                    Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show()
+                }
             )
         },
         bottomBar = {
@@ -85,7 +95,8 @@ fun DetailScreen(
                         isBookmark = it,
                         onSaveClick = { viewModel.postBookmark(postId) },
                         onDeleteClick = { viewModel.deleteBookmark(postId) },
-                        onClick = { onApplyClick(postId) }
+                        onClick = { onApplyClick(postId) },
+                        postStatus = detail!!.postStatus
                     )
                 }
         }
@@ -244,9 +255,9 @@ fun VolunteerInfo(detail: NoticeDetailResponseItem) {
             fontSize = 20.sp
         )
         Spacer(modifier = Modifier.height(20.dp))
-        DetailInfo("출발지", "${detail.departureLoc}")
+        DetailInfo("출발지", detail.departureLoc)
         Spacer(modifier = Modifier.height(8.dp))
-        DetailInfo("도착지", "${detail.arrivalLoc}")
+        DetailInfo("도착지", detail.arrivalLoc)
         Spacer(modifier = Modifier.height(8.dp))
         DetailInfo("픽업 일시", detail.pickUpTime)
         Spacer(modifier = Modifier.height(8.dp))
@@ -327,7 +338,7 @@ fun IntermediatorInfo(
             )
             ProfileButton(
                 modifier = Modifier
-                    .width(100.dp)
+                    .wrapContentWidth()
                     .height(34.dp)
                     .align(Alignment.CenterVertically),
                 onClick = { onClick(detail.intermediaryId.toLong()) }
@@ -341,6 +352,7 @@ private fun BottomBar(
     isBookmark: Boolean,
     onSaveClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    postStatus: String,
     onClick: () -> Unit
 ) {
     Box(
@@ -355,7 +367,17 @@ private fun BottomBar(
         ) {
             BookmarkButton(isBookmark, onSaveClick, onDeleteClick)
             Spacer(modifier = Modifier.width(10.dp))
-            ConnectDogNormalButton(content = "신청하기", onClick = onClick)
+            ConnectDogBottomButton(
+                content = when (postStatus) {
+                    "모집중" -> "신청하기"
+                    "승인 대기중" -> "승인 대기중인 공고입니다"
+                    "봉사 완료" -> "봉사 완료된 공고입니다"
+                    "마감" -> "마감된 공고입니다"
+                    else -> ""
+                },
+                enabled = postStatus == "모집중",
+                onClick = onClick
+            )
         }
     }
 }

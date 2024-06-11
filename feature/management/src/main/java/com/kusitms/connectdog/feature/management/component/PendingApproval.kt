@@ -44,7 +44,7 @@ fun PendingApproval(
         }
 
         is ApplicationUiState.Empty -> {
-            Empty(titleRes = R.string.no_pending, descriptionRes = R.string.no_description)
+            Empty(titleRes = R.string.no_pending, descriptionRes = R.string.pending_approval_empty)
         }
 
         is ApplicationUiState.Loading -> Loading()

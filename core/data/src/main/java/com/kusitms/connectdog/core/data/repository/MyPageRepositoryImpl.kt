@@ -1,17 +1,20 @@
 package com.kusitms.connectdog.core.data.repository
 
 import com.kusitms.connectdog.core.data.api.ApiService
-import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
+import com.kusitms.connectdog.core.data.api.InterApiService
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
+import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorAccountInfo
 import com.kusitms.connectdog.core.data.api.model.volunteer.BadgeResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.IsDuplicateNicknameBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.UserInfoResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.VolunteerAccountInfo
 import javax.inject.Inject
 
 internal class MyPageRepositoryImpl @Inject constructor(
-    private val api: ApiService
+    private val api: ApiService,
+    private val interApi: InterApiService
 ) : MyPageRepository {
     override suspend fun getMyInfo(): MyInfoResponseItem {
         return api.getMyInfo()
@@ -29,15 +32,31 @@ internal class MyPageRepositoryImpl @Inject constructor(
         return api.getBookmarkData()
     }
 
-    override suspend fun deleteAccount(): DeleteAccountResponse {
-        return api.deleteAccount()
-    }
-
     override suspend fun postNickname(nickname: IsDuplicateNicknameBody): IsDuplicateNicknameResponse {
         return api.postNickname(nickname)
     }
 
     override suspend fun updateUserInfo(userInfo: UserInfoResponse) {
         return api.updateUserInfo(userInfo)
+    }
+
+    override suspend fun updateNotification() {
+        api.patchNotification()
+    }
+
+    override suspend fun getVolunteerAccountInfo(): VolunteerAccountInfo {
+        return api.getVolunteerAccountInfo()
+    }
+
+    override suspend fun getInterAccountInfo(): IntermediatorAccountInfo {
+        return interApi.getInterAccountInfo()
+    }
+
+    override suspend fun volunteerWithdraw() {
+        api.volunteerWithdraw()
+    }
+
+    override suspend fun interWithdraw() {
+        interApi.interWithdraw()
     }
 }

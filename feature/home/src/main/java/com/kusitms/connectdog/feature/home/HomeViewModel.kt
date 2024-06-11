@@ -57,7 +57,26 @@ constructor(
 
     val reviewUiState: StateFlow<ReviewUiState> =
         flow {
-            emit(homeRepository.getReviewList(0, 20))
+            emit(homeRepository.getReviewList(0, 100))
+        }.map {
+            Log.d(TAG, "reviewUiState = ${it.size}")
+            if (it.isNotEmpty()) {
+                ReviewUiState.Reviews(it)
+            } else {
+                ReviewUiState.Empty
+            }
+        }.catch {
+            _errorFlow.emit(it)
+            Log.e(TAG, "reviewUiState = ${it.message}")
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = ReviewUiState.Loading
+        )
+
+    val homeReviewUiState: StateFlow<ReviewUiState> =
+        flow {
+            emit(homeRepository.getReviewList(0, 100))
         }.map {
             Log.d(TAG, "reviewUiState = ${it.size}")
             if (it.isNotEmpty()) {

@@ -37,8 +37,11 @@ internal class VolunteerDataModule {
 
     @Provides
     @Singleton
-    fun provideLoginRepository(apiService: ApiService): LoginRepository {
-        return LoginRepositoryImpl(apiService)
+    fun provideLoginRepository(
+        apiService: ApiService,
+        intermediatorApi: InterApiService
+    ): LoginRepository {
+        return LoginRepositoryImpl(apiService, intermediatorApi)
     }
 
     @Provides
@@ -55,8 +58,11 @@ internal class VolunteerDataModule {
 
     @Provides
     @Singleton
-    fun provideMyPageRepository(apiService: ApiService): MyPageRepository {
-        return MyPageRepositoryImpl(apiService)
+    fun provideMyPageRepository(
+        apiService: ApiService,
+        intermediatorApi: InterApiService
+    ): MyPageRepository {
+        return MyPageRepositoryImpl(apiService, intermediatorApi)
     }
 
     @Provides

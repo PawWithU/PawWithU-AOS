@@ -73,6 +73,7 @@ fun NavGraphBuilder.signUpGraph(
     navigateToLogin: () -> Unit,
     onSendMessage: (String) -> Unit,
     onVerifyCode: (String, (Boolean) -> Unit) -> Unit,
+    openWebBrowser: (String) -> Unit,
     imeHeight: Int,
     signUpViewModel: SignUpViewModel,
     profileViewModel: VolunteerProfileViewModel
@@ -90,8 +91,8 @@ fun NavGraphBuilder.signUpGraph(
         SignUpRoute(
             onBackClick = navigateToLogin,
             userType = it.arguments!!.getSerializable("type") as UserType,
-            navigateToIntermediatorInformation = navigateToIntermediatorInformation,
-            navigateToCertification = navigateToCertification
+            navigateToCertification = navigateToCertification,
+            openWebBrowser = openWebBrowser
         )
     }
 
@@ -167,10 +168,7 @@ fun NavGraphBuilder.signUpGraph(
         arguments = userTypeArgument
     ) {
         CompleteSignUpScreen(
-            userType = it.arguments!!.getSerializable("type") as UserType,
-            navigateToVolunteer = navigateToVolunteer,
-            viewModel = signUpViewModel,
-            navigateToIntermediator = navigateToIntermediator
+            navigateToLoginRoute = navigateToLogin
         )
     }
 

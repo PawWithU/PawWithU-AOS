@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.signup.viewmodel
 
-import android.util.Log
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -51,21 +52,38 @@ class RegisterEmailViewModel @Inject constructor(
         _isValidEmail.value = !android.util.Patterns.EMAIL_ADDRESS.matcher(_email.value).matches()
     }
 
-    fun postEmail() {
-        viewModelScope.launch {
-            val body = EmailCertificationBody(_email.value)
-            try {
-                val response = signUpRepository.postEmail(body)
-                _isEmailDuplicated.value = false
-                postNumber = response.authCode
-            } catch (e: Exception) {
-                _isEmailDuplicated.value = true
-            }
+    fun updateEmailVerify(value: Boolean) {
+        _isEmailVerified.value = value
+    }
+
+    fun postEmail(context: Context) = viewModelScope.launch {
+        if (isValidEmail.value == true) {
+            Toast.makeText(context, "유효한 이메일을 입력해주세요", Toast.LENGTH_SHORT).show()
+            return@launch
+        }
+
+        val body = EmailCertificationBody(_email.value)
+        try {
+            val response = signUpRepository.postEmail(body)
+            Toast.makeText(context, "이메일을 전송했습니다", Toast.LENGTH_SHORT).show()
+            _isEmailDuplicated.value = false
+            postNumber = response.authCode
+        } catch (e: Exception) {
+            _isEmailDuplicated.value = true
+            Toast.makeText(context, "이미 가입된 이메일입니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun checkCertificationNumber() {
-        _isEmailVerified.value = _certificationNumber.value == postNumber
-        Log.d("asdfa", _isEmailVerified.value.toString())
+    fun checkCertificationNumber(context: Context) {
+        if (_certificationNumber.value.isEmpty()) {
+            Toast.makeText(context, "인증번호를 입력해주세요", Toast.LENGTH_SHORT).show()
+        } else {
+            _isEmailVerified.value = _certificationNumber.value == postNumber
+            if (_isEmailVerified.value == true) {
+                Toast.makeText(context, "인증이 완료되었습니다", Toast.LENGTH_SHORT).show()
+            } else if (_isEmailVerified.value == true) {
+                Toast.makeText(context, "인증에 실패하였습니다", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

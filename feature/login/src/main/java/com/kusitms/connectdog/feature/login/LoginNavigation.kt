@@ -10,6 +10,7 @@ import com.kusitms.connectdog.feature.login.screen.EmailSearchResultScreen
 import com.kusitms.connectdog.feature.login.screen.EmailSearchScreen
 import com.kusitms.connectdog.feature.login.screen.LoginRoute
 import com.kusitms.connectdog.feature.login.screen.NormalLoginScreen
+import com.kusitms.connectdog.feature.login.screen.PasswordSearchAuthScreen
 import com.kusitms.connectdog.feature.login.screen.PasswordSearchScreen
 
 fun NavController.navigateToLoginRoute() {
@@ -24,20 +25,20 @@ fun NavController.navigateNormalLogin(userType: UserType) {
     navigate("${LoginRoute.normal_login}/$userType")
 }
 
-fun NavController.navigateEmailSearch() {
-    navigate(LoginRoute.email_search)
+fun NavController.navigateEmailSearch(userType: UserType) {
+    navigate("${LoginRoute.email_search}/$userType")
 }
 
-fun NavController.navigatePasswordSearch() {
-    navigate(LoginRoute.password_search)
+fun NavController.navigateEmailSearchComplete(email: String) {
+    navigate("${LoginRoute.email_search_complete}/$email")
 }
 
-fun NavController.navigateEmailSearchComplete() {
-    navigate(LoginRoute.email_search_complete)
+fun NavController.navigatePasswordSearchAuth(userType: UserType) {
+    navigate("${LoginRoute.password_search_auth}/$userType")
 }
 
-fun NavController.navigatePasswordSearchComplete() {
-    navigate(LoginRoute.password_search_complete)
+fun NavController.navigatePasswordSearch(userType: UserType) {
+    navigate("${LoginRoute.password_search}/$userType")
 }
 
 fun NavGraphBuilder.loginNavGraph(
@@ -48,10 +49,13 @@ fun NavGraphBuilder.loginNavGraph(
     onNavigateToVolunteer: () -> Unit,
     onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit,
-    onNavigateToPasswordSearchComplete: () -> Unit,
-    onNavigateToEmailSearchComplete: () -> Unit
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit,
+    onNavigateToEmailSearchComplete: (String) -> Unit,
+    onNavigateToPasswordSearchAuth: (UserType) -> Unit,
+    onNavigateToLoginRoute: () -> Unit,
+    onSendMessage: (String) -> Unit,
+    onVerifyCode: (String, (Boolean) -> Unit) -> Unit
 ) {
     composable(route = LoginRoute.route) {
         LoginRoute(
@@ -59,7 +63,9 @@ fun NavGraphBuilder.loginNavGraph(
             onNavigateToNormalLogin,
             onNavigateToSignup,
             onNavigateToVolunteer,
-            onNavigateToIntermediatorHome
+            onNavigateToIntermediatorHome,
+            onNavigateToEmailSearch,
+            onNavigateToPasswordSearchAuth
         )
     }
 
@@ -78,27 +84,72 @@ fun NavGraphBuilder.loginNavGraph(
             onNavigateToVolunteerHome = onNavigateToVolunteer,
             onNavigateToIntermediatorHome = onNavigateToIntermediatorHome,
             onNavigateToEmailSearch = onNavigateToEmailSearch,
-            onNavigateToPasswordSearch = onNavigateToPasswordSearch
+            onNavigateToPasswordSearch = onNavigateToPasswordSearchAuth
         )
     }
 
-    composable(route = LoginRoute.email_search) {
+    composable(
+        route = "${LoginRoute.email_search}/{type}",
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.EnumType(UserType::class.java)
+            }
+        )
+    ) {
         EmailSearchScreen(
             imeHeight = imeHeight,
             onBackClick = onBackClick,
-            navigateToCompleteScreen = onNavigateToEmailSearchComplete
+            navigateToCompleteScreen = onNavigateToEmailSearchComplete,
+            userType = it.arguments!!.getSerializable("type") as UserType,
+            onSendMessageClick = onSendMessage,
+            onVerifyCodeClick = onVerifyCode
         )
     }
 
-    composable(route = LoginRoute.email_search_complete) {
-        EmailSearchResultScreen(
-            onBackClick = onBackClick
+    composable(
+        route = "${LoginRoute.email_search_complete}/{email}",
+        arguments = listOf(
+            navArgument("email") { type = NavType.StringType }
         )
+    ) {
+        it.arguments!!.getString("email")?.let { email ->
+            EmailSearchResultScreen(
+                onBackClick = onBackClick,
+                email = email,
+                navigateToLoginRoute = onNavigateToLoginRoute
+            )
+        }
     }
 
-    composable(route = LoginRoute.password_search) {
+    composable(
+        route = "${LoginRoute.password_search}/{type}",
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.EnumType(UserType::class.java)
+            }
+        )
+    ) {
         PasswordSearchScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            userType = it.arguments!!.getSerializable("type") as UserType,
+            imeHeight = imeHeight,
+            navigateToLoginRoute = onNavigateToLoginRoute
+        )
+    }
+
+    composable(
+        route = "${LoginRoute.password_search_auth}/{type}",
+        arguments = listOf(
+            navArgument("type") {
+                type = NavType.EnumType(UserType::class.java)
+            }
+        )
+    ) {
+        PasswordSearchAuthScreen(
+            onBackClick = onBackClick,
+            imeHeight = imeHeight,
+            onNavigateToPasswordSearch = onNavigateToPasswordSearch,
+            userType = it.arguments!!.getSerializable("type") as UserType
         )
     }
 }
@@ -109,5 +160,5 @@ object LoginRoute {
     const val email_search = "email_search"
     const val password_search = "password_search"
     const val email_search_complete = "email_search_complete"
-    const val password_search_complete = "password_search_complete"
+    const val password_search_auth = "password_search_auth"
 }

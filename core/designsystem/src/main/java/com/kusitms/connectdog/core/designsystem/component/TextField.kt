@@ -107,6 +107,67 @@ fun ConnectDogTextField(
     }
 }
 
+@Composable
+fun ConnectDogTextField(
+    text: String,
+    onTextChanged: (String) -> Unit,
+    enabled: Boolean = true,
+    placeholder: String,
+    borderColor: Color = Gray5,
+    @StringRes supportingText: Int? = null,
+    imeAction: ImeAction = ImeAction.Next,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false,
+    @SuppressLint("PrivateResource") @StringRes errorMessageRes: Int = R.string.default_error_message,
+    height: Int = 65,
+    modifier: Modifier = Modifier
+) {
+    val visualTransformation =
+        if (keyboardType == KeyboardType.Password) {
+            PasswordVisualTransformation()
+        } else {
+            VisualTransformation.None
+        }
+
+    Box(
+        modifier = modifier
+            .height(height.dp)
+            .fillMaxWidth()
+    ) {
+        OutlinedTextField(
+            visualTransformation = visualTransformation,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .fillMaxSize(),
+            value = text,
+            onValueChange = { onTextChanged(it) },
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = Gray4
+                )
+            },
+            keyboardOptions =
+            KeyboardOptions(
+                keyboardType = keyboardType,
+                imeAction = imeAction
+            ),
+            singleLine = (height == 65),
+            shape = RoundedCornerShape(12.dp),
+            isError = isError,
+            enabled = enabled,
+            colors =
+            OutlinedTextFieldDefaults.colors(
+                unfocusedBorderColor = borderColor,
+                errorBorderColor = MaterialTheme.colorScheme.error
+            )
+//        textStyle = LocalTextStyle.current.copy(
+//            baselineShift = BaselineShift(if(height == 65) 0f else 2.5f)
+//        )
+        )
+    }
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConnectDogIconTextField(
@@ -164,7 +225,7 @@ fun ConnectDogTextFieldWithButton(
     height: Int,
     textFieldLabel: String,
     placeholder: String,
-    buttonLabel: String,
+    buttonLabel: String = "중복 확인",
     borderColor: Color = Gray5,
     keyboardType: KeyboardType = KeyboardType.Text,
     padding: Int,

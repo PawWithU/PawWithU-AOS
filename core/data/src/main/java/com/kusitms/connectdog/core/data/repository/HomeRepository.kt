@@ -6,7 +6,7 @@ import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.Review
 
 interface HomeRepository {
-    suspend fun getReviewList(page: Int? = 0, size: Int? = 5): List<Review>
+    suspend fun getReviewList(page: Int? = 0, size: Int? = 100): List<Review>
     suspend fun getAnnouncementList(): List<AnnouncementHome>
     suspend fun postFcmToken(fcmToken: FcmTokenRequestBody)
     suspend fun getAnnouncementListWithFilter(

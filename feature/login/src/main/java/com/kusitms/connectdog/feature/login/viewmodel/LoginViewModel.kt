@@ -117,7 +117,7 @@ class LoginViewModel @Inject constructor(
                     dataStoreRepository.saveSocialProvider(provider.toString())
                     when (response.roleName) {
                         "GUEST" -> _socialType.emit(SocialType.GUEST)
-                        "VOLUNTEER" -> {
+                        "AUTH_VOLUNTEER" -> {
                             _socialType.emit(SocialType.VOLUNTEER)
                             dataStoreRepository.saveAppMode(AppMode.VOLUNTEER)
                         }

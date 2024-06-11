@@ -6,9 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -92,6 +95,7 @@ private fun Content(
     val context = LocalContext.current
     val isSendNumber by remember { viewModel.isSendNumber }.collectAsState()
     val isCertified by remember { viewModel.isCertified }.collectAsState()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(key1 = signUpViewModel) {
         signUpViewModel.isDuplicatePhoneNumber.collect {
@@ -106,12 +110,14 @@ private fun Content(
 
     Column(
         modifier = Modifier
+            .fillMaxSize()
             .padding(start = 20.dp, end = 20.dp, top = 32.dp)
             .clickable(
                 onClick = { focusManager.clearFocus() },
                 indication = null,
                 interactionSource = interactionSource
             )
+            .verticalScroll(scrollState)
     ) {
         Spacer(modifier = Modifier.height(48.dp))
         Text(
@@ -174,6 +180,7 @@ private fun Content(
                 }
             }
         )
+        Spacer(modifier = Modifier.height(20.dp))
         Spacer(modifier = Modifier.weight(1f))
         ConnectDogNormalButton(
             content = "다음",
@@ -196,6 +203,6 @@ private fun Content(
                 }
             }
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height((imeHeight + 32).dp))
     }
 }

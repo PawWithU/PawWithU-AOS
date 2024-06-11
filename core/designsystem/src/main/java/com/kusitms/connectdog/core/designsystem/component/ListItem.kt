@@ -39,6 +39,7 @@ import com.kusitms.connectdog.core.designsystem.theme.Gray7
 import com.kusitms.connectdog.core.model.AnnouncementHome
 import com.kusitms.connectdog.core.model.InterApplication
 import com.kusitms.connectdog.core.model.Review
+import com.kusitms.connectdog.core.util.UserType
 
 @Composable
 fun ListForUserItem(
@@ -325,6 +326,7 @@ fun ReviewItemContent(
     review: Review,
     modifier: Modifier = Modifier,
     reviewType: ReviewType = ReviewType.REVIEW,
+    userType: UserType = UserType.NORMAL_VOLUNTEER,
     onInterProfileClick: (Long) -> Unit = {}
 ) {
     Column(
@@ -333,7 +335,6 @@ fun ReviewItemContent(
             .wrapContentSize()
     ) {
         ConnectDogReview(review = review, type = reviewType)
-        Spacer(modifier = Modifier.height(16.dp))
         Divider(
             Modifier
                 .height(1.dp)
@@ -342,7 +343,7 @@ fun ReviewItemContent(
             color = Gray7
         )
         Spacer(modifier = Modifier.height(16.dp))
-        IntermediatorInfo(review) {
+        IntermediatorInfo(userType, review) {
             review.intermediaryId?.let { onInterProfileClick(it) }
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -357,6 +358,7 @@ fun ReviewItemContent(
 
 @Composable
 private fun IntermediatorInfo(
+    userType: UserType,
     review: Review,
     onInterProfileClick: () -> Unit
 ) {
@@ -379,13 +381,15 @@ private fun IntermediatorInfo(
                     fontWeight = FontWeight.SemiBold
                 )
                 Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "프로필 보기",
-                    fontSize = 12.sp,
-                    color = Gray3,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.clickable { onInterProfileClick() }
-                )
+                if (userType != UserType.INTERMEDIATOR) {
+                    Text(
+                        text = "프로필 보기",
+                        fontSize = 12.sp,
+                        color = Gray3,
+                        fontWeight = FontWeight.Normal,
+                        modifier = Modifier.clickable { onInterProfileClick() }
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(6.dp))
             Row(

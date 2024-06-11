@@ -1,6 +1,7 @@
 package com.kusitms.connectdog.feature.intermediator.screen
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,8 +27,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,11 +45,11 @@ import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.component.ReviewItemContent
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.component.text.DetailInfo
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray7
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileFindingUiState
 import com.kusitms.connectdog.feature.intermediator.state.InterProfileInfoUiState
@@ -62,7 +63,8 @@ private val pages = listOf("기본 정보", "모집중", "완료 및 후기")
 @Composable
 internal fun InterProfileScreen(
     onBackClick: () -> Unit,
-    onNavigateToInterProfileEdit: () -> Unit,
+    onNavigateToInterProfileEdit: (String) -> Unit,
+    onNavigateToAnnouncementManagement: (Long) -> Unit,
     viewModel: InterProfileViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -77,19 +79,23 @@ internal fun InterProfileScreen(
     ) {
         Content(
             onNavigateToInterProfileEdit = onNavigateToInterProfileEdit,
-            viewModel = viewModel
+            viewModel = viewModel,
+            onNavigateToAnnouncementManagement = onNavigateToAnnouncementManagement
         )
     }
 }
 
 @Composable
 private fun Content(
-    onNavigateToInterProfileEdit: () -> Unit,
+    onNavigateToInterProfileEdit: (String) -> Unit,
+    onNavigateToAnnouncementManagement: (Long) -> Unit,
     viewModel: InterProfileViewModel
 ) {
     val reviewUiState by viewModel.interProfileReviewUiState.collectAsStateWithLifecycle()
     val findingUiState by viewModel.interProfileFindingUiState.collectAsStateWithLifecycle()
     val infoUiState by viewModel.interProfileInfoUiState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -100,30 +106,35 @@ private fun Content(
             is InterProfileInfoUiState.Loading -> {
                 InterInfo(imageUrl = "", name = "", intro = "")
             }
+
             is InterProfileInfoUiState.InterProfile -> {
                 val data = (infoUiState as InterProfileInfoUiState.InterProfile).data
                 InterInfo(imageUrl = data.profileImage, name = data.name, intro = data.intro)
+                Spacer(modifier = Modifier.height(8.dp))
+                ConnectDogBottomButton(
+                    onClick = {
+                        Toast.makeText(context, "아직 준비중인 기능입니다.", Toast.LENGTH_SHORT).show()
+//                        onNavigateToInterProfileEdit(data.profileImage)
+                    },
+                    content = "프로필 수정",
+                    textColor = Gray1,
+                    enabledColor = Gray7,
+                    modifier = Modifier
+                        .height(40.dp)
+                        .padding(horizontal = 20.dp),
+                    fontSize = 12,
+                    paddingValues = PaddingValues(vertical = 11.dp),
+                    border = BorderStroke(0.dp, color = Gray7)
+                )
+                Spacer(modifier = Modifier.height(32.dp))
+                TabLayout(
+                    info = infoUiState,
+                    finding = findingUiState,
+                    review = reviewUiState,
+                    onNavigateToAnnouncementManagement = onNavigateToAnnouncementManagement
+                )
             }
         }
-        Spacer(modifier = Modifier.height(12.dp))
-        ConnectDogBottomButton(
-            onClick = onNavigateToInterProfileEdit,
-            content = "프로필 수정",
-            textColor = Gray1,
-            enabledColor = Gray7,
-            modifier = Modifier
-                .height(40.dp)
-                .padding(horizontal = 20.dp),
-            fontSize = 12,
-            paddingValues = PaddingValues(vertical = 11.dp),
-            border = BorderStroke(0.dp, color = Gray7)
-        )
-        Spacer(modifier = Modifier.height(32.dp))
-        TabLayout(
-            info = infoUiState,
-            finding = findingUiState,
-            review = reviewUiState
-        )
     }
 }
 
@@ -134,7 +145,9 @@ private fun InterInfo(
     intro: String
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NetworkImage(imageUrl = imageUrl, modifier = Modifier.size(80.dp))
@@ -157,7 +170,8 @@ private fun InterInfo(
 private fun TabLayout(
     info: InterProfileInfoUiState,
     finding: InterProfileFindingUiState,
-    review: InterProfileReviewUiState
+    review: InterProfileReviewUiState,
+    onNavigateToAnnouncementManagement: (Long) -> Unit
 ) {
     Surface {
         Column {
@@ -194,7 +208,7 @@ private fun TabLayout(
             ) {
                 when (it) {
                     0 -> IntermediatorInformation(info)
-                    1 -> Finding(finding)
+                    1 -> Finding(finding, onNavigateToAnnouncementManagement)
                     2 -> CompleteAndReview(review)
                 }
             }
@@ -235,9 +249,9 @@ private fun IntermediatorInformation(
 
 @Composable
 private fun Finding(
-    data: InterProfileFindingUiState
+    data: InterProfileFindingUiState,
+    onClick: (Long) -> Unit
 ) {
-    val modifier = Modifier.padding(horizontal = 0.dp)
     Column(
         verticalArrangement = Arrangement.Top
     ) {
@@ -256,7 +270,7 @@ private fun Finding(
                             dogSize = it.dogSize,
                             date = it.date,
                             pickUpTime = it.pickUpTime,
-                            onClick = {}
+                            onClick = onClick
                         )
                     }
                 }
@@ -278,21 +292,17 @@ fun CompleteAndReview(
             is InterProfileReviewUiState.Loading -> Loading()
             is InterProfileReviewUiState.Empty -> {
             }
+
             is InterProfileReviewUiState.InterProfileReview -> {
                 LazyColumn(modifier = Modifier.padding(horizontal = 0.dp)) {
                     items(data.review.take(30)) {
-                        ReviewItemContent(review = it)
+                        ReviewItemContent(
+                            review = it,
+                            userType = UserType.INTERMEDIATOR
+                        )
                     }
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun test() {
-    ConnectDogTheme {
-//        InterProfileScreen()
     }
 }

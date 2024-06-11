@@ -45,7 +45,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,11 +52,11 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogFilledButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIntermediatorTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.NetworkImage
 import com.kusitms.connectdog.core.designsystem.theme.Brown5
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Typography
 import com.kusitms.connectdog.core.model.IntermediatorManage
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.intermediator.R
 import com.kusitms.connectdog.feature.intermediator.viewmodel.InterHomeViewModel
 
@@ -79,7 +78,7 @@ private val titleList = listOf(
 @Composable
 fun InterHomeScreen(
     onNotificationClick: () -> Unit,
-    onSettingClick: () -> Unit,
+    onSettingClick: (UserType) -> Unit,
     onManageClick: (Int) -> Unit,
     onProfileClick: () -> Unit,
     onNavigateToCreateAnnouncementScreen: () -> Unit,
@@ -180,8 +179,8 @@ private fun ProfileCard(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     ConnectDogFilledButton(
-                        width = 45,
-                        height = 14,
+                        width = 54,
+                        height = 16,
                         text = "프로필 보기",
                         padding = 1,
                         onClick = onProfileClick
@@ -342,32 +341,6 @@ private fun ManageCard(
                     contentDescription = null
                 )
             }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun test() {
-    ConnectDogTheme {
-        Row(
-            modifier = Modifier.wrapContentHeight(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "이동봉사 중개",
-                style = MaterialTheme.typography.titleSmall,
-                color = Color.White,
-                fontSize = 20.sp
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            ConnectDogFilledButton(
-                width = 45,
-                height = 14,
-                text = "프로필 보기",
-                padding = 1,
-                onClick = {}
-            )
         }
     }
 }

@@ -74,7 +74,7 @@ private fun ReviewContent(
 @Composable
 fun ReviewListContent(
     list: List<Review>,
-    onInterProfileClick: (Long) -> Unit = {},
+    onInterProfileClick: (Long) -> Unit,
     modifier: Modifier
 ) {
     LazyColumn(modifier = modifier) {
@@ -102,6 +102,7 @@ fun ReviewLoading(modifier: Modifier) {
             contentImages = null
         )
     }
+
     LazyColumn(modifier = modifier) {
         items(list) {
             ReviewItemContent(

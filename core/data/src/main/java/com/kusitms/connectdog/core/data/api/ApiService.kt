@@ -1,7 +1,8 @@
 package com.kusitms.connectdog.core.data.api
 
 import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
-import com.kusitms.connectdog.core.data.api.model.DeleteAccountResponse
+import com.kusitms.connectdog.core.data.api.model.AuthDto
+import com.kusitms.connectdog.core.data.api.model.EmailDto
 import com.kusitms.connectdog.core.data.api.model.FcmTokenRequestBody
 import com.kusitms.connectdog.core.data.api.model.IsDuplicateNicknameResponse
 import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberBody
@@ -9,8 +10,8 @@ import com.kusitms.connectdog.core.data.api.model.IsDuplicatePhoneNumberResponse
 import com.kusitms.connectdog.core.data.api.model.LoginResponseItem
 import com.kusitms.connectdog.core.data.api.model.MyInfoResponseItem
 import com.kusitms.connectdog.core.data.api.model.NormalLoginBody
+import com.kusitms.connectdog.core.data.api.model.PhoneDto
 import com.kusitms.connectdog.core.data.api.model.Response
-import com.kusitms.connectdog.core.data.api.model.ReviewResponseItem
 import com.kusitms.connectdog.core.data.api.model.SocialLoginBody
 import com.kusitms.connectdog.core.data.api.model.VolunteerResponse
 import com.kusitms.connectdog.core.data.api.model.intermediator.IntermediatorInfoResponseItem
@@ -23,14 +24,18 @@ import com.kusitms.connectdog.core.data.api.model.volunteer.ApplyBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.BadgeResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BasicInformationResponse
 import com.kusitms.connectdog.core.data.api.model.volunteer.BookmarkResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.EmailAuthDto
 import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationBody
-import com.kusitms.connectdog.core.data.api.model.volunteer.EmailCertificationResponseItem
 import com.kusitms.connectdog.core.data.api.model.volunteer.IsDuplicateNicknameBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NormalVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.NoticeDetailResponseItem
+import com.kusitms.connectdog.core.data.api.model.volunteer.PasswordCheckResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.PasswordDto
 import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.ReviewDetailWithId
 import com.kusitms.connectdog.core.data.api.model.volunteer.SocialVolunteerSignUpBody
 import com.kusitms.connectdog.core.data.api.model.volunteer.UserInfoResponse
+import com.kusitms.connectdog.core.data.api.model.volunteer.VolunteerAccountInfo
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -71,7 +76,7 @@ internal interface ApiService {
     suspend fun getReviewsHome(
         @Query("page") page: Int,
         @Query("size") size: Int
-    ): List<ReviewDetailResponse>
+    ): List<ReviewDetailWithId>
 
     /**
      * 회원가입
@@ -84,7 +89,7 @@ internal interface ApiService {
     @POST("/volunteers/sign-up/email")
     suspend fun postEmail(
         @Body emailCertificationBody: EmailCertificationBody
-    ): EmailCertificationResponseItem
+    ): AuthDto
 
     @POST("/volunteers/sign-up")
     suspend fun postNormalVolunteerSignUp(
@@ -157,7 +162,12 @@ internal interface ApiService {
         @Body socialLoginBody: SocialLoginBody
     ): LoginResponseItem
 
-    /**
+    @POST("/volunteers/search/send-email")
+    suspend fun volunteerPasswordSearchAuth(
+        @Body body: EmailDto
+    ): EmailAuthDto
+
+    /**s
      * 이동봉사자 > 마이페이지
      */
     @GET("/volunteers/my/info")
@@ -171,9 +181,6 @@ internal interface ApiService {
 
     @GET("/volunteers/my/bookmarks")
     suspend fun getBookmarkData(): List<BookmarkResponseItem>
-
-    @DELETE("/volunteers/my/delete")
-    suspend fun deleteAccount(): DeleteAccountResponse
 
     @PATCH("/volunteers/my/profile")
     suspend fun updateUserInfo(
@@ -239,7 +246,7 @@ internal interface ApiService {
         @Path("intermediaryId") intermediaryId: Long,
         @Query("page") page: Int?,
         @Query("size") size: Int?
-    ): List<ReviewResponseItem>
+    ): List<ReviewDetailResponse>
 
     @Multipart
     @POST("/volunteers/posts/{postId}/reviews")
@@ -249,6 +256,19 @@ internal interface ApiService {
         @Part files: List<MultipartBody.Part>
     )
 
+    @POST("/volunteers/password/check")
+    suspend fun checkVolunteerPassword(
+        @Body password: PasswordDto
+    ): PasswordCheckResponse
+
+    @PATCH("/volunteers/password")
+    suspend fun changeVolunteerPassword(
+        @Body password: PasswordDto
+    )
+
+    @DELETE("/volunteers/my")
+    suspend fun volunteerWithdraw()
+
     /**
      * fcm
      */
@@ -256,4 +276,15 @@ internal interface ApiService {
     suspend fun postFcmToken(
         @Body fcmToken: FcmTokenRequestBody
     )
+
+    @PATCH("/volunteers/notifications/setting")
+    suspend fun patchNotification()
+
+    @GET("/volunteers/setting/my/info")
+    suspend fun getVolunteerAccountInfo(): VolunteerAccountInfo
+
+    @POST("/volunteers/search/email")
+    suspend fun volunteerEmailSearch(
+        @Body body: PhoneDto
+    ): EmailDto
 }

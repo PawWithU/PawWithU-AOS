@@ -69,14 +69,18 @@ internal fun LoginRoute(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
-    onNavigateToIntermediatorHome: () -> Unit
+    onNavigateToIntermediatorHome: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit
 ) {
     BackHandler { finish() }
     LoginScreen(
         onNavigateToNormalLogin = onNavigateToNormalLogin,
         onNavigateToSignup = onNavigateToSignup,
         onNavigateToVolunteerHome = onNavigateToVolunteerHome,
-        onNavigateToIntermediatorHome = onNavigateToIntermediatorHome
+        onNavigateToIntermediatorHome = onNavigateToIntermediatorHome,
+        onNavigateToEmailSearch = onNavigateToEmailSearch,
+        onNavigateToPasswordSearch = onNavigateToPasswordSearch
     )
 }
 
@@ -86,7 +90,9 @@ fun LoginScreen(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
-    onNavigateToIntermediatorHome: () -> Unit
+    onNavigateToIntermediatorHome: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -110,7 +116,9 @@ fun LoginScreen(
             onNavigateToNormalLogin,
             onNavigateToSignup,
             onNavigateToVolunteerHome,
-            onNavigateToIntermediatorHome
+            onNavigateToIntermediatorHome,
+            onNavigateToEmailSearch,
+            onNavigateToPasswordSearch
         )
         Spacer(modifier = Modifier.weight(1f))
         Image(
@@ -129,7 +137,9 @@ private fun LoginContent(
     onNavigateToNormalLogin: (UserType) -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
-    onNavigateToIntermediatorHome: () -> Unit
+    onNavigateToIntermediatorHome: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit
 ) {
     val pages = listOf("이동봉사자 회원", "이동봉사 모집자 회원")
     Column(
@@ -176,7 +186,9 @@ private fun LoginContent(
 
                 1 -> Intermediator(
                     onNavigateToIntermediatorHome = onNavigateToIntermediatorHome,
-                    onNavigateToSignup = onNavigateToSignup
+                    onNavigateToSignup = onNavigateToSignup,
+                    onNavigateToEmailSearch = onNavigateToEmailSearch,
+                    onNavigateToPasswordSearch = onNavigateToPasswordSearch
                 )
             }
         }
@@ -239,6 +251,8 @@ private fun Volunteer(
 private fun Intermediator(
     onNavigateToIntermediatorHome: () -> Unit,
     onNavigateToSignup: (UserType) -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val isLoginSuccessful by viewModel.isLoginSuccessful.collectAsState()
@@ -285,8 +299,8 @@ private fun Intermediator(
         Spacer(modifier = Modifier.height(30.dp))
         AccountFind(
             onNavigateToSignup = onNavigateToSignup,
-            onNavigateToEmailSearch = { },
-            onNavigateToPasswordSearch = { },
+            onNavigateToEmailSearch = { onNavigateToEmailSearch(UserType.INTERMEDIATOR) },
+            onNavigateToPasswordSearch = { onNavigateToPasswordSearch(UserType.INTERMEDIATOR) },
             userType = UserType.INTERMEDIATOR
         )
     }
