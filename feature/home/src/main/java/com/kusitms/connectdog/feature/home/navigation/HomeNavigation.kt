@@ -13,6 +13,7 @@ import com.kusitms.connectdog.feature.home.screen.ApplyScreen
 import com.kusitms.connectdog.feature.home.screen.CompleteApplyScreen
 import com.kusitms.connectdog.feature.home.screen.DetailScreen
 import com.kusitms.connectdog.feature.home.screen.FilterSearchRoute
+import com.kusitms.connectdog.feature.home.screen.GuideScreen
 import com.kusitms.connectdog.feature.home.screen.HomeRoute
 import com.kusitms.connectdog.feature.home.screen.IntermediatorProfileScreen
 import com.kusitms.connectdog.feature.home.screen.ReviewScreen
@@ -72,6 +73,10 @@ fun NavController.navigateNotification() {
     navigate(HomeRoute.notification)
 }
 
+fun NavController.navigateGuide() {
+    navigate(HomeRoute.guide)
+}
+
 fun NavGraphBuilder.homeNavGraph(
     onBackClick: () -> Unit,
     onNavigateToSearch: () -> Unit,
@@ -84,6 +89,8 @@ fun NavGraphBuilder.homeNavGraph(
     onNavigateToComplete: () -> Unit,
     onNavigateToIntermediatorProfile: (Long) -> Unit,
     onNavigateToNotification: () -> Unit,
+    onNavigateToGuideScreen: () -> Unit,
+    onNavigateToReviewDetail: (Long) -> Unit,
     onSendMessage: (String) -> Unit,
     onVerifyCode: (String, (Boolean) -> Unit) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
@@ -98,6 +105,8 @@ fun NavGraphBuilder.homeNavGraph(
             onNavigateToDetail,
             onNavigateToNotification,
             onShowErrorSnackBar,
+            onNavigateToReviewDetail,
+            onNavigateToGuideScreen,
             finish
         )
     }
@@ -211,6 +220,12 @@ fun NavGraphBuilder.homeNavGraph(
         )
     }
 
+    composable(route = HomeRoute.guide) {
+        GuideScreen(
+            onBackClick = onBackClick
+        )
+    }
+
     composable(route = HomeRoute.notification) {
 //        NotificationScreen(
 //            onClick = navigateNotification
@@ -229,4 +244,5 @@ object HomeRoute {
     const val complete = "complete"
     const val intermediatorProfile = "intermediatorProfile"
     const val notification = "notification"
+    const val guide = "guide"
 }

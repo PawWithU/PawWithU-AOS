@@ -16,10 +16,6 @@ import javax.inject.Inject
 class EditProfileViewModel @Inject constructor(
     private val myPageRepository: MyPageRepository
 ) : ViewModel() {
-    init {
-        fetchProfileInformation()
-    }
-
     private val _isDuplicatedNickname: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val isDuplicatedNickname: StateFlow<Boolean?>
         get() = _isDuplicatedNickname
@@ -40,16 +36,9 @@ class EditProfileViewModel @Inject constructor(
         _selectedImageIndex.value = imageIndex
     }
 
-    private fun fetchProfileInformation() {
-        viewModelScope.launch {
-            try {
-                val response = myPageRepository.getUserInfo()
-                updateProfileImageIndex(response.profileImageNum)
-                updateNickname(response.nickname)
-            } catch (e: Exception) {
-                Log.d("Asdf", e.message.toString())
-            }
-        }
+    fun fetchProfileInformation(profileImageId: Int, nickName: String) {
+        updateProfileImageIndex(profileImageId)
+        updateNickname(nickName)
     }
 
     fun updateNicknameAvailability() {

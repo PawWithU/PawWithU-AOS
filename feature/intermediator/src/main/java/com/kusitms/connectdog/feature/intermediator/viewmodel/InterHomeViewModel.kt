@@ -53,7 +53,7 @@ class InterHomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getIntermediatorProfileInfo()
-                _profileImage.value = response.profileImage
+                _profileImage.value = response.profileImage.toString()
                 _intermediaryName.value = response.intermediaryName
                 _completedCount.value = response.completedCount.toInt()
                 _progressingCount.value = response.progressingCount.toInt()
