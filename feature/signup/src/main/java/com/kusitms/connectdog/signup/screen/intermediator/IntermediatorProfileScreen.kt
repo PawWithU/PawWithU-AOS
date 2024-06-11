@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,8 +39,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,6 +50,9 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
+import com.kusitms.connectdog.core.designsystem.theme.Red1
 import com.kusitms.connectdog.feature.signup.R
 import com.kusitms.connectdog.signup.viewmodel.IntermediatorProfileViewModel
 import com.kusitms.connectdog.signup.viewmodel.SignUpViewModel
@@ -86,6 +90,8 @@ fun IntermediatorProfileScreen(
         val focusManager = LocalFocusManager.current
         val interactionSource = remember { MutableInteractionSource() }
         val scrollState = rememberScrollState()
+
+        val isDuplicatedName by viewModel.isDuplicateName.collectAsState()
 
         Column(
             modifier = Modifier
@@ -153,28 +159,34 @@ fun IntermediatorProfileScreen(
                 text = viewModel.name,
                 width = 62,
                 height = 27,
-                textFieldLabel = "모집자명",
-                placeholder = "모집자명 입력",
-                buttonLabel = "중복 확인",
-                keyboardType = KeyboardType.Number,
+                textFieldLabel = stringResource(id = R.string.intermediator_name),
+                placeholder = stringResource(id = R.string.intermediator_name_input),
                 padding = 5,
                 onTextChanged = viewModel::updateName,
-                onClick = {
-                }
+                isError = isDuplicatedName == true,
+                onClick = { viewModel.checkNickNameDuplicate() }
             )
-
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = if (isDuplicatedName == true) "이미 사용중인 모집자명입니다." else if (isDuplicatedName == false) "사용 가능한 모집자명 입니다." else "",
+                fontSize = 10.sp,
+                color = if (isDuplicatedName == true) Red1 else if (isDuplicatedName == false) PetOrange else Gray1,
+                fontWeight = FontWeight.Normal
+            )
+            Spacer(modifier = Modifier.height(6.dp))
             ConnectDogTextField(
                 text = viewModel.introduce,
-                onTextChanged = { viewModel.updateIntroduce(it) },
-                label = "한 줄 소개",
-                placeholder = "한 줄 소개 입력",
+                onTextChanged = viewModel::updateIntroduce,
+                placeholder = stringResource(id = R.string.introduce_placeholder),
                 height = 130
             )
+            Spacer(modifier = Modifier.height(20.dp))
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogBottomButton(
                 content = "다음",
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 enabled = viewModel.name != "" && viewModel.introduce != "" && viewModel.uri != null,
                 onClick = {
                     navigateToIntermediatorInfo()

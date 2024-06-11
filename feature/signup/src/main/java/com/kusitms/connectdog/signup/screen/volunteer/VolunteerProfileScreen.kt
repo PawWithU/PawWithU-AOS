@@ -31,6 +31,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButt
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextFieldWithButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.designsystem.theme.Gray5
 import com.kusitms.connectdog.core.designsystem.theme.Orange_40
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.core.designsystem.theme.Red1
@@ -123,6 +124,7 @@ fun VolunteerProfileScreen(
                     viewModel.updateNickname(it)
                     viewModel.isAvailableNickname()
                 },
+                borderColor = if (isDuplicatedNickname == false) Red1 else if (isDuplicatedNickname == true) PetOrange else Gray5,
                 padding = 5,
                 isError = (isDuplicatedNickname == false) || (isAvailableNickname ?: false)
             )

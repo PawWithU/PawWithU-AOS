@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,12 +23,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogErrorCard
@@ -49,8 +52,8 @@ internal fun NormalLoginScreen(
     onNavigateToSignUp: (UserType) -> Unit,
     onNavigateToVolunteerHome: () -> Unit,
     onNavigateToIntermediatorHome: () -> Unit,
-    onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
@@ -103,8 +106,8 @@ internal fun NormalLoginScreen(
 private fun Content(
     viewModel: LoginViewModel,
     onNavigateToSignUp: (UserType) -> Unit,
-    onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit,
     userType: UserType,
     isLoginSuccessful: Boolean?
 ) {
@@ -151,27 +154,37 @@ private fun Content(
                 onNavigateToPasswordSearch = onNavigateToPasswordSearch,
                 userType = userType
             )
-            Spacer(modifier = Modifier.height(40.dp))
-            if (isLoginSuccessful?.let { !it } ?: run { false }) {
-                ConnectDogErrorCard(R.string.login_error)
-            }
         }
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.ic_main_large),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-        )
+        Spacer(modifier = Modifier.height(30.dp))
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            if (isLoginSuccessful?.let { !it } ?: run { false }) {
+                ConnectDogErrorCard(
+                    modifier = Modifier
+                        .zIndex(1f)
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 20.dp),
+                    errorMessage = R.string.login_error
+                )
+            }
+            Image(
+                painter = painterResource(id = R.drawable.ic_main_large),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .aspectRatio(1f)
+            )
+        }
     }
 }
 
 @Composable
 fun AccountFind(
     onNavigateToSignup: (UserType) -> Unit,
-    onNavigateToEmailSearch: () -> Unit,
-    onNavigateToPasswordSearch: () -> Unit,
+    onNavigateToEmailSearch: (UserType) -> Unit,
+    onNavigateToPasswordSearch: (UserType) -> Unit,
     userType: UserType
 ) {
     Row(
@@ -192,7 +205,7 @@ fun AccountFind(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            modifier = Modifier.clickable { onNavigateToEmailSearch() },
+            modifier = Modifier.clickable { onNavigateToEmailSearch(UserType.NORMAL_VOLUNTEER) },
             text = "이메일 찾기",
             fontSize = 12.sp,
             color = Gray2
@@ -205,7 +218,7 @@ fun AccountFind(
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            modifier = Modifier.clickable { onNavigateToPasswordSearch() },
+            modifier = Modifier.clickable { onNavigateToPasswordSearch(UserType.NORMAL_VOLUNTEER) },
             text = "비밀번호 찾기",
             fontSize = 12.sp,
             color = Gray2

@@ -77,7 +77,9 @@ internal fun InterManagementRoute(
 
     val pendingDataState by viewModel.pendingDataState.collectAsState()
     UiState(dataUiState = pendingDataState) {
+        viewModel.refreshRecruitingUiState()
         viewModel.refreshWaitingUiState()
+        viewModel.refreshInProgressUiState()
     }
 
     val progressDataState by viewModel.progressDataState.collectAsState()

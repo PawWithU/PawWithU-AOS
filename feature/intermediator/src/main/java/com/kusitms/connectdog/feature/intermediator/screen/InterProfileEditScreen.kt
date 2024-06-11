@@ -29,6 +29,7 @@ import com.kusitms.connectdog.feature.intermediator.R
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun InterProfileEditScreen(
+    profileImage: String,
     onBackClick: () -> Unit,
     imeHeight: Int
 ) {
@@ -43,6 +44,7 @@ fun InterProfileEditScreen(
         }
     ) {
         Content(
+            profileImage = profileImage,
             imeHeight = imeHeight
         )
     }
@@ -50,6 +52,7 @@ fun InterProfileEditScreen(
 
 @Composable
 private fun Content(
+    profileImage: String,
     imeHeight: Int
 ) {
     val scrollState = rememberScrollState()
@@ -62,7 +65,7 @@ private fun Content(
     ) {
         Spacer(modifier = Modifier.height(80.dp))
         NetworkImage(
-            imageUrl = "",
+            imageUrl = profileImage,
             modifier = Modifier.size(80.dp),
             placeholder = painterResource(id = R.drawable.ic_default_intermediator)
         )
