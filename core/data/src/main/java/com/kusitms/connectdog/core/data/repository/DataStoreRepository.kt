@@ -41,6 +41,12 @@ class DataStoreRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteAccessToken() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(PreferenceKeys.accessToken)
+        }
+    }
+
     suspend fun saveRefreshToken(refreshToken: String) {
         context.dataStore.edit { preferences ->
             preferences[PreferenceKeys.refreshToken] = refreshToken
