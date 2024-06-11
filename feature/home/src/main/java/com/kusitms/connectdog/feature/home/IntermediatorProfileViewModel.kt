@@ -41,7 +41,7 @@ class IntermediatorProfileViewModel @Inject constructor(
 
     fun initIntermediatorReview(intermediaryId: Long) {
         viewModelScope.launch {
-            val response = detailRepository.getIntermediatorReview(0, 20, intermediaryId)
+            val response = detailRepository.getIntermediatorReview(0, 100, intermediaryId)
             _review.postValue(response)
         }
     }
