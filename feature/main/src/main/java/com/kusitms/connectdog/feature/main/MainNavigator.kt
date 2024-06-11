@@ -17,6 +17,7 @@ import com.kusitms.connectdog.feature.home.navigation.navigateComplete
 import com.kusitms.connectdog.feature.home.navigation.navigateDetail
 import com.kusitms.connectdog.feature.home.navigation.navigateFilter
 import com.kusitms.connectdog.feature.home.navigation.navigateFilterSearch
+import com.kusitms.connectdog.feature.home.navigation.navigateGuide
 import com.kusitms.connectdog.feature.home.navigation.navigateHome
 import com.kusitms.connectdog.feature.home.navigation.navigateIntermediatorProfile
 import com.kusitms.connectdog.feature.home.navigation.navigateReview
@@ -28,6 +29,7 @@ import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterMana
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateInterProfile
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToAnnouncementManagement
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateAnnouncementScreen
+import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateComplete
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToCreateDog
 import com.kusitms.connectdog.feature.intermediator.navigation.navigateToInterProfileEdit
 import com.kusitms.connectdog.feature.login.LoginRoute
@@ -35,7 +37,7 @@ import com.kusitms.connectdog.feature.login.navigateEmailSearch
 import com.kusitms.connectdog.feature.login.navigateEmailSearchComplete
 import com.kusitms.connectdog.feature.login.navigateNormalLogin
 import com.kusitms.connectdog.feature.login.navigatePasswordSearch
-import com.kusitms.connectdog.feature.login.navigatePasswordSearchComplete
+import com.kusitms.connectdog.feature.login.navigatePasswordSearchAuth
 import com.kusitms.connectdog.feature.login.navigateToLoginRoute
 import com.kusitms.connectdog.feature.management.navigation.navigateCheckReview
 import com.kusitms.connectdog.feature.management.navigation.navigateCreateReview
@@ -47,6 +49,7 @@ import com.kusitms.connectdog.feature.mypage.navigation.navigateEditProfileImage
 import com.kusitms.connectdog.feature.mypage.navigation.navigateManageAccount
 import com.kusitms.connectdog.feature.mypage.navigation.navigateMypage
 import com.kusitms.connectdog.feature.mypage.navigation.navigateNotification
+import com.kusitms.connectdog.feature.mypage.navigation.navigatePasswordChange
 import com.kusitms.connectdog.feature.mypage.navigation.navigateSetting
 import com.kusitms.connectdog.signup.navigation.navigateCompleteSignUp
 import com.kusitms.connectdog.signup.navigation.navigateIntermediatorInformation
@@ -98,11 +101,11 @@ internal class MainNavigator(
     // login navigator
     fun navigateNormalLogin(userType: UserType) = navController.navigateNormalLogin(userType)
     fun navigateSignup(userType: UserType) = navController.navigateSignup(userType)
-    fun navigateEmailSearch() = navController.navigateEmailSearch()
-    fun navigatePasswordSearch() = navController.navigatePasswordSearch()
-    fun navigateEmailSearchComplete() = navController.navigateEmailSearchComplete()
-    fun navigatePasswordSearchComplete() = navController.navigatePasswordSearchComplete()
+    fun navigateEmailSearch(userType: UserType) = navController.navigateEmailSearch(userType)
+    fun navigateEmailSearchComplete(email: String) = navController.navigateEmailSearchComplete(email)
+    fun navigatePasswordSearchAuth(userType: UserType) = navController.navigatePasswordSearchAuth(userType)
     fun onLogoutClick() = navController.navigateToLoginRoute()
+    fun navigatePasswordSearch(userType: UserType) = navController.navigatePasswordSearch(userType)
 
     // signup navigator
     fun navigateVolunteerProfile(userType: UserType) = navController.navigateToVolunteerProfile(userType)
@@ -125,24 +128,27 @@ internal class MainNavigator(
     fun navigateApply(postId: Long) = navController.navigateApply(postId)
     fun navigateComplete() = navController.navigateComplete()
     fun navigateIntermediatorProfile(intermediaryId: Long) = navController.navigateIntermediatorProfile(intermediaryId)
-    fun navigateEditProfile() = navController.navigateEditProfile()
-    fun navigateManageAccount() = navController.navigateManageAccount()
+    fun navigateEditProfile(profileImageId: Int, nickName: String) = navController.navigateEditProfile(profileImageId, nickName)
+    fun navigateManageAccount(userType: UserType) = navController.navigateManageAccount(userType)
     fun navigateNotification() = navController.navigateNotification()
-    fun navigateSetting() = navController.navigateSetting()
+    fun navigateSetting(userType: UserType) = navController.navigateSetting(userType)
     fun navigateBadge() = navController.navigateBadge()
     fun navigateBookmark() = navController.navigateBookmark()
     fun navigateEditProfileImage() = navController.navigateEditProfileImage()
     fun navigateCreateReview(application: String) = navController.navigateCreateReview(application)
     fun navigateCheckReview(reviewId: Long, userType: UserType) = navController.navigateCheckReview(reviewId, userType)
+    fun navigateToGuide() = navController.navigateGuide()
+    fun navigatePasswordChange(userType: UserType) = navController.navigatePasswordChange(userType)
 
     // intermediator
     fun navigateIntermediatorHome() = navController.navigateInterHome()
     fun navigateInterManagement(index: Int) = navController.navigateInterManagement(index)
     fun navigateInterProfile() = navController.navigateInterProfile()
     fun navigateCreateAnnouncement() = navController.navigateToCreateAnnouncementScreen()
-    fun navigateToInterProfileEdit() = navController.navigateToInterProfileEdit()
+    fun navigateToInterProfileEdit(profileImage: String) = navController.navigateToInterProfileEdit(profileImage)
     fun navigateToCreateDog() = navController.navigateToCreateDog()
     fun navigateToAnnouncementManagement(postId: Long) = navController.navigateToAnnouncementManagement(postId)
+    fun navigateToCompleteCreate() = navController.navigateToCreateComplete()
 
     fun popBackStackIfNotHome() {
         if (!isSameCurrentDestination(HomeRoute.route)) {
