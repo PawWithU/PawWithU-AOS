@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -44,15 +45,16 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.PetOrange
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.core.util.getProfileImageId
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.MyPageViewModel
 
 @Composable
 internal fun MypageRoute(
-    onEditProfileClick: () -> Unit,
+    onEditProfileClick: (Int, String) -> Unit,
     onNotificationClick: () -> Unit,
-    onSettingClick: () -> Unit,
+    onSettingClick: (UserType) -> Unit,
     onBadgeClick: () -> Unit,
     onBookmarkClick: () -> Unit,
     onNavigateToHome: (String) -> Unit,
@@ -73,7 +75,7 @@ internal fun MypageRoute(
 
 @Composable
 private fun TopBar(
-    onManageAccountClick: () -> Unit,
+    onManageAccountClick: (UserType) -> Unit,
     onNotificationClick: () -> Unit
 ) {
     ConnectDogTopAppBar(
@@ -92,7 +94,7 @@ private fun TopBar(
                 Icon(
                     imageVector = Icons.Outlined.Settings,
                     contentDescription = "Navigate to Search",
-                    modifier = Modifier.clickable { onManageAccountClick() }
+                    modifier = Modifier.clickable { onManageAccountClick(UserType.NORMAL_VOLUNTEER) }
                 )
             }
         }
@@ -101,9 +103,9 @@ private fun TopBar(
 
 @Composable
 private fun MypageScreen(
-    onEditProfileClick: () -> Unit,
+    onEditProfileClick: (Int, String) -> Unit,
     onNotificationClick: () -> Unit,
-    onSettingClick: () -> Unit,
+    onSettingClick: (UserType) -> Unit,
     onBadgeClick: () -> Unit,
     onBookmarkClick: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
@@ -114,6 +116,9 @@ private fun MypageScreen(
         viewModel.fetchBookmark()
     }
 
+    val bookmarkCount by viewModel.bookmark.observeAsState()
+    val badgeList by viewModel.badge.observeAsState()
+
     Column {
         TopBar(onSettingClick, onNotificationClick)
         Spacer(modifier = Modifier.height(20.dp))
@@ -121,7 +126,7 @@ private fun MypageScreen(
         Spacer(modifier = Modifier.height(20.dp))
         InformationBox()
         Spacer(modifier = Modifier.height(40.dp))
-        BannerGuideline({})
+        BannerGuideline()
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = "나의 이동봉사",
@@ -131,23 +136,23 @@ private fun MypageScreen(
         Spacer(modifier = Modifier.height(20.dp))
         MypageTab(
             painter = R.drawable.ic_bookmark,
-            title = "저장한 이동봉사 공고",
+            title = stringResource(id = R.string.bookmark),
             onClick = onBookmarkClick,
-            count = viewModel.bookmark.value?.size
+            count = bookmarkCount?.size ?: 0
         )
         Spacer(modifier = Modifier.height(20.dp))
         MypageTab(
             painter = R.drawable.ic_badge,
-            title = "내 활동 배지",
+            title = stringResource(id = R.string.badge),
             onClick = onBadgeClick,
-            count = viewModel.badge.value?.size
+            count = (badgeList?.count { it.image != null }) ?: 0
         )
     }
 }
 
 @Composable
 private fun MyInformation(
-    onEditProfileClick: () -> Unit,
+    onEditProfileClick: (Int, String) -> Unit,
     viewModel: MyPageViewModel
 ) {
     val userInfo by viewModel.myInfo.observeAsState(null)
@@ -178,7 +183,7 @@ private fun MyInformation(
                 height = 26,
                 text = "프로필 수정",
                 padding = 5,
-                onClick = { onEditProfileClick() }
+                onClick = { onEditProfileClick(userInfo!!.profileImageNum, userInfo!!.nickname) }
             )
         }
     }
@@ -196,7 +201,8 @@ private fun MypageTab(
             .fillMaxWidth()
             .height(32.dp)
             .padding(horizontal = 20.dp)
-            .clickable { onClick() }
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = painter),

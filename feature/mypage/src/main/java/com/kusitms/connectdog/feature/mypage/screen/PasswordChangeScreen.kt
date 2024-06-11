@@ -30,6 +30,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
+import com.kusitms.connectdog.core.util.UserType
 import com.kusitms.connectdog.feature.mypage.R
 import com.kusitms.connectdog.feature.mypage.viewmodel.PasswordChangeViewModel
 
@@ -37,6 +38,7 @@ import com.kusitms.connectdog.feature.mypage.viewmodel.PasswordChangeViewModel
 @Composable
 internal fun PasswordChangeScreen(
     onBackClick: () -> Unit,
+    userType: UserType
 ) {
     Scaffold(
         topBar = {
@@ -47,7 +49,10 @@ internal fun PasswordChangeScreen(
             )
         }
     ) {
-        Content(onBackClick = onBackClick)
+        Content(
+            onBackClick = onBackClick,
+            userType = userType
+        )
     }
 }
 
@@ -55,6 +60,7 @@ internal fun PasswordChangeScreen(
 private fun Content(
     viewModel: PasswordChangeViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
+    userType: UserType
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -65,11 +71,11 @@ private fun Content(
     val isValidConfirmPassword by viewModel.isValidConfirmPassword.collectAsState()
 
     LaunchedEffect(key1 = isRightPassword) {
-        if(isRightPassword == true) {
-            viewModel.changePassword()
+        if (isRightPassword == true) {
+            viewModel.changePassword(userType)
             onBackClick()
             Toast.makeText(context, "비밀번호를 변경하였습니다", Toast.LENGTH_SHORT).show()
-        } else if(isRightPassword == false) {
+        } else if (isRightPassword == false) {
             Toast.makeText(context, "기존 비밀번호를 올바르게 입력해주세요", Toast.LENGTH_SHORT).show()
         }
     }
@@ -136,7 +142,7 @@ private fun Content(
             modifier = Modifier.padding(vertical = 24.dp),
             content = "완료",
             enabled = isValidPassword == false && isValidConfirmPassword == false && viewModel.previousPassword.isNotEmpty(),
-            onClick = { viewModel.checkPreviousPassword() },
+            onClick = { viewModel.checkPreviousPassword(userType) }
         )
     }
 }
