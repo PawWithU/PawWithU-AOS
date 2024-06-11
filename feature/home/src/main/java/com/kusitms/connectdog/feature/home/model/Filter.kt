@@ -5,8 +5,8 @@ import java.time.LocalDate
 data class Filter(
     var departure: String = "",
     var arrival: String = "",
-    var startDate: LocalDate? = null, // 2023-11-08
-    var endDate: LocalDate? = null, // 2023-11-08
+    var startDate: LocalDate? = null,
+    var endDate: LocalDate? = null,
     var detail: Detail = Detail()
 ) {
     fun isNotEmpty(): Boolean {
@@ -28,9 +28,9 @@ data class Detail(
 
         fun toDisplayName(): String {
             return when (this) {
-                BIG -> "대형견"
-                MIDDLE -> "중형견"
-                SMALL -> "소형견"
+                BIG -> "대형"
+                MIDDLE -> "중형"
+                SMALL -> "소형"
             }
         }
     }

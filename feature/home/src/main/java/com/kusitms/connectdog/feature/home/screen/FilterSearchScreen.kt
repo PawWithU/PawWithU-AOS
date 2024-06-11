@@ -25,8 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -58,6 +58,7 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogExpandableCa
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.TopAppBarNavigationType
+import com.kusitms.connectdog.core.designsystem.theme.Gray1
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
@@ -290,7 +291,6 @@ private fun ScheduleCard(
                     startDate = startDate,
                     endDate = endDate
                 ) { start, end ->
-                    Log.d("FilterSearch", "start = $start - end = $end")
                     startDate = start
                     endDate = end
                 }
@@ -309,7 +309,7 @@ private fun DetailCard(
 
     var dogSize = detail.dogSize
     var hasKennel = detail.hasKennel
-    var organization = detail.organization
+    var organization by remember { mutableStateOf(detail.organization) }
     val detailContent = detailContentDisplay(detail.dogSize, detail.hasKennel, detail.organization)
 
     Column {
@@ -357,6 +357,7 @@ private fun DetailCard(
                         DetailContent(titleRes = R.string.filter_organization) {
                             SearchOrganization(organizationText = organization) {
                                 organization = it
+                                Log.d("orgniaz", organization.toString())
                             }
                         }
                     }
@@ -389,7 +390,7 @@ private fun DefaultCardContent(
             text = if (content.isNullOrEmpty()) stringResource(id = R.string.filter_choose) else content,
             style = MaterialTheme.typography.titleMedium,
             fontSize = 14.sp,
-            color = Gray3,
+            color = if (content.isNullOrEmpty()) Gray3 else Gray1,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             textAlign = TextAlign.End
@@ -510,11 +511,11 @@ private fun SelectLocation(
         Text(
             text = if (place.isNullOrEmpty()) stringResource(id = placeholderRes) else place,
             style = MaterialTheme.typography.bodyLarge,
-            color = Gray4,
+            color = if (place.isNullOrEmpty()) Gray4 else Gray1,
             modifier = Modifier
                 .padding(vertical = 8.dp)
         )
-        Divider(modifier = Modifier.fillMaxWidth())
+        HorizontalDivider(modifier = Modifier.fillMaxWidth())
     }
 }
 
@@ -547,7 +548,7 @@ private fun DialogBottomButton(
             modifier = Modifier.size(width = 104.dp, height = 37.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.filter_next),
+                text = stringResource(id = R.string.filter_apply),
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onPrimary
