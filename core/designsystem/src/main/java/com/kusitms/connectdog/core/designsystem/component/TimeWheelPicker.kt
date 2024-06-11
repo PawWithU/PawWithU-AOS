@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-enum class DayTime { AM, PM }
+enum class DayTime(val time: String) { AM("오전"), PM("오후") }
 
 const val loopingRealCount = 1000000000
 const val halfLoopingRealCount = loopingRealCount / 2
@@ -87,7 +87,7 @@ fun TimeWheelPicker(
             )
             LoopingNumberPicker(
                 modifier = Modifier.weight(1F),
-                range = 0..59,
+                range = 0..59 step 5,
                 currentNumber = minute,
                 itemHeight = itemHeight,
                 onCurrentNumberChange = {
@@ -125,10 +125,7 @@ private fun DayTimePicker(
         }
     ) { index ->
         val dayTime = DayTime.values()[index % 2]
-        val text = when (dayTime) {
-            DayTime.AM -> "오전"
-            DayTime.PM -> "오후"
-        }
+        val text = dayTime.time
         Box(
             modifier = Modifier
                 .height(itemHeight),
@@ -160,7 +157,7 @@ private fun DayTimePicker(
 @Composable
 private fun LoopingNumberPicker(
     modifier: Modifier = Modifier,
-    range: IntRange,
+    range: IntProgression,
     currentNumber: Int,
     itemHeight: Dp,
     onCurrentNumberChange: (Int) -> Unit
