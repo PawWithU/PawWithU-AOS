@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogCardButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogOutlinedButton
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
 import com.kusitms.connectdog.feature.home.R
 import com.kusitms.connectdog.feature.home.model.Detail
 
@@ -95,7 +96,7 @@ private fun DogSizeButton(
                 text = stringResource(id = textRes),
                 style = MaterialTheme.typography.titleSmall,
                 fontSize = 12.sp,
-                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                color = if (isSelected) PetOrange else MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -146,7 +147,7 @@ private fun KennelButton(
             text = stringResource(id = textRes),
             style = MaterialTheme.typography.titleSmall,
             fontSize = 12.sp,
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+            color = if (isSelected) PetOrange else MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -161,7 +162,10 @@ internal fun SearchOrganization(
     ConnectDogIconTextField(
         modifier = modifier.fillMaxWidth(),
         text = text,
-        onTextChanged = onTextChanged,
+        onTextChanged = {
+            onTextChanged(it)
+            onSearched(text)
+        },
         iconRes = R.drawable.ic_search,
         placeholderRes = R.string.filter_organization_placeholder,
         onImeAction = {

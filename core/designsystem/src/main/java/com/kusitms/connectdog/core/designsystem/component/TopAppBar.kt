@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.kusitms.connectdog.core.designsystem.R
 import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Red1
+import com.kusitms.connectdog.core.util.UserType
 
 @Composable
 fun ConnectDogTopAppBar(
@@ -126,7 +127,7 @@ fun ConnectDogTopAppBar(
 @Composable
 fun ConnectDogIntermediatorTopAppBar(
     onNotificationClick: () -> Unit,
-    onSettingClick: () -> Unit
+    onSettingClick: (UserType) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -142,7 +143,7 @@ fun ConnectDogIntermediatorTopAppBar(
                 contentDescription = "Navigate to Search"
             )
         }
-        IconButton(onClick = onSettingClick) {
+        IconButton(onClick = { onSettingClick(UserType.INTERMEDIATOR) }) {
             Icon(
                 imageVector = Icons.Outlined.Settings,
                 tint = Color.White,

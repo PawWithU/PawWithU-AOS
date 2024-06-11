@@ -123,6 +123,7 @@ fun ConnectDogOutlinedButton(
     height: Int,
     text: String,
     padding: Int,
+    verticalPadding: Int = 4,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     borderColor: Color = MaterialTheme.colorScheme.primary,
@@ -135,8 +136,8 @@ fun ConnectDogOutlinedButton(
             .height(height.dp),
         border = BorderStroke(1.dp, borderColor),
         contentPadding = PaddingValues(
-            top = 4.dp,
-            bottom = 4.dp,
+            top = verticalPadding.dp,
+            bottom = verticalPadding.dp,
             start = padding.dp,
             end = padding.dp
         )

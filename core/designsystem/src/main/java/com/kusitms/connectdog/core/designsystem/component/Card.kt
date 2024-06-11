@@ -128,6 +128,7 @@ fun ConnectDogCardButton(
 
 @Composable
 fun ConnectDogErrorCard(
+    modifier: Modifier = Modifier,
     @StringRes errorMessage: Int
 ) {
     Card(
@@ -136,7 +137,7 @@ fun ConnectDogErrorCard(
             containerColor = Red2
         ),
         modifier =
-        Modifier
+        modifier
             .fillMaxWidth()
             .height(40.dp)
     ) {
