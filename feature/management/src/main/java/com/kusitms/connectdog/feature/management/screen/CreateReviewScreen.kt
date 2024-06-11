@@ -129,7 +129,7 @@ private fun Content(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 32.dp),
             onClick = { isConfirmDialogVisible = true },
             content = stringResource(id = R.string.create_review),
-            enabled = viewModel.review.length >= 10
+            enabled = viewModel.review.length >= 20 && viewModel.uriList.value.size in 1..5
         )
     }
 
@@ -190,7 +190,7 @@ private fun ReviewContent(
         Row {
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "최소 글자수 10",
+                text = "최소 글자수 20",
                 fontSize = 10.sp,
                 color = Gray4
             )
