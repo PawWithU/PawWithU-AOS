@@ -38,8 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kusitms.connectdog.core.designsystem.component.ConnectDogBottomButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogDialogButton
-import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTopAppBar
 import com.kusitms.connectdog.core.designsystem.component.DayTime
@@ -93,7 +93,8 @@ fun CreateApplicationInfoScreen(
         bottomBar = {
             BottomBar(
                 navigateToCreateDog = navigateToCreateDog,
-                imeHeight = imeHeight
+                imeHeight = imeHeight,
+                viewModel = viewModel
             )
         }
     ) {
@@ -174,15 +175,17 @@ private fun Content(
                 updateIsAdjustable = viewModel::updateIsAdjustableSchedule
             )
             Spacer(modifier = Modifier.height(40.dp))
-            Time(
-                onClick = { isTimeSheetOpen = true },
-                hour = hour.value,
-                minute = minute.value,
-                dayTime = dayTime.value,
-                isAdjustable = isAdjustableTime.value,
-                updateIsAdjustable = viewModel::updateIsAdjustableTime
-            )
-            Spacer(modifier = Modifier.height(40.dp))
+            if ((startDate.value == endDate.value) && (startDate.value != null && endDate.value != null)) {
+                Time(
+                    onClick = { isTimeSheetOpen = true },
+                    hour = hour.value,
+                    minute = minute.value,
+                    dayTime = dayTime.value,
+                    isAdjustable = isAdjustableTime.value,
+                    updateIsAdjustable = viewModel::updateIsAdjustableTime
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+            }
             Kennel(
                 isKennel = isKennel.value,
                 updateHasKennel = viewModel::updateIsKennel
@@ -199,7 +202,7 @@ private fun Content(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                text = stringResource(id = R.string.create_announcement_subtitle_4),
+                text = stringResource(id = R.string.create_announcement_subtitle_5),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
@@ -212,7 +215,6 @@ private fun Content(
                 height = 244,
                 text = viewModel.content,
                 onTextChanged = viewModel::updateSignificant,
-                label = "느꼈던 감정, 후기를 작성해주세요",
                 placeholder = "[이동봉사 목적, 이동 동물의 사연, 이동봉사 시간 및 장소 상세, 이동봉사 추가 안내사항 등]을 작성해주세요."
             )
         }
@@ -245,8 +247,8 @@ private fun Content(
 
 @Composable
 private fun Location(
-    destination: String,
-    departure: String,
+    destination: String?,
+    departure: String?,
     updateDeparture: (String) -> Unit,
     updateDestination: (String) -> Unit
 ) {
@@ -337,13 +339,13 @@ private fun Time(
         ConnectDogDialogButton(
             onClick = { if (!isAdjustable) onClick() },
             text = if (hour != null && minute != null && dayTime != null && !isAdjustable) {
-                "$dayTime $hour:$minute"
+                "${dayTime.time} ${String.format("%02d", hour)}:${String.format("%02d", minute)}"
             } else if (isAdjustable) {
                 "시간 미정"
             } else {
                 "시간 선택"
             },
-            textColor = if (hour != null && minute != null && dayTime != null) {
+            textColor = if ((hour != null && minute != null && dayTime != null) || isAdjustable) {
                 Gray1
             } else {
                 Gray4
@@ -415,9 +417,10 @@ private fun AdjustableButton(
 @Composable
 private fun BottomBar(
     imeHeight: Int,
+    viewModel: CreateApplicationViewModel,
     navigateToCreateDog: () -> Unit
 ) {
-    ConnectDogNormalButton(
+    ConnectDogBottomButton(
         modifier = Modifier.padding(
             top = 24.dp,
             bottom = (24 + imeHeight).dp,
@@ -425,6 +428,13 @@ private fun BottomBar(
             end = 20.dp
         ),
         onClick = navigateToCreateDog,
-        content = "다음"
+        content = "다음",
+        enabled = viewModel.isKennel.value != null &&
+            viewModel.departure.value != null &&
+            viewModel.destination.value != null &&
+            viewModel.startDate.value != null &&
+            viewModel.endDate.value != null &&
+            (if (viewModel.startDate.value == viewModel.endDate.value) (viewModel.isAdjustableTime.value || (viewModel.dayTime.value != null && viewModel.hour.value != null && viewModel.minute.value != null)) else true) &&
+            viewModel.content != ""
     )
 }

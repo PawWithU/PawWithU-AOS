@@ -5,9 +5,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,6 +42,7 @@ fun IntermediatorInformationScreen(
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
+    val scrollState = rememberScrollState()
     val context = LocalContext.current
 
     Scaffold(
@@ -52,12 +56,14 @@ fun IntermediatorInformationScreen(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(horizontal = 20.dp)
                 .clickable(
                     onClick = { focusManager.clearFocus() },
                     indication = null,
                     interactionSource = interactionSource
                 )
+                .verticalScroll(scrollState)
         ) {
             Spacer(modifier = Modifier.height(80.dp))
             Text(
@@ -77,9 +83,10 @@ fun IntermediatorInformationScreen(
                 text = viewModel.contact,
                 onTextChanged = viewModel::updateContact,
                 label = "문의 받을 연락처",
-                placeholder = "문의 받을 채널과 연락처를 입력해주세요",
+                placeholder = "문의 받을 채널과 연락처를 입력해주세요.",
                 height = 144
             )
+            Spacer(modifier = Modifier.height(20.dp))
             Spacer(modifier = Modifier.weight(1f))
             ConnectDogNormalButton(
                 content = "다음",
@@ -89,7 +96,9 @@ fun IntermediatorInformationScreen(
                     signUpViewModel.updateContact(viewModel.contact)
                     signUpViewModel.postIntermediatorSignUp(context)
                 },
-                modifier = Modifier.fillMaxWidth().height(56.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
             )
             Spacer(modifier = Modifier.height((imeHeight + 32).dp))
         }
