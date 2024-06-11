@@ -72,7 +72,7 @@ fun ApplyScreen(
             )
         }
     ) {
-        Content(viewModel, postId, imeHeight, onClick)
+        Content(viewModel, postId, imeHeight, onClick, onBackClick)
     }
 }
 
@@ -81,7 +81,8 @@ private fun Content(
     viewModel: ApplyViewModel,
     postId: Long,
     imeHeight: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -160,6 +161,7 @@ private fun Content(
             content = "신청하기",
             onClick = {
                 viewModel.postApplyVolunteer(postId)
+                onBackClick()
                 onClick()
             }
         )
