@@ -44,13 +44,16 @@ fun CheckReviewScreen(
         val reviewUiState by viewModel.reviewUiState.collectAsStateWithLifecycle()
 
         when (reviewUiState) {
-            is ReviewUiState.Loading -> {}
+            is ReviewUiState.Loading -> Loading()
             is ReviewUiState.Reviews -> {
                 Column(
-                    modifier = Modifier.fillMaxSize().padding(top = 68.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 48.dp)
                 ) {
                     ReviewItemContent(
                         review = (reviewUiState as ReviewUiState.Reviews).review,
+                        userType = userType,
                         onInterProfileClick = onInterProfileClick
                     )
                 }
