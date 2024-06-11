@@ -36,9 +36,9 @@ data class Detail(
 
         fun toDisplayName(): String {
             return when (this) {
-                BIG -> "대형견"
-                MIDDLE -> "중형견"
-                SMALL -> "소형견"
+                BIG -> "대형"
+                MIDDLE -> "중형"
+                SMALL -> "소형"
             }
         }
     }
