@@ -105,7 +105,8 @@ fun ConnectDogNormalButton(
     fontSize: Int = 16,
     modifier: Modifier = Modifier
         .fillMaxWidth()
-        .height(56.dp)
+        .height(56.dp),
+    enabled: Boolean = true,
 ) {
     ConnectDogBottomButton(
         onClick = onClick,
@@ -113,7 +114,8 @@ fun ConnectDogNormalButton(
         enabledColor = color,
         modifier = modifier,
         textColor = textColor,
-        fontSize = fontSize
+        fontSize = fontSize,
+        enabled = enabled
     )
 }
 

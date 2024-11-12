@@ -54,6 +54,10 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.android)
 
+    implementation(libs.orbit.core)
+    implementation(libs.orbit.compose)
+    implementation(libs.orbit.viewmodel)
+
     implementation(libs.androidx.compose.navigation)
     implementation(libs.hilt.navigation.compose)
 
