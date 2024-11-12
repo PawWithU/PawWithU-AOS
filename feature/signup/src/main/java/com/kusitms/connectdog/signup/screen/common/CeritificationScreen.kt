@@ -117,7 +117,7 @@ private fun Content(
             is CertificationSideEffect.NavigateToProfile -> {
                 signUpViewModel.updateName(uiState.name)
                 signUpViewModel.updatePhoneNumber(uiState.phoneNumber)
-                when(userType) {
+                when (userType) {
                     UserType.SOCIAL_VOLUNTEER -> onNavigateToVolunteerProfile(userType)
                     else -> onNavigateToRegisterEmail(userType)
                 }
@@ -156,7 +156,7 @@ private fun Content(
             onTextChanged = viewModel::onPhoneNumberChanged,
             label = stringResource(id = R.string.phone_number),
             placeholder = "'-'빼고 입력",
-            keyboardType = KeyboardType.Number,
+            keyboardType = KeyboardType.Number
         )
 
         if (uiState.isSendCertificationNumber) {
@@ -166,7 +166,7 @@ private fun Content(
                 textFieldLabel = "인증번호",
                 placeholder = "숫자 6자리",
                 keyboardType = KeyboardType.Number,
-                onTextChanged = viewModel::onChangeCertificationNumber,
+                onTextChanged = viewModel::onChangeCertificationNumber
             )
             Spacer(modifier = Modifier.height(28.dp))
             Row(
@@ -180,7 +180,7 @@ private fun Content(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    modifier = Modifier.clickable {  },
+                    modifier = Modifier.clickable { },
                     text = "재발송",
                     fontSize = 12.sp,
                     color = Gray8,
@@ -191,7 +191,7 @@ private fun Content(
         Spacer(modifier = Modifier.weight(1f))
         ConnectDogNormalButton(
             content = uiState.bottomButtonText,
-            enabled = if(!uiState.isSendCertificationNumber) uiState.enableNext else uiState.enableCertification,
+            enabled = if (!uiState.isSendCertificationNumber) uiState.enableNext else uiState.enableCertification,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),

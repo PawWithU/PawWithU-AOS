@@ -106,7 +106,7 @@ fun ConnectDogNormalButton(
     modifier: Modifier = Modifier
         .fillMaxWidth()
         .height(56.dp),
-    enabled: Boolean = true,
+    enabled: Boolean = true
 ) {
     ConnectDogBottomButton(
         onClick = onClick,

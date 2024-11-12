@@ -308,7 +308,7 @@ fun ConnectDogTextFieldWithTimer(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(end = 16.dp),
-            color = PetOrange,
+            color = PetOrange
         )
     }
 }

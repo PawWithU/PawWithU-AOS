@@ -10,7 +10,7 @@ data class CertificationUiState(
     val isCertified: Boolean,
     val enableNext: Boolean,
     val bottomButtonText: String,
-    val enableCertification: Boolean,
+    val enableCertification: Boolean
 ) {
     companion object {
         fun empty() = CertificationUiState(
@@ -27,5 +27,5 @@ data class CertificationUiState(
 }
 
 sealed class CertificationSideEffect {
-    object NavigateToProfile: CertificationSideEffect()
+    object NavigateToProfile : CertificationSideEffect()
 }

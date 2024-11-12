@@ -36,23 +36,32 @@ class CertificationViewModel @Inject constructor() : ContainerHost<Certification
         onSendMessageClick: (String) -> Unit,
         onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit
     ) {
-        if(!state.isSendCertificationNumber) sendCertificationNumber(onSendMessageClick)
-        else checkCertificationNumber(onVerifyCodeClick)
+        if (!state.isSendCertificationNumber) {
+            sendCertificationNumber(onSendMessageClick)
+        } else {
+            checkCertificationNumber(onVerifyCodeClick)
+        }
     }
 
     private fun enableNextButton() = intent {
-        if(state.phoneNumber.length == 11 && state.name.isNotEmpty()) reduce { state.copy(enableNext = true) }
-        else reduce { state.copy(enableNext = false) }
+        if (state.phoneNumber.length == 11 && state.name.isNotEmpty()) {
+            reduce { state.copy(enableNext = true) }
+        } else {
+            reduce { state.copy(enableNext = false) }
+        }
     }
 
     private fun enableCertificationButton() = intent {
-        if(state.certificationNumber.length == 6) reduce { state.copy(enableCertification = true) }
-        else reduce { state.copy(enableCertification = false) }
+        if (state.certificationNumber.length == 6) {
+            reduce { state.copy(enableCertification = true) }
+        } else {
+            reduce { state.copy(enableCertification = false) }
+        }
     }
 
     private fun checkCertificationNumber(onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit) {
         onVerifyCodeClick(state.certificationNumber) { isCertified ->
-            if(isCertified) intent { postSideEffect(CertificationSideEffect.NavigateToProfile) }
+            if (isCertified) intent { postSideEffect(CertificationSideEffect.NavigateToProfile) }
             intent { reduce { state.copy(isCertified = isCertified) } }
         }
     }

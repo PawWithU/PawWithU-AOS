@@ -23,7 +23,7 @@ fun SpeechBubble(
     text: String,
     fontSize: Int,
     fontColor: Color,
-    fontWeight: FontWeight,
+    fontWeight: FontWeight
 ) {
     Box {
         BubbleShape()

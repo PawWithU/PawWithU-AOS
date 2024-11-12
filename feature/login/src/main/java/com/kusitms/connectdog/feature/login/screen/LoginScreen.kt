@@ -2,12 +2,10 @@ package com.kusitms.connectdog.feature.login.screen
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,18 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,7 +45,6 @@ import com.kusitms.connectdog.core.designsystem.component.ConnectDogIconBottomBu
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogNormalButton
 import com.kusitms.connectdog.core.designsystem.component.ConnectDogTextField
 import com.kusitms.connectdog.core.designsystem.component.SpeechBubble
-import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray2
 import com.kusitms.connectdog.core.designsystem.theme.KAKAO
 import com.kusitms.connectdog.core.designsystem.theme.NAVER
@@ -154,10 +146,10 @@ private fun LoginContent(
                 .height(37.dp)
                 .fillMaxWidth(0.5f)
                 .padding(
-                    start = if(pagerState.currentPage == 0) 0.dp else 10.dp,
-                    end = if(pagerState.currentPage == 0) 10.dp else 0.dp
+                    start = if (pagerState.currentPage == 0) 0.dp else 10.dp,
+                    end = if (pagerState.currentPage == 0) 10.dp else 0.dp
                 )
-                .align(if(pagerState.currentPage == 0) Alignment.End else Alignment.Start)
+                .align(if (pagerState.currentPage == 0) Alignment.End else Alignment.Start)
         ) {
             SpeechBubble(
                 text = "이동봉사 공고 신청자를 모집한다면?",
