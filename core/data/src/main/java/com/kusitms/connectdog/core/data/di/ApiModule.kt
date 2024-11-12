@@ -31,7 +31,7 @@ private const val TAG = "API Module"
 @Module
 @InstallIn(SingletonComponent::class)
 internal object ApiModule {
-    private const val BASE_URL = "https://dev-api.connectdog.site"
+    private const val BASE_URL = "https://dev-api.pawwithu.site/"
 
     @Provides
     fun provideNetworkInterceptor(dataStoreRepository: DataStoreRepository): Interceptor = Interceptor { chain ->
