@@ -1,69 +1,76 @@
 package com.kusitms.connectdog.signup.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.kusitms.connectdog.core.data.api.model.AdditionalAuthBody
-import com.kusitms.connectdog.core.data.repository.ApplyRepository
+import com.kusitms.connectdog.signup.state.CertificationSideEffect
+import com.kusitms.connectdog.signup.state.CertificationUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.ContainerHost
+import org.orbitmvi.orbit.syntax.simple.intent
+import org.orbitmvi.orbit.syntax.simple.postSideEffect
+import org.orbitmvi.orbit.syntax.simple.reduce
+import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
 
 @HiltViewModel
-class CertificationViewModel @Inject constructor(
-    private val applyRepository: ApplyRepository
-) : ViewModel() {
-    private val _isCertified: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isCertified: StateFlow<Boolean> = _isCertified
+class CertificationViewModel @Inject constructor() : ContainerHost<CertificationUiState, CertificationSideEffect>, ViewModel() {
+    override val container = container<CertificationUiState, CertificationSideEffect>(CertificationUiState.empty())
+    private val state: CertificationUiState
+        get() = container.stateFlow.value
 
-    private val _isSendNumber: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isSendNumber: StateFlow<Boolean> = _isSendNumber
-
-    private val _name: MutableState<String> = mutableStateOf("")
-    val name: String
-        get() = _name.value
-
-    private val _phoneNumber: MutableState<String> = mutableStateOf("")
-    val phoneNumber: String
-        get() = _phoneNumber.value
-
-    private val _certificationNumber: MutableState<String> = mutableStateOf("")
-    val certificationNumber: String
-        get() = _certificationNumber.value
-
-    fun updateName(name: String) {
-        _name.value = name
+    fun onNameChanged(name: String) = intent {
+        reduce { state.copy(name = name) }
+        enableNextButton()
     }
 
-    fun updatePhoneNumber(phoneNumber: String) {
-        _phoneNumber.value = phoneNumber
+    fun onPhoneNumberChanged(phoneNumber: String) = intent {
+        if (phoneNumber.length <= 11) reduce { state.copy(phoneNumber = phoneNumber) }
+        enableNextButton()
     }
 
-    fun updateCertificationNumber(certificationNumber: String) {
-        _certificationNumber.value = certificationNumber
+    fun onChangeCertificationNumber(certificationNumber: String) = intent {
+        if (certificationNumber.length <= 6) reduce { state.copy(certificationNumber = certificationNumber) }
+        enableCertificationButton()
     }
 
-    fun updateIsCertified(isCertified: Boolean) {
-        _isCertified.value = isCertified
-    }
-
-    fun updateIsSendNumber(value: Boolean) {
-        _isSendNumber.value = value
-    }
-
-    fun postAdditionalAuth() {
-        val body = AdditionalAuthBody(name = _name.value, phone = _phoneNumber.value)
-        viewModelScope.launch {
-            try {
-                val response = applyRepository.postAdditionalAuth(body)
-                Log.d("testtts", response.toString())
-            } catch (e: Exception) {
-                Log.d("testttserror", e.message.toString())
-            }
+    fun onNextClick(
+        onSendMessageClick: (String) -> Unit,
+        onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit
+    ) {
+        if (!state.isSendCertificationNumber) {
+            sendCertificationNumber(onSendMessageClick)
+        } else {
+            checkCertificationNumber(onVerifyCodeClick)
         }
     }
+
+    private fun enableNextButton() = intent {
+        if (state.phoneNumber.length == 11 && state.name.isNotEmpty()) {
+            reduce { state.copy(enableNext = true) }
+        } else {
+            reduce { state.copy(enableNext = false) }
+        }
+    }
+
+    private fun enableCertificationButton() = intent {
+        if (state.certificationNumber.length == 6) {
+            reduce { state.copy(enableCertification = true) }
+        } else {
+            reduce { state.copy(enableCertification = false) }
+        }
+    }
+
+    private fun checkCertificationNumber(onVerifyCodeClick: (String, (Boolean) -> Unit) -> Unit) {
+        onVerifyCodeClick(state.certificationNumber) { isCertified ->
+            if (isCertified) intent { postSideEffect(CertificationSideEffect.NavigateToProfile) }
+            intent { reduce { state.copy(isCertified = isCertified) } }
+        }
+    }
+
+    private fun sendCertificationNumber(sendMessage: (String) -> Unit) {
+        sendMessage(state.phoneNumber)
+        intent { reduce { state.copy(isSendCertificationNumber = true) } }
+        updateBottomButtonText()
+    }
+
+    private fun updateBottomButtonText() = intent { reduce { state.copy(bottomButtonText = "인증 확인") } }
 }
