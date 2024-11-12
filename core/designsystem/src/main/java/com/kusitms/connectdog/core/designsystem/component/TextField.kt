@@ -17,10 +17,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.R
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,8 @@ import com.kusitms.connectdog.core.designsystem.theme.ConnectDogTheme
 import com.kusitms.connectdog.core.designsystem.theme.Gray3
 import com.kusitms.connectdog.core.designsystem.theme.Gray4
 import com.kusitms.connectdog.core.designsystem.theme.Gray5
+import com.kusitms.connectdog.core.designsystem.theme.PetOrange
+import kotlinx.coroutines.delay
 
 @Composable
 fun ConnectDogTextField(
@@ -168,7 +172,6 @@ fun ConnectDogTextField(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConnectDogIconTextField(
     modifier: Modifier = Modifier,
@@ -258,6 +261,58 @@ fun ConnectDogTextFieldWithButton(
     }
 }
 
+@Composable
+fun ConnectDogTextFieldWithTimer(
+    initialMinute: Int = 5,
+    initialSecond: Int = 0,
+    text: String,
+    onTextChanged: (String) -> Unit,
+    textFieldLabel: String,
+    placeholder: String,
+    borderColor: Color = Gray5,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false
+) {
+    var minute by remember { mutableStateOf(initialMinute) }
+    var second by remember { mutableStateOf(initialSecond) }
+
+    LaunchedEffect(key1 = minute, key2 = second) {
+        if (minute > 0 || second > 0) {
+            delay(1000L)
+            if (second > 0) {
+                second--
+            } else {
+                if (minute > 0) {
+                    minute--
+                    second = 59
+                }
+            }
+        }
+    }
+
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
+        ConnectDogTextField(
+            text = text,
+            label = textFieldLabel,
+            placeholder = placeholder,
+            keyboardType = keyboardType,
+            onTextChanged = { onTextChanged(it) },
+            borderColor = borderColor,
+            isError = isError
+        )
+        Text(
+            text = String.format("%02d:%02d", minute, second),
+            fontSize = 12.sp,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            color = PetOrange,
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun ConnectDogTextFieldPreview() {
@@ -274,61 +329,3 @@ private fun ConnectDogTextFieldPreview() {
         )
     }
 }
-
-@Preview
-@Composable
-private fun tesaq() {
-    ConnectDogTheme {
-        ConnectDogTextField(
-            height = 244,
-            text = "",
-            onTextChanged = {},
-            label = "느꼈던 감정, 후기를 작성해주세요",
-            placeholder = "",
-            isError = false,
-            supportingText = null
-        )
-    }
-}
-
-// @Preview
-// @Composable
-// private fun ConnectDogTextFieldSupportPreview() {
-//    val (text, onTextChanged) = remember {
-//        mutableStateOf("")
-//    }
-//    ConnectDogTheme {
-//        ConnectDogTextField(
-//            text = text,
-//            onTextChanged = onTextChanged,
-//            label = "텍스트"
-//            supportingText = R.string.untitled
-//        )
-//    }
-// }
-//
-// @Preview
-// @Composable
-// private fun ConnectDogTextFieldErrorPreview() {
-//    val (text, onTextChanged) = remember {
-//        mutableStateOf("")
-//    }
-//    ConnectDogTheme {
-//        ConnectDogTextField(
-//            text = text,
-//            onTextChanged = onTextChanged,
-// //            labelRes = androidx.compose.ui.R.string.selected,
-// //            placeholderRes = R.string.untitled,
-//            isError = true,
-//            errorMessageRes = R.string.untitled
-//        )
-//    }
-// }
-
-// @Preview
-// @Composable
-// private fun ConnnectDogTextFieldWithButtonPreview() {
-//    ConnectDogTheme {
-//        ConnectDogTextFieldWithButton(width = 100, height = 30, label = "test", padding = 10)
-//    }
-// }
